@@ -1,0 +1,17 @@
+[versions]
+kotlin = "1.9.10"
+log4j = "2.20.0"
+
+[libraries]
+annotations = "org.jetbrains:annotations:24.0.1"
+coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
+logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+style = "org.sourcegrade.style:3.0.0"
