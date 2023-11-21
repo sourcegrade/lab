@@ -8,7 +8,6 @@ plugins {
 }
 
 val projectVersion = file("version").readLines().first()
-project.extra["apiVersion"] = projectVersion.replace("\\.[1-9]\\d*-SNAPSHOT|\\.0|\\.\\d*\$".toRegex(), "")
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
@@ -23,12 +22,12 @@ allprojects {
 
     tasks {
         withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "17"
         }
         withType<JavaCompile> {
             options.encoding = "UTF-8"
-            sourceCompatibility = "11"
-            targetCompatibility = "11"
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
         }
     }
 }

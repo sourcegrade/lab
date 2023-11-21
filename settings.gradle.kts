@@ -1,7 +1,6 @@
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        gradlePluginPortal()
         mavenCentral()
     }
 }
@@ -14,13 +13,13 @@ pluginManagement {
     }
 }
 
-rootProject.name = "hub"
+rootProject.name = "yougrade"
 
 sequenceOf(
-    "backend",
-    "frontend",
+    "operator",
+    "hub",
 ).forEach {
-    val project = ":hub-$it"
+    val project = ":yougrade-$it"
     include(project)
     project(project).projectDir = file(it)
 }
