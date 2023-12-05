@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.operator
+package org.sourcegrade.autogd.operator
 
 import com.expediagroup.graphql.server.ktor.GraphQL
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute

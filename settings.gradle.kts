@@ -13,13 +13,13 @@ pluginManagement {
     }
 }
 
-rootProject.name = "yougrade"
+rootProject.name = "autogd"
 
 sequenceOf(
     "operator",
     "hub",
 ).forEach {
-    val project = ":yougrade-$it"
+    val project = ":autogd-$it"
     include(project)
     project(project).projectDir = file(it)
 }
