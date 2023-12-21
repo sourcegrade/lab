@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Card } from "@repo/ui";
+import { Card } from "@repo/ui/components";
 import styles from "./page.module.css";
 
 function Gradient({
