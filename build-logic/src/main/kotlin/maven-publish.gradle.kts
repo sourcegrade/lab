@@ -25,13 +25,13 @@ extensions.configure<PublishingExtension> {
     publications.register<MavenPublication>("maven") {
         from(components["java"])
         pom {
-            name.set("jagr")
+            name.set("autogd")
             description.set("An automated tool for grading programming assignments")
             url.set("https://www.sourcegrade.org")
             scm {
-                url.set("https://github.com/sourcegrade/jagr")
-                connection.set("scm:git:https://github.com/sourcegrade/jagr.git")
-                developerConnection.set("scm:git:https://github.com/sourcegrade/jagr.git")
+                url.set("https://github.com/sourcegrade/autogd")
+                connection.set("scm:git:https://github.com/sourcegrade/autogd.git")
+                developerConnection.set("scm:git:https://github.com/sourcegrade/autogd.git")
             }
             licenses {
                 license {

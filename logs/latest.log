@@ -1,0 +1,6 @@
+[23-Dec-05 12:10:56] [INFO] - Autoreload is disabled because the development mode is off.
+[23-Dec-05 12:10:56] [INFO] - Application started in 0.162 seconds.
+[23-Dec-05 12:10:56] [INFO] - Starting operator...
+[23-Dec-05 12:10:56] [INFO] - Initializing operator...
+[23-Dec-05 12:10:56] [INFO] - Connected to Kubernetes API server https://kubernetes.default.svc/ with API version v1.
+[23-Dec-05 12:11:16] [INFO] - Responding at http://0.0.0.0:8080

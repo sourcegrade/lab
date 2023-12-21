@@ -6,9 +6,9 @@ graphql = "7.0.2"
 [libraries]
 annotations = "org.jetbrains:annotations:24.0.1"
 coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
-# com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
+koin = "io.insert-koin:koin-ktor:3.5.2-RC1"
 ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
@@ -19,6 +19,7 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
 kubernetes-client = "io.fabric8:kubernetes-client:6.9.2"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+logging-slf4jimpl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 
 [plugins]
@@ -27,4 +28,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 style = "org.sourcegrade.style:3.0.0"
-ktor = "io.ktor.plugin:2.3.5"
+ktor = "io.ktor.plugin:2.3.6"
