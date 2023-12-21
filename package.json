@@ -15,8 +15,8 @@
     "name": "my-turborepo",
     "packageManager": "yarn@1.22.19",
     "workspaces": [
+        "common/*",
         "hub/ui",
-        "operator/ui",
-        "common-ts/*"
+        "operator/ui"
     ]
 }
