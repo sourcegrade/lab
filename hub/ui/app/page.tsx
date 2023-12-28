@@ -19,6 +19,7 @@ const demoAssignments: CardContent[] = _.range(10).map((i) => ({
 export default function Page() {
     return (
         <div>
+            <h1>Dashboard</h1>
             <div className="flex justify-center space-x-6 p-3 rounded-md bg-slate-700">
                 <Button variant="contained" className="flex-col flex-grow">
                     <AddCircleIcon className="!text-5xl" />
@@ -29,9 +30,9 @@ export default function Page() {
                     Show my Courses
                 </Button>
             </div>
-            <h1>Recent Courses</h1>
+            <h2>Recent Courses</h2>
             <CardCarousel items={demoCourses}/>
-            <h1>Recent Assignments</h1>
+            <h2>Recent Assignments</h2>
             <CardCarousel items={demoAssignments}/>
         </div>
     );

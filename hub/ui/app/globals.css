@@ -25,3 +25,11 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+h1 {
+  @apply text-4xl font-bold py-6;
+}
+
+h2 {
+  @apply text-3xl font-bold py-4;
+}
