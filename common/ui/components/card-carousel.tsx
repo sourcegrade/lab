@@ -8,12 +8,17 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 
 export interface CardContent {
     title: string;
     description: string;
     image: string;
+    openButtonEnabled?: boolean;
+    settingsButtonEnabled?: boolean;
 }
 
 const responsive = {
@@ -36,11 +41,11 @@ const responsive = {
     }
 };
 
-export default function CardCarousel<T extends CardContent>(
+export default function CardCarousel(
     {
         items
     }: {
-        items: T[];
+        items: CardContent[];
     }
 ) {
     return (
@@ -86,8 +91,18 @@ export default function CardCarousel<T extends CardContent>(
                             </Typography>
                         </CardContent>
                         <CardActions>
-                            <Button size="small">Open</Button>
-                            <Button size="small">Settings</Button>
+                            <Button size="small"
+                                    disabled={!(item.openButtonEnabled ?? true)}
+                                    startIcon={<VisibilityIcon/>}
+                                    variant={"contained"}>
+                                Open
+                            </Button>
+                            <Button size="small"
+                                    disabled={!(item.settingsButtonEnabled ?? true)}
+                                    startIcon={<SettingsIcon/>}
+                                    variant={"contained"}>
+                                Settings
+                            </Button>
                         </CardActions>
                     </Card>
                 ))}
