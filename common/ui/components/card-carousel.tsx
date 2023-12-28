@@ -8,7 +8,6 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SettingsIcon from '@mui/icons-material/Settings';
 
