@@ -10,7 +10,7 @@ fun Application.module() {
         schema {
             packages = listOf("org.sourcegrade.yougrade.hub")
             queries = listOf(
-                HelloWorldQuery()
+                HelloWorldQuery(),
             )
         }
     }
