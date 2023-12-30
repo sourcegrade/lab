@@ -14,5 +14,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.sourcegrade.yougrade.operator.MainKt")
+    mainClass.set("org.sourcegrade.yougrade.hub.MainKt")
 }
