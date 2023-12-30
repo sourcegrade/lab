@@ -12,7 +12,8 @@
     "@repo/ui": "*",
     "next": "^13.4.19",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "sass": "^1.69.5"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.4.19",

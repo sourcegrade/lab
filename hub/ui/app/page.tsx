@@ -8,8 +8,9 @@ const demoCourses: CardContent[] = _.range(10).map((i) => ({
     title: `Course ${i}`,
     description: `Description ${i}`,
     image: "https://www.pngkit.com/png/full/12-120436_open-book-icon-png.png",
-    openButtonEnabled: false,
+    openButtonEnabled: true,
     settingsButtonEnabled: false,
+    openButtonHref: `/courses/${i}`,
 }));
 
 const demoAssignments: CardContent[] = _.range(10).map((i) => ({
