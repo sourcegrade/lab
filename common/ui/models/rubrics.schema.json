@@ -1,0 +1,281 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "NumberRange": {
+            "type": "object",
+            "description": "A number range defines a range of numbers. The range is inclusive.",
+            "properties": {
+                "min": {
+                    "description": "The minimum value of the range.",
+                    "type": "number",
+                    "default": 0
+                },
+                "max": {
+                    "description": "The maximum value of the range.",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "min",
+                "max"
+            ],
+            "additionalProperties": false
+        },
+        "PointRange": {
+            "description": "A point range defines a range of points. This can be a single number or a range of numbers. The range is inclusive.",
+            "oneOf": [
+                {
+                    "type": "number"
+                },
+                {
+                    "$ref": "#/definitions/NumberRange"
+                }
+            ],
+            "default": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "ShowcaseString": {
+            "description": "A showcase string is a string that can either be a simple string or an object that contains a text and an html property. The text property is used for the text representation of the string and the html property is used for the html representation of the string. Both representations should contain the same information.",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "text": {
+                            "description": "The text representation of the string.",
+                            "type": "string"
+                        },
+                        "html": {
+                            "description": "The html representation of the string.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "text",
+                        "html"
+                    ],
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "TestState": {
+            "type": "string",
+            "description": "The state of a test run.",
+            "enum": [
+                "PENDING",
+                "RUNNING",
+                "SUCCESS",
+                "FAILURE",
+                "ERROR",
+                "SKIPPED",
+                "UNKNOWN"
+            ]
+        },
+        "TestRun": {
+            "type": "object",
+            "description": "A test run is the result of a test. It contains information about the test such as the state, the message, the stacktrace, the duration and the children of the test.",
+            "properties": {
+                "id": {
+                    "description": "The id of the test run. This id is used to identify the test run in the showcase.",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "The name of the test run.",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "The type of the test run.",
+                    "$ref": "#/definitions/TestState"
+                },
+                "message": {
+                    "description": "The message of the test. It should be empty if the test is successful. If the test is not successful, it should contain the error message as well as context information.",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "stacktrace": {
+                    "description": "The stacktrace of the test. It should be empty if the test is successful. If the test is not successful, it should contain the stacktrace of the error.",
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "The duration of the test in milliseconds.",
+                    "type": "number"
+                },
+                "children": {
+                    "type": "array",
+                    "description": "The children of the test. This can be other tests or test runs.",
+                    "items": {
+                        "$ref": "#/definitions/TestRun"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "type",
+                "duration"
+            ],
+            "additionalProperties": false
+        },
+        "CriterionAccumulator": {
+            "type": "string",
+            "description": "The accumulator of a criterion. It defines how the points of the criterion are calculated.",
+            "enum": [
+                "AND",
+                "OR",
+                "NOT",
+                "SUM"
+            ],
+            "default": "AND"
+        },
+        "Criterion": {
+            "type": "object",
+            "description": "A criterion is a single criterion of a rubric. It can be a leaf criterion or a parent criterion. A leaf criterion contains tests and a parent criterion contains other criteria.",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The id of the criterion. This id is used to identify the criterion in the showcase."
+                },
+                "name": {
+                    "description": "The name of the criterion.",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "description": {
+                    "description": "The description of the criterion.",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "possiblePoints": {
+                    "description": "The possible amount of points that can be achieved.",
+                    "$ref": "#/definitions/NumberRange"
+                },
+                "achievedPoints": {
+                    "description": "The amount of points that were achieved.",
+                    "$ref": "#/definitions/PointRange"
+                },
+                "message": {
+                    "description": "The message that is displayed if the criterion is not fulfilled",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "tests": {
+                    "type": "array",
+                    "description": "The tests of the criterion. This is only defined if the criterion is a leaf criterion.",
+                    "items": {
+                        "$ref": "#/definitions/TestRun"
+                    }
+                },
+                "testAccumulator": {
+                    "description": "The accumulator of the tests. It defines how the points of the tests are calculated. This is only defined if the criterion is a leaf criterion.",
+                    "$ref": "#/definitions/CriterionAccumulator"
+                },
+                "children": {
+                    "type": "array",
+                    "description": "The children of the criterion. This is only defined if the criterion is a parent criterion.",
+                    "items": {
+                        "$ref": "#/definitions/Criterion"
+                    }
+                },
+                "childrenAccumulator": {
+                    "description": "The accumulator of the children. It defines how the points of the children are calculated. This is only defined if the criterion is a parent criterion.",
+                    "$ref": "#/definitions/CriterionAccumulator"
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "description",
+                "possiblePoints",
+                "achievedPoints"
+            ],
+            "additionalProperties": false
+        },
+        "LeafCriterion": {
+            "description": "A leaf criterion is a criterion that does not have any children.",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Criterion"
+                },
+                {
+                    "not": {
+                        "required": [
+                            "children",
+                            "childrenAccumulator"
+                        ]
+                    }
+                },
+                {
+                    "required": [
+                        "tests",
+                        "testAccumulator"
+                    ]
+                }
+            ]
+        },
+        "ParentCriterion": {
+            "description": "A parent criterion is a criterion that has children.",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Criterion"
+                },
+                {
+                    "not": {
+                        "required": [
+                            "tests",
+                            "testAccumulator"
+                        ]
+                    }
+                },
+                {
+                    "required": [
+                        "children",
+                        "childrenAccumulator"
+                    ]
+                }
+            ]
+        },
+        "Rubric": {
+            "type": "object",
+            "description": "A rubric is a collection of criteria. It is used to provide feedback to the student about their solution.",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "The id of the rubric. This id is used to identify the rubric in the showcase."
+                },
+                "name": {
+                    "description": "The name of the rubric. This should contain information about the exercise such as sheet-number, group, etc.",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "description": {
+                    "description": "The description of the rubric.",
+                    "$ref": "#/definitions/ShowcaseString"
+                },
+                "possiblePoints": {
+                    "description": "The possible amount of points that can be achieved.",
+                    "$ref": "#/definitions/NumberRange"
+                },
+                "achievedPoints": {
+                    "description": "The amount of points that were achieved.",
+                    "$ref": "#/definitions/PointRange"
+                },
+                "criteria": {
+                    "type": "array",
+                    "description": "The criteria of the rubric.",
+                    "items": {
+                        "$ref": "#/definitions/Criterion"
+                    }
+                }
+            },
+            "required": [
+                "id",
+                "name",
+                "description",
+                "possiblePoints",
+                "achievedPoints",
+                "criteria"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "$ref": "#/definitions/Rubric"
+}
