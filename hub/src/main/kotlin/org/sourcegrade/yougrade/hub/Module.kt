@@ -1,23 +1,47 @@
 package org.sourcegrade.yougrade.hub
 
-import com.expediagroup.graphql.server.ktor.*
+import com.expediagroup.graphql.server.ktor.GraphQL
+import com.expediagroup.graphql.server.ktor.graphQLGetRoute
+import com.expediagroup.graphql.server.ktor.graphQLPostRoute
+import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
+import com.expediagroup.graphql.server.ktor.graphiQLRoute
+import io.ktor.http.Url
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.auth.*
+import io.ktor.server.config.tryGetString
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.request.path
 import io.ktor.server.routing.Routing
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
-import org.sourcegrade.yougrade.hub.models.Users
+import org.jetbrains.exposed.sql.DatabaseConfig
+import org.sourcegrade.yougrade.hub.http.authenticationModule
 import org.sourcegrade.yougrade.hub.queries.HelloWorldQuery
 import org.sourcegrade.yougrade.hub.queries.UsersEndpoints
+import kotlin.collections.listOf
 
 fun Application.module() {
-    val database =
-        Database.connect(
-            "jdbc:postgresql://localhost:5432/yougrade",
-            driver = "org.postgresql.Driver",
-            user = "admin",
-            password = "admin",
+    val environment = environment
+    val url =
+        Url(
+            environment.config.tryGetString("ktor.deployment.url") ?: throw IllegalStateException("No deployment url set"),
         )
+
+    val databaseConfig =
+        DatabaseConfig {
+            keepLoadedReferencesOutOfTransaction = true
+        }
+
+    Database.connect(
+        environment.config.tryGetString("ktor.db.url") ?: "",
+        driver = "org.postgresql.Driver",
+        user = environment.config.tryGetString("ktor.db.user") ?: "",
+        password = environment.config.tryGetString("ktor.db.password") ?: "",
+        databaseConfig = databaseConfig,
+    )
+
     install(GraphQL) {
         schema {
             packages = listOf("org.sourcegrade.yougrade.hub")
@@ -28,24 +52,29 @@ fun Application.module() {
                 )
         }
     }
-    install(Authentication) {
-        // local authentication
-        basic {
-            realm = "ktor"
-            validate { credentials ->
-                if (Users.validateUser(username = credentials.name, password = credentials.password)) {
-                    UserIdPrincipal(credentials.name)
-                } else {
-                    null
-                }
-            }
-        }
-    }
+
     install(Routing) {
         graphQLGetRoute()
         graphQLPostRoute()
-//        graphQLSubscriptionsRoute()
-        graphiQLRoute()
         graphQLSDLRoute()
+        //        graphQLSubscriptionsRoute()
+        graphiQLRoute()
+    }
+
+    install(ContentNegotiation) {
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            },
+        )
+    }
+
+    authenticationModule()
+    configureRouting()
+    install(CallLogging) {
+        level = org.slf4j.event.Level.INFO
+        filter { call -> call.request.path().startsWith("/") }
     }
 }

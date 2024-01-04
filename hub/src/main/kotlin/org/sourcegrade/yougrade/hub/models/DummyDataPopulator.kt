@@ -1,20 +1,22 @@
 package org.sourcegrade.yougrade.hub.models
 
-import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
+    // read HOCON config file
+    val config = com.typesafe.config.ConfigFactory.load()
+    val dbConfig = config.getConfig("ktor.db")
     Database.connect(
-        "jdbc:postgresql://localhost:5432/yougrade",
+        url = dbConfig.getString("url"),
         driver = "org.postgresql.Driver",
-        user = "admin",
-        password = "admin",
+        user = dbConfig.getString("user"),
+        password = dbConfig.getString("password"),
     )
-    transaction {
+    newSuspendedTransaction {
         addLogger(StdOutSqlLogger)
 
         // delete and re-create tables
@@ -23,21 +25,21 @@ fun main(args: Array<String>) {
 
         val dummyUsers =
             listOf(
-                Users.createUser(
-                    username = "John Doe",
-                    email = "test@example.com",
-                    password = "test",
-                ),
-                Users.createUser(
-                    username = "John Smith",
-                    email = "john.smith@aol.com",
-                    password = "toast",
-                ),
-                Users.createUser(
-                    username = "Bernd Scheuert",
-                    email = "b.scheuert@gmail.com",
-                    password = "meinnameistbernd",
-                ),
+                User.new {
+                    username = "John Doe"
+                    email = "test@example.com"
+//                    password = "test"
+                },
+                User.new {
+                    username = "John Smith"
+                    email = "john.smith@aol.com"
+//                    password = "toast"
+                },
+                User.new {
+                    username = "Bernd Scheuert"
+                    email = "b.scheuert@gmail.com"
+//                    password = "meinnameistbernd"
+                },
             )
     }
 }
