@@ -16,6 +16,8 @@ open class Models : IdTable<String> {
     override val primaryKey = PrimaryKey(id, name = "pk_${tableName}_id")
 }
 
-abstract class Model(id: EntityID<String>) : Entity<String>(id)
+abstract class Model<T>(id: EntityID<String>) : Entity<String>(id) {
+    abstract fun toDTO(): T
+}
 
 // TODO: add https://github.com/JetBrains/Exposed/issues/497#issuecomment-520266191

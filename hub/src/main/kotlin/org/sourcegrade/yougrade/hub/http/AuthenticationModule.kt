@@ -42,7 +42,6 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.yougrade.hub.models.User
 import org.sourcegrade.yougrade.hub.models.Users
-import org.sourcegrade.yougrade.hub.models.toUserDTO
 import java.io.File
 import kotlin.time.Duration.Companion.hours
 
@@ -168,7 +167,7 @@ fun Application.authenticationModule() {
             }
         }
         get("/api/session/current-user") {
-            withUser { call.respond(it.toUserDTO()) }
+            withUser { call.respond(it.toDTO()) }
         }
     }
 }

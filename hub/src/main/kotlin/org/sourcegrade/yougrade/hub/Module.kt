@@ -16,7 +16,8 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.sourcegrade.yougrade.hub.http.authenticationModule
 import org.sourcegrade.yougrade.hub.queries.HelloWorldQuery
-import org.sourcegrade.yougrade.hub.queries.UsersEndpoints
+import org.sourcegrade.yougrade.hub.queries.UserMutations
+import org.sourcegrade.yougrade.hub.queries.UserQueries
 import kotlin.collections.listOf
 
 fun Application.module() {
@@ -45,7 +46,11 @@ fun Application.module() {
             queries =
                 listOf(
                     HelloWorldQuery(),
-                    UsersEndpoints(),
+                    UserQueries(),
+                )
+            mutations =
+                listOf(
+                    UserMutations(),
                 )
         }
     }
