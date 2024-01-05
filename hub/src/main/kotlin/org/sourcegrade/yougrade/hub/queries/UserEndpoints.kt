@@ -6,33 +6,63 @@ import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.sourcegrade.yougrade.hub.models.CourseDTO
 import org.sourcegrade.yougrade.hub.models.User
 import org.sourcegrade.yougrade.hub.models.UserDTO
 
-class UserQueries : Query {
+@GraphQLDescription("Query collection for users")
+class UserQuery {
+    private fun requireId(environment: DataFetchingEnvironment): String {
+        return environment.executionStepInfo.parent?.arguments?.get("id") as? String
+            ?: throw IllegalArgumentException("id is required")
+    }
+
     @GraphQLDescription("Get a list of all users")
-    suspend fun getAllUsers(): List<UserDTO> {
+    suspend fun fetchAll(): List<UserDTO> {
         return newSuspendedTransaction {
             User.all().map { it.toDTO() }
         }
     }
 
-    suspend fun user(id: String): UserDTO {
+    @GraphQLDescription("Get a single user by id")
+    suspend fun fetch(environment: DataFetchingEnvironment): UserDTO {
+        val id = requireId(environment)
         return newSuspendedTransaction {
             User.findById(id)?.toDTO() ?: throw IllegalArgumentException("No user with id $id found")
         }
     }
+
+    @GraphQLDescription("Get the courses of a user by id")
+    suspend fun courses(environment: DataFetchingEnvironment): List<CourseDTO> {
+        val id = requireId(environment)
+        return newSuspendedTransaction {
+            User.findById(id)?.courses?.toList()?.map { it.toDTO() } ?: throw IllegalArgumentException("No user with id $id found")
+        }
+    }
 }
 
+class UserQueries : Query {
+    suspend fun user(
+        environment: DataFetchingEnvironment,
+        id: String? = null,
+    ): UserQuery {
+        return UserQuery()
+    }
+}
+
+@GraphQLDescription("Mutation collection for users")
 class UserMutation {
     private fun requireId(environment: DataFetchingEnvironment): String {
         return environment.executionStepInfo.parent?.arguments?.get("id") as? String
             ?: throw IllegalArgumentException("id is required")
     }
 
+    data class CreateUserInput(val email: String, val username: String, val password: String? = null)
+
+    @GraphQLDescription("Create a new user")
     suspend fun create(
         environment: DataFetchingEnvironment,
-        input: UserDTO,
+        input: CreateUserInput,
     ): UserDTO {
         return newSuspendedTransaction {
             User.new {
@@ -42,6 +72,7 @@ class UserMutation {
         }
     }
 
+    @GraphQLDescription("Delete a user by id")
     suspend fun delete(environment: DataFetchingEnvironment): UserDTO {
         val id = requireId(environment)
         return newSuspendedTransaction {
@@ -51,6 +82,7 @@ class UserMutation {
         }
     }
 
+    @GraphQLDescription("Get a single user by id")
     suspend fun fetch(environment: DataFetchingEnvironment): UserDTO {
         val id = requireId(environment)
         return newSuspendedTransaction {
@@ -58,6 +90,7 @@ class UserMutation {
         }
     }
 
+    @GraphQLDescription("Update a user's email")
     suspend fun updateEmail(
         environment: DataFetchingEnvironment,
         @GraphQLName("email") newEmail: String,
@@ -70,6 +103,7 @@ class UserMutation {
         }.email
     }
 
+    @GraphQLDescription("Update a user's username")
     suspend fun updateUsername(
         environment: DataFetchingEnvironment,
         @GraphQLName("username") newUsername: String,
@@ -84,7 +118,7 @@ class UserMutation {
 }
 
 class UserMutations : Mutation {
-    suspend fun userMutation(
+    suspend fun user(
         environment: DataFetchingEnvironment,
         id: String? = null,
     ): UserMutation {

@@ -15,6 +15,8 @@ import io.ktor.server.routing.Routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.sourcegrade.yougrade.hub.http.authenticationModule
+import org.sourcegrade.yougrade.hub.queries.CourseMutations
+import org.sourcegrade.yougrade.hub.queries.CourseQueries
 import org.sourcegrade.yougrade.hub.queries.HelloWorldQuery
 import org.sourcegrade.yougrade.hub.queries.UserMutations
 import org.sourcegrade.yougrade.hub.queries.UserQueries
@@ -47,10 +49,12 @@ fun Application.module() {
                 listOf(
                     HelloWorldQuery(),
                     UserQueries(),
+                    CourseQueries(),
                 )
             mutations =
                 listOf(
                     UserMutations(),
+                    CourseMutations(),
                 )
         }
     }
