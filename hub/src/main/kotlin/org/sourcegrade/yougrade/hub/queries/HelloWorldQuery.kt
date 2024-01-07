@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub
+package org.sourcegrade.yougrade.hub.queries
 
 import com.expediagroup.graphql.server.operations.Query
 
