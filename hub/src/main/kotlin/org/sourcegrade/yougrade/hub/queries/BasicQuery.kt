@@ -5,11 +5,11 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.yougrade.hub.models.Model
 
-// class BasicQuery<T>(private val entityClass: EntityClass<String, Model<T>>) : Query {
-//    suspend fun helloWorld(): String {
-//        return "Hello World"
-//    }
-// }
+class BasicQuery<T>(private val entityClass: EntityClass<String, Model<T>>) {
+    suspend fun helloWorld(): String {
+        return "Hello World"
+    }
+}
 
 // generics not supported by gql :(
 abstract class BasicMutation<T>(private val entityClass: EntityClass<String, Model<T>>) {
