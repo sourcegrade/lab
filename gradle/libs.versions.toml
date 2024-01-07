@@ -2,6 +2,7 @@
 kotlin = "1.9.20"
 log4j = "2.21.1"
 graphql = "7.0.2"
+exposedVersion = "0.45.0"
 
 [libraries]
 annotations = "org.jetbrains:annotations:24.0.1"
@@ -11,15 +12,33 @@ graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", versi
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
+ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialisation-kotlinx-json" }
+ktor-client-cio-jvm = { module = "io.ktor:ktor-client-cio-jvm" }
+
 kubernetes-client = "io.fabric8:kubernetes-client:6.9.2"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
+logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
+exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposedVersion" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
+exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposedVersion" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
+
+postgresql = "org.postgresql:postgresql:42.6.0"
+
+bcrypt = "org.mindrot:jbcrypt:0.4"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
