@@ -22,11 +22,11 @@ import io.ktor.server.auth.oauth
 import io.ktor.server.auth.principal
 import io.ktor.server.auth.session
 import io.ktor.server.config.tryGetString
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
+import io.ktor.server.routing.*
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.cookie
@@ -88,22 +88,22 @@ fun Application.authenticationModule() {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "Authentik",
                     authorizeUrl =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.authorizeUrl")
-                            ?: throw IllegalStateException("Missing OAuth authorize Url"),
+                    this@authenticationModule.environment.config.tryGetString("ktor.oauth.authorizeUrl")
+                        ?: throw IllegalStateException("Missing OAuth authorize Url"),
                     accessTokenUrl =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.accessTokenUrl")
-                            ?: throw IllegalStateException("Missing OAuth access token Url"),
+                    this@authenticationModule.environment.config.tryGetString("ktor.oauth.accessTokenUrl")
+                        ?: throw IllegalStateException("Missing OAuth access token Url"),
                     requestMethod = HttpMethod.Post,
                     clientId =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientId")
-                            ?: throw IllegalStateException("Missing OAuth client ID"),
+                    this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientId")
+                        ?: throw IllegalStateException("Missing OAuth client ID"),
                     clientSecret =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientSecret")
-                            ?: throw IllegalStateException("Missing OAuth client secret"),
+                    this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientSecret")
+                        ?: throw IllegalStateException("Missing OAuth client secret"),
                     defaultScopes =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.scopes")
-                            ?.split(" ")
-                            ?: listOf("openid", "profile", "email"),
+                    this@authenticationModule.environment.config.tryGetString("ktor.oauth.scopes")
+                        ?.split(" ")
+                        ?: listOf("openid", "profile", "email"),
                     onStateCreated = { call, state ->
                         // saves new state with redirect url value
                         call.request.queryParameters["redirectUrl"]?.let {
@@ -115,59 +115,70 @@ fun Application.authenticationModule() {
         }
     }
     routing {
-        authenticate("Authentik") {
-            get("/api/session/login") {
-                // Redirects to 'authorizeUrl' automatically
+        route("/api/session") {
+            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+                json(
+                    Json {
+                        prettyPrint = true
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    },
+                )
             }
+            authenticate("Authentik") {
+                get("login") {
+                    // Redirects to 'authorizeUrl' automatically
+                }
 
-            get(callback) {
-                val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
+                get("callback") {
+                    val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
 
-                val userInfo =
-                    httpClient.get(
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.userInfoUrl")
-                            ?: throw IllegalStateException("Missing OAuth user info Url"),
-                    ) {
-                        header("Authorization", "Bearer ${principal.accessToken}")
-                    }.body<OAuthUserInfo>()
+                    val userInfo =
+                        httpClient.get(
+                            this@authenticationModule.environment.config.tryGetString("ktor.oauth.userInfoUrl")
+                                ?: throw IllegalStateException("Missing OAuth user info Url"),
+                        ) {
+                            header("Authorization", "Bearer ${principal.accessToken}")
+                        }.body<OAuthUserInfo>()
 
-                // find user in db
+                    // find user in db
 
-                val user =
-                    newSuspendedTransaction {
-                        User.find { Users.email eq userInfo.email }.firstOrNull()
-                    } ?: newSuspendedTransaction {
-                        User.new {
-                            username = userInfo.preferredUsername
-                            email = userInfo.email
+                    val user =
+                        newSuspendedTransaction {
+                            User.find { Users.email eq userInfo.email }.firstOrNull()
+                        } ?: newSuspendedTransaction {
+                            User.new {
+                                username = userInfo.preferredUsername
+                                email = userInfo.email
+                            }
+                        }
+
+                    val session =
+                        UserSession(
+                            user.id.value,
+                            checkNotNull(principal.state) { "No state" },
+                            principal.accessToken,
+                            userInfo.email,
+                        )
+
+                    call.sessions.set(session)
+                    principal.state?.let { state ->
+                        redirects[state]?.let { redirect ->
+                            call.respondRedirect(redirect)
+                            return@get
                         }
                     }
-
-                val session =
-                    UserSession(
-                        user.id.value,
-                        checkNotNull(principal.state) { "No state" },
-                        principal.accessToken,
-                        userInfo.email,
-                    )
-
-                call.sessions.set(session)
-                principal.state?.let { state ->
-                    redirects[state]?.let { redirect ->
-                        call.respondRedirect(redirect)
-                        return@get
-                    }
+                    call.respondRedirect("/")
                 }
-                call.respondRedirect("/")
-            }
 
-            get("/api/session/logout") {
-                call.sessions.clear<UserSession>()
-                call.respondRedirect("/")
+                get("logout") {
+                    call.sessions.clear<UserSession>()
+                    call.respondRedirect("/")
+                }
             }
-        }
-        get("/api/session/current-user") {
-            withUser { call.respond(it.toDTO()) }
+            get("current-user") {
+                withUser { call.respond(it.toDTO()) }
+            }
         }
     }
 }

@@ -1,9 +1,6 @@
 package org.sourcegrade.yougrade.hub
 
-import com.expediagroup.graphql.server.ktor.GraphQL
-import com.expediagroup.graphql.server.ktor.graphQLGetRoute
-import com.expediagroup.graphql.server.ktor.graphQLPostRoute
-import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
+import com.expediagroup.graphql.server.ktor.*
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
 import io.ktor.http.Url
 import io.ktor.serialization.kotlinx.json.*
@@ -29,7 +26,8 @@ fun Application.module() {
     val environment = environment
     val url =
         Url(
-            environment.config.tryGetString("ktor.deployment.url") ?: throw IllegalStateException("No deployment url set"),
+            environment.config.tryGetString("ktor.deployment.url")
+                ?: throw IllegalStateException("No deployment url set"),
         )
 
     val databaseConfig =
@@ -66,18 +64,8 @@ fun Application.module() {
         graphQLGetRoute()
         graphQLPostRoute()
         graphQLSDLRoute()
-        //        graphQLSubscriptionsRoute()
+//        graphQLSubscriptionsRoute()
         graphiQLRoute()
-    }
-
-    install(ContentNegotiation) {
-        json(
-            Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            },
-        )
     }
 
     authenticationModule()
