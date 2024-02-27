@@ -6,12 +6,15 @@ import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
 import io.ktor.http.Url
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.request.path
 import io.ktor.server.routing.Routing
+import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.sourcegrade.yougrade.hub.http.authenticationModule
@@ -67,15 +70,15 @@ fun Application.module() {
         graphiQLRoute()
     }
 
-//    install(ContentNegotiation) {
-//        json(
-//            Json {
-//                prettyPrint = true
-//                isLenient = true
-//                ignoreUnknownKeys = true
-//            },
-//        )
-//    }
+    install(ContentNegotiation) {
+        json(
+            Json {
+                prettyPrint = true
+                isLenient = true
+                ignoreUnknownKeys = true
+            },
+        )
+    }
 
     authenticationModule()
     configureRouting()
