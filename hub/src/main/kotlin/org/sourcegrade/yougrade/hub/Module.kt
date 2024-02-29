@@ -9,6 +9,7 @@ import io.ktor.server.application.install
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.request.path
 import io.ktor.server.routing.Routing
 import kotlinx.serialization.json.Json
@@ -42,6 +43,11 @@ fun Application.module() {
         password = environment.config.tryGetString("ktor.db.password") ?: "",
         databaseConfig = databaseConfig,
     )
+
+    install(CORS) {
+//        allowHost("localhost:3000", schemes = listOf("http", "https"))
+        anyHost()
+    }
 
     install(GraphQL) {
         schema {

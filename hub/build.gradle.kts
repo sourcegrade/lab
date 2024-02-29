@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.logging.api)
     implementation(libs.logging.core)
     implementation(libs.logging.impl)
+    implementation(libs.ktor.server.cors)
 //    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.0")
     implementation(libs.exposed.core)
     implementation(libs.exposed.crypt)
