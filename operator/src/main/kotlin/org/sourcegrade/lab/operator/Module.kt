@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.operator
+package org.sourcegrade.lab.operator
 
 import com.expediagroup.graphql.server.ktor.GraphQL
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute
@@ -14,7 +14,7 @@ class HelloWorldQuery : Query {
 fun Application.module() {
     install(GraphQL) {
         schema {
-            packages = listOf("org.sourcegrade.yougrade.operator")
+            packages = listOf("org.sourcegrade.lab.operator")
             queries = listOf(
                 HelloWorldQuery(),
             )

@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub.models
+package org.sourcegrade.lab.hub.models
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.EntityClass

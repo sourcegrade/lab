@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub.models
+package org.sourcegrade.lab.hub.models
 
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils

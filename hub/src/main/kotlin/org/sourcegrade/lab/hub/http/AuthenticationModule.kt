@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub.http
+package org.sourcegrade.lab.hub.http
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -40,12 +40,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.yougrade.hub.models.User
-import org.sourcegrade.yougrade.hub.models.Users
+import org.sourcegrade.lab.hub.models.User
+import org.sourcegrade.lab.hub.models.Users
 import java.io.File
 import kotlin.time.Duration.Companion.hours
 
 fun Application.authenticationModule() {
+    val ktorEnv = environment
+
     val httpClient =
         HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -77,41 +79,31 @@ fun Application.authenticationModule() {
         }
         // oidc authentication
         oauth("Authentik") {
-            val url =
-                this@authenticationModule.environment.config.tryGetString("ktor.deployment.url")
-                    ?: throw IllegalStateException("Missing deployment url")
+            val url = ktorEnv.config.property("ktor.deployment.url").getString()
 
             urlProvider = { "$url$callback" }
 
             client = httpClient
-            providerLookup = {
-                OAuthServerSettings.OAuth2ServerSettings(
-                    name = "Authentik",
-                    authorizeUrl =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.authorizeUrl")
-                            ?: throw IllegalStateException("Missing OAuth authorize Url"),
-                    accessTokenUrl =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.accessTokenUrl")
-                            ?: throw IllegalStateException("Missing OAuth access token Url"),
-                    requestMethod = HttpMethod.Post,
-                    clientId =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientId")
-                            ?: throw IllegalStateException("Missing OAuth client ID"),
-                    clientSecret =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.clientSecret")
-                            ?: throw IllegalStateException("Missing OAuth client secret"),
-                    defaultScopes =
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.scopes")
-                            ?.split(" ")
-                            ?: listOf("openid", "profile", "email"),
-                    onStateCreated = { call, state ->
-                        // saves new state with redirect url value
-                        call.request.queryParameters["redirectUrl"]?.let {
-                            redirects[state] = it
-                        }
-                    },
-                )
-            }
+
+            val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
+                name = "Authentik",
+                authorizeUrl = ktorEnv.config.property("ktor.oauth.authorizeUrl").getString(),
+                accessTokenUrl = ktorEnv.config.property("ktor.oauth.accessTokenUrl").getString(),
+                requestMethod = HttpMethod.Post,
+                clientId = ktorEnv.config.property("ktor.oauth.clientId").getString(),
+                clientSecret = ktorEnv.config.property("ktor.oauth.clientSecret").getString(),
+                defaultScopes = ktorEnv.config.tryGetString("ktor.oauth.scopes")
+                    ?.split(" ")
+                    ?: listOf("openid", "profile", "email"),
+                onStateCreated = { call, state ->
+                    // saves new state with redirect url value
+                    call.request.queryParameters["redirectUrl"]?.let {
+                        redirects[state] = it
+                    }
+                },
+            )
+
+            providerLookup = { oauthSettings }
         }
     }
     routing {
@@ -191,14 +183,14 @@ suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User
 }
 
 @Serializable
-public data class UserSession(
+data class UserSession(
     val userId: String,
     val state: String,
     val token: String,
     val email: String,
 ) : Principal
 
-public val redirects = mutableMapOf<String, String>()
+val redirects = mutableMapOf<String, String>()
 
 @Serializable
 data class OAuthUserInfo(

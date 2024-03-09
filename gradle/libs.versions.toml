@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.20"
+kotlin = "1.9.23"
 log4j = "2.21.1"
 graphql = "7.0.2"
 exposedVersion = "0.45.0"
@@ -44,6 +44,6 @@ bcrypt = "org.mindrot:jbcrypt:0.4"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
-style = "org.sourcegrade.style:3.0.0"
 ktor = "io.ktor.plugin:2.3.5"
