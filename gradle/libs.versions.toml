@@ -46,4 +46,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
-ktor = "io.ktor.plugin:2.3.5"
+ktor = "io.ktor.plugin:2.3.9"
