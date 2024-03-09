@@ -13,7 +13,7 @@
         "turbo": "latest"
     },
     "name": "my-turborepo",
-    "packageManager": "yarn@1.22.19",
+    "packageManager": "yarn@1.22.22",
     "workspaces": [
         "common/*",
         "hub/ui",
