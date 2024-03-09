@@ -10,18 +10,18 @@ coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
-ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
-ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging" }
-ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
 ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialisation-kotlinx-json" }
-ktor-client-cio-jvm = { module = "io.ktor:ktor-client-cio-jvm" }
 
 kubernetes-client = "io.fabric8:kubernetes-client:6.9.2"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
@@ -46,4 +46,4 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
-ktor = "io.ktor.plugin:2.3.5"
+ktor = "io.ktor.plugin:2.3.9"

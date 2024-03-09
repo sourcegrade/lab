@@ -28,7 +28,7 @@ dependencies {
     implementation(libs.exposed.json)
     implementation(libs.postgresql)
     implementation(libs.bcrypt)
-    implementation("io.ktor:ktor-client-cio-jvm:2.3.5")
+    implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.client.logging)
 }
