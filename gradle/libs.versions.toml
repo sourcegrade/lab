@@ -23,7 +23,7 @@ ktor-server-sessions = { module = "io.ktor:ktor-server-sessions" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
 ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialisation-kotlinx-json" }
 
-kubernetes-client = "io.fabric8:kubernetes-client:6.9.2"
+kubernetes-client = "io.fabric8:kubernetes-client:6.10.0"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
