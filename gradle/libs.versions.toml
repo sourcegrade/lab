@@ -1,6 +1,6 @@
 [versions]
 kotlin = "1.9.23"
-log4j = "2.21.1"
+log4j = "2.23.1"
 graphql = "7.0.2"
 exposedVersion = "0.45.0"
 
