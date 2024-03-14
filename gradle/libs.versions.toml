@@ -36,7 +36,7 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposedVersion" }
 exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
 
-postgresql = "org.postgresql:postgresql:42.6.0"
+postgresql = "org.postgresql:postgresql:42.7.3"
 
 bcrypt = "org.mindrot:jbcrypt:0.4"
 
