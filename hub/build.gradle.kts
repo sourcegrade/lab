@@ -1,6 +1,6 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
+    id("lab-ktor")
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -15,11 +15,10 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.kubernetes.client)
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation(libs.ktor.serialisation.kotlinx.json)
     implementation(libs.logging.api)
     implementation(libs.logging.core)
     implementation(libs.logging.impl)
-//    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.0")
     implementation(libs.exposed.core)
     implementation(libs.exposed.crypt)
     implementation(libs.exposed.dao)

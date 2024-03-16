@@ -1,6 +1,6 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
+    id("lab-ktor")
 }
 
 repositories {
