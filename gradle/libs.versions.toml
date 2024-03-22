@@ -10,6 +10,7 @@ coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
+koin = "io.insert-koin:koin-ktor:3.5.3"
 ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
@@ -26,7 +27,7 @@ ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 kubernetes-client = "io.fabric8:kubernetes-client:6.10.0"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
-logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+logging-slf4jimpl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }

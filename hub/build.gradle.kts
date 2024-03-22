@@ -18,7 +18,7 @@ dependencies {
     implementation(libs.ktor.serialisation.kotlinx.json)
     implementation(libs.logging.api)
     implementation(libs.logging.core)
-    implementation(libs.logging.impl)
+    implementation(libs.logging.slf4jimpl)
     implementation(libs.exposed.core)
     implementation(libs.exposed.crypt)
     implementation(libs.exposed.dao)
