@@ -32,6 +32,7 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.client.logging)
+    implementation(libs.kotlin.reflect)
 }
 
 application {
