@@ -4,14 +4,14 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.shadow)
-    alias(libs.plugins.style)
+    alias(libs.plugins.ktlint)
 }
 
 val projectVersion = file("version").readLines().first()
 
 allprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.sourcegrade.style")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     group = "org.sourcegrade"
     version = projectVersion

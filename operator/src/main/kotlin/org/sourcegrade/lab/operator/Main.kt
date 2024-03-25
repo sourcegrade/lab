@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.operator
+package org.sourcegrade.lab.operator
 
 import io.ktor.server.netty.EngineMain
 

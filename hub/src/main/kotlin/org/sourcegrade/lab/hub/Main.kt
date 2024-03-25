@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub
+package org.sourcegrade.lab.hub
 
 import io.ktor.server.netty.EngineMain
 

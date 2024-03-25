@@ -1,6 +1,6 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
+    id("lab-ktor")
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.kubernetes.client)
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation(libs.ktor.serialisation.kotlinx.json)
     implementation(libs.logging.api)
     implementation(libs.logging.core)
     implementation(libs.logging.impl)
@@ -29,11 +29,11 @@ dependencies {
     implementation(libs.exposed.json)
     implementation(libs.postgresql)
     implementation(libs.bcrypt)
-    implementation("io.ktor:ktor-client-cio-jvm:2.3.5")
+    implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.client.logging)
 }
 
 application {
-    mainClass.set("org.sourcegrade.yougrade.hub.MainKt")
+    mainClass.set("org.sourcegrade.lab.hub.MainKt")
 }

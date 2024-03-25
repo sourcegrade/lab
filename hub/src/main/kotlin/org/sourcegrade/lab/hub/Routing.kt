@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub
+package org.sourcegrade.lab.hub
 
 import io.ktor.client.request.get
 import io.ktor.http.URLBuilder
@@ -15,7 +15,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.sessions.get
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
-import org.sourcegrade.yougrade.hub.http.UserSession
+import org.sourcegrade.lab.hub.http.UserSession
 
 private suspend fun getSession(call: ApplicationCall): UserSession? {
     val userSession: UserSession? = call.sessions.get()

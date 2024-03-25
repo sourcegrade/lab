@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub
+package org.sourcegrade.lab.hub
 
 import com.expediagroup.graphql.server.ktor.*
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
@@ -15,12 +15,12 @@ import io.ktor.server.routing.Routing
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
-import org.sourcegrade.yougrade.hub.http.authenticationModule
-import org.sourcegrade.yougrade.hub.queries.CourseMutations
-import org.sourcegrade.yougrade.hub.queries.CourseQueries
-import org.sourcegrade.yougrade.hub.queries.HelloWorldQuery
-import org.sourcegrade.yougrade.hub.queries.UserMutations
-import org.sourcegrade.yougrade.hub.queries.UserQueries
+import org.sourcegrade.lab.hub.http.authenticationModule
+import org.sourcegrade.lab.hub.queries.CourseMutations
+import org.sourcegrade.lab.hub.queries.CourseQueries
+import org.sourcegrade.lab.hub.queries.HelloWorldQuery
+import org.sourcegrade.lab.hub.queries.UserMutations
+import org.sourcegrade.lab.hub.queries.UserQueries
 import kotlin.collections.listOf
 
 fun Application.module() {
@@ -51,7 +51,7 @@ fun Application.module() {
 
     install(GraphQL) {
         schema {
-            packages = listOf("org.sourcegrade.yougrade.hub")
+            packages = listOf("org.sourcegrade.lab.hub")
             queries =
                 listOf(
                     HelloWorldQuery(),

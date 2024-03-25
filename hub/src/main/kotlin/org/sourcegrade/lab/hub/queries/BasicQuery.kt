@@ -1,9 +1,9 @@
-package org.sourcegrade.yougrade.hub.queries
+package org.sourcegrade.lab.hub.queries
 
 import graphql.schema.DataFetchingEnvironment
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.yougrade.hub.models.Model
+import org.sourcegrade.lab.hub.models.Model
 
 class BasicQuery<T>(private val entityClass: EntityClass<String, Model<T>>) {
     suspend fun helloWorld(): String {

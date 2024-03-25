@@ -1,4 +1,4 @@
-package org.sourcegrade.yougrade.hub.queries
+package org.sourcegrade.lab.hub.queries
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
 import com.expediagroup.graphql.generator.annotations.GraphQLName
@@ -6,9 +6,9 @@ import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.yougrade.hub.models.CourseDTO
-import org.sourcegrade.yougrade.hub.models.User
-import org.sourcegrade.yougrade.hub.models.UserDTO
+import org.sourcegrade.lab.hub.models.CourseDTO
+import org.sourcegrade.lab.hub.models.User
+import org.sourcegrade.lab.hub.models.UserDTO
 
 @GraphQLDescription("Query collection for users")
 class UserQuery {

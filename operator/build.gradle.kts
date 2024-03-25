@@ -1,6 +1,6 @@
 plugins {
     application
-    alias(libs.plugins.ktor)
+    id("lab-ktor")
 }
 
 repositories {
@@ -14,5 +14,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.sourcegrade.yougrade.operator.MainKt")
+    mainClass.set("org.sourcegrade.lab.operator.MainKt")
 }
