@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+// Represents a string that can have both text and HTML representations.
+message ShowcaseString {
+    oneof value {
+        // Simple text representation
+        string simple = 1;
+        // Text representation
+        string text = 2;
+        // HTML representation
+        string html = 3;
+    }
+}
