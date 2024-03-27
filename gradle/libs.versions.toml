@@ -26,7 +26,7 @@ ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 kubernetes-client = "io.fabric8:kubernetes-client:6.10.0"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
-logging-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
+logging-slf4jimpl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
 
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
