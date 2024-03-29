@@ -3,10 +3,6 @@ plugins {
     id("lab-ktor")
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(libs.graphql.server)
     implementation(libs.ktor.server.netty)

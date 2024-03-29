@@ -3,10 +3,6 @@ plugins {
     id("lab-ktor")
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.kubernetes.client)
