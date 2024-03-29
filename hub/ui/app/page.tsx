@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import GradingIcon from '@mui/icons-material/Grading';
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import CardCarousel, {CardContent} from "@repo/ui/components/card-carousel";
 import Courses from "@repo/ui/components/courses";
@@ -16,6 +17,12 @@ const demoAssignments: CardContent[] = _.range(10).map((i) => ({
 export default function Page() {
     return (
         <div>
+            <div className="flex justify-center space-x-6 p-3 rounded-md bg-slate-700">
+                <Button variant="contained" className="flex-col flex-grow" href={"/rubrics"}>
+                    <GradingIcon className="!text-5xl"/>
+                    View Test Rubric
+                </Button>
+            </div>
             <h1>Dashboard</h1>
             <div className="flex justify-center space-x-6 p-3 rounded-md bg-slate-700">
                 <Button variant="contained" className="flex-col flex-grow" disabled>
