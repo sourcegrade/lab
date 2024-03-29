@@ -16,8 +16,9 @@ pluginManagement {
 rootProject.name = "lab"
 
 sequenceOf(
-    "operator",
     "hub",
+    "operator",
+    "supervisor",
 ).forEach {
     val project = ":lab-$it"
     include(project)
