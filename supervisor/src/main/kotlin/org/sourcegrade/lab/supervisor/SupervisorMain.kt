@@ -1,4 +1,4 @@
-package org.sourcegrade.lab.operator
+package org.sourcegrade.lab.supervisor
 
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation

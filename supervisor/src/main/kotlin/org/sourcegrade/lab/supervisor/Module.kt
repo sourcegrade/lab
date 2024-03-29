@@ -1,6 +1,5 @@
-package org.sourcegrade.lab.operator
+package org.sourcegrade.lab.supervisor
 
-import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.operations.Query
 import io.ktor.client.HttpClient
 import io.ktor.http.ContentType
@@ -9,7 +8,6 @@ import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.receiveText
-import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import org.apache.logging.log4j.LogManager
