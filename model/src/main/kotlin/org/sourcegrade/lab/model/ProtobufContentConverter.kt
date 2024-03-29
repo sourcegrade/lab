@@ -15,7 +15,7 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.full.staticFunctions
 
-class ProtobufContentConverter : ContentConverter {
+object ProtobufContentConverter : ContentConverter {
     private fun getParser(typeInfo: TypeInfo): Parser<*> {
         val parserFun = typeInfo.type.staticFunctions
             .firstOrNull { it.name == "parser" && it.returnType.isSubtypeOf(Parser::class.starProjectedType) }
