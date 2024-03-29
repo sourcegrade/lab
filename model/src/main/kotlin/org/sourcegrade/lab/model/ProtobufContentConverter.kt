@@ -24,12 +24,13 @@ class ProtobufContentConverter : ContentConverter {
         return parserFun.call() as Parser<*>
     }
 
-    override suspend fun serializeNullable(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? =
-        (value as? GeneratedMessage)?.let { message ->
-            object : OutgoingContent.WriteChannelContent() {
-                override suspend fun writeTo(channel: ByteWriteChannel) = message.writeTo(channel.toOutputStream())
-            }
+    override suspend fun serializeNullable(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any?): OutgoingContent? {
+        if (value !is GeneratedMessage) return null
+        return object : OutgoingContent.WriteChannelContent() {
+            override val contentType: ContentType = contentType
+            override suspend fun writeTo(channel: ByteWriteChannel) = value.writeTo(channel.toOutputStream())
         }
+    }
 
     override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? =
         getParser(typeInfo).parseFrom(content.toInputStream())

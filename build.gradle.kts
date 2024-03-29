@@ -31,3 +31,9 @@ allprojects {
         }
     }
 }
+
+tasks {
+    register("initWorkspace") {
+        dependsOn(":lab-model:generateProto")
+    }
+}

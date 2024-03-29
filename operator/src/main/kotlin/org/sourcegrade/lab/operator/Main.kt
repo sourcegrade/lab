@@ -25,7 +25,7 @@ fun main() {
 
     println("Got here")
     val response = runBlocking {
-        client.post("http://localhost/launch") {
+        client.post("http://localhost:8080/launch") {
             contentType(ContentType.Application.ProtoBuf)
             setBody(launch)
             println("Sent content type: ${contentType()}")

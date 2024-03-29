@@ -2,6 +2,7 @@ package org.sourcegrade.lab.example.grader
 
 import io.ktor.client.HttpClient
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
@@ -9,6 +10,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.request.contentType
+import io.ktor.server.request.header
 import io.ktor.server.request.receive
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
@@ -24,7 +26,7 @@ import org.sourcegrade.lab.model.ProtobufContentConverter
 
 fun main() {
     val client = HttpClient()
-    embeddedServer(Netty, module = { module(client) })
+    embeddedServer(Netty, module = { module(client) }, port = 8080)
         .start(wait = true)
 }
 
@@ -47,7 +49,7 @@ fun Application.module(client: HttpClient) {
     routing {
         val logger by inject<Logger>()
         post("/launch") {
-            val contentType = call.request.contentType()
+            val contentType = call.request.header(HttpHeaders.ContentType)
             logger.warn("Content-Type: $contentType")
             val graderLaunch = call.receive<GraderLaunch>()
             logger.info("Received $graderLaunch")
