@@ -1,6 +1,5 @@
 package org.sourcegrade.lab.supervisor
 
-import com.expediagroup.graphql.server.operations.Query
 import io.ktor.client.HttpClient
 import io.ktor.http.ContentType
 import io.ktor.server.application.Application
@@ -17,15 +16,7 @@ import org.koin.ktor.plugin.Koin
 import org.sourcegrade.lab.model.ProtobufContentConverter
 import java.util.UUID
 
-class HelloWorldQuery : Query {
-    fun hello(): String = "Hello World!"
-}
-
 fun Application.module(client: HttpClient, jobs: MutableMap<UUID, String>) {
-//    install(Routing) {
-//        graphQLPostRoute()
-//    }
-
     install(Koin) {
         modules(org.koin.dsl.module { single<Logger> { LogManager.getLogger("SGL Operator") } })
     }

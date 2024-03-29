@@ -9,7 +9,6 @@ repositories {
 
 dependencies {
     implementation(project(":lab-model"))
-    implementation(libs.graphql.server)
     implementation(libs.koin)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
