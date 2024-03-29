@@ -81,12 +81,21 @@ export default function CardCarousel(
                                 gutterBottom
                                 variant="h5"
                                 component="div"
+                                style={{
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis"
+                                }}
                             >
                                 {item.title}
                             </Typography>
                             <Typography
                                 variant="body2"
                                 color="text.secondary"
+                                style={{
+                                    height: "100px",
+                                    overflow: "scroll",
+                                }}
                             >
                                 {item.description}
                             </Typography>
