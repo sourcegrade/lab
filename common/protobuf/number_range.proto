@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package org.sourcegrade.lab.proto;
+
 // Defines a range of numbers. The range is inclusive.
 message NumberRange {
     // Minimum value of the range (inclusive)

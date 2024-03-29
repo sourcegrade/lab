@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package org.sourcegrade.lab.proto;
+
 // Enumerates the states of a test.
 enum TestState {
     // The test is pending, i.e., it has not been executed yet.

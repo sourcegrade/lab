@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package org.sourcegrade.lab.proto;
+
 import "number_range.proto";
 
 // Defines a range of points. The range is inclusive.
