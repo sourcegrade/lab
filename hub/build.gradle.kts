@@ -4,10 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(libs.graphql.server)
     implementation(libs.ktor.server.netty)

@@ -1,6 +1,4 @@
 import io.ktor.plugin.features.DockerImageRegistry
-import org.gradle.api.internal.tasks.userinput.UserInputHandler
-import org.gradle.kotlin.dsl.support.serviceOf
 
 plugins {
     id("io.ktor.plugin")

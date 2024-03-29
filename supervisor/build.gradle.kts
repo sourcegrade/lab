@@ -3,10 +3,6 @@ plugins {
     id("lab-ktor")
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(project(":lab-model"))
     implementation(libs.koin)
