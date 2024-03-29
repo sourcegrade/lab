@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package org.sourcegrade.lab.model;
+
+message GraderLaunch {
+    string work_download = 1;
+    string rubric_webhook = 2;
+    string language = 3;
+}

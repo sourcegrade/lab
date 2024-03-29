@@ -3,6 +3,7 @@ kotlin = "1.9.23"
 log4j = "2.21.1"
 graphql = "7.0.2"
 exposedVersion = "0.48.0"
+serialization = "1.6.3"
 
 [libraries]
 annotations = "org.jetbrains:annotations:24.0.1"
@@ -10,6 +11,7 @@ coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
+koin = "io.insert-koin:koin-ktor:3.5.3"
 ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
@@ -21,13 +23,16 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources" }
 ktor-server-sessions = { module = "io.ktor:ktor-server-sessions" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
-ktor-serialisation-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
+ktor-serialization-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
+ktor-serialization-kotlinx-protobuf = { module = "io.ktor:ktor-serialization-kotlinx-protobuf" }
 
 kubernetes-client = "io.fabric8:kubernetes-client:6.10.0"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 logging-slf4jimpl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf", version.ref = "serialization" }
 
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
 exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposedVersion" }
@@ -37,6 +42,8 @@ exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datet
 exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
 
 postgresql = "org.postgresql:postgresql:42.7.3"
+protobuf-java = "com.google.protobuf:protobuf-java:4.26.1"
+protobuf-kotlin = "com.google.protobuf:protobuf-kotlin:4.26.1"
 
 bcrypt = "org.mindrot:jbcrypt:0.4"
 
@@ -45,5 +52,6 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
+protobuf = "com.google.protobuf:0.9.4"
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 ktor = "io.ktor.plugin:2.3.9"

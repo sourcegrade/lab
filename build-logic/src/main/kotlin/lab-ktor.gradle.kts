@@ -22,8 +22,3 @@ ktor {
         )
     }
 }
-
-fun promptProvider(prompt: String): Provider<String> {
-    val userInput = project.serviceOf<UserInputHandler>()
-    return project.provider { userInput.askQuestion(prompt, null) }
-}

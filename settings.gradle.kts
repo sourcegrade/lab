@@ -18,8 +18,11 @@ rootProject.name = "lab"
 sequenceOf(
     "operator",
     "hub",
+    "model",
+    "scheduler",
+    "example-grader",
 ).forEach {
     val project = ":lab-$it"
     include(project)
-    project(project).projectDir = file(it)
+    project(project).projectDir = file(it.replace('-', '/'))
 }
