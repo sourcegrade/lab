@@ -1,3 +1,4 @@
+"use client";
 import Button from "@mui/material/Button";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
@@ -36,19 +37,22 @@ const query: TypedDocumentNode<{course: CourseDto}>
                 id
                 name
                 description
+                semesterStartYear
+                semesterType
             }
         }
     }
 `;
 
 export default function Page() {
-    // const { loading, data } = useQuery(query, {client});
-    // var recentCourses:JSX.Element;
-    // if (loading) {
-    //     recentCourses = <p>Loading...</p>;
-    // } else {
-    //     recentCourses = <p>{JSON.stringify(data)}</p>;
-    // }
+    const { loading, data } = useQuery(query, {client});
+    var recentCourses:JSX.Element;
+    if (loading) {
+        recentCourses = <p>Loading...</p>;
+    } else {
+        recentCourses = <p>{JSON.stringify(data)}</p>;
+    }
+    console.log("data", data)
     return (
         <div>
             <h1>Dashboard</h1>
