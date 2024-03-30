@@ -13,11 +13,11 @@ graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", versi
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
 koin = "io.insert-koin:koin-ktor:3.5.3"
 ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-server-contentnegotiation = { module = "io.ktor:ktor-server-content-negotiation" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources" }
