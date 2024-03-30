@@ -8,7 +8,6 @@ dependencies {
     implementation(project(":lab-model"))
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.contentnegotiation)
-    implementation(libs.ktor.serialization.kotlinx.protobuf)
     implementation(libs.ktor.client.cio)
     implementation(libs.koin)
     implementation(libs.logging.core)
