@@ -18,7 +18,7 @@ import java.util.UUID
 
 fun Application.module(client: HttpClient, jobs: MutableMap<UUID, String>) {
     install(Koin) {
-        modules(org.koin.dsl.module { single<Logger> { LogManager.getLogger("SGL Operator") } })
+        modules(org.koin.dsl.module { single<Logger> { LogManager.getLogger("SGL Supervisor") } })
     }
 
     install(ContentNegotiation) {
