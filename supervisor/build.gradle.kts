@@ -16,5 +16,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("org.sourcegrade.lab.supervisor.MainKt")
+    mainClass.set("org.sourcegrade.lab.supervisor.SupervisorMainKt")
 }
