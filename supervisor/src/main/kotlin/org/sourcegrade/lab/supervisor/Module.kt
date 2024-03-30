@@ -11,6 +11,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import org.koin.dsl.module
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.sourcegrade.lab.model.ProtobufContentConverter
@@ -18,7 +19,7 @@ import java.util.UUID
 
 fun Application.module(client: HttpClient, jobs: MutableMap<UUID, String>) {
     install(Koin) {
-        modules(org.koin.dsl.module { single<Logger> { LogManager.getLogger("SGL Supervisor") } })
+        modules(module { single<Logger> { LogManager.getLogger("SGL Supervisor") } })
     }
 
     install(ContentNegotiation) {
