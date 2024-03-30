@@ -16,11 +16,13 @@ pluginManagement {
 rootProject.name = "lab"
 
 sequenceOf(
+    "example-grader",
     "hub",
+    "model",
     "operator",
     "supervisor",
 ).forEach {
     val project = ":lab-$it"
     include(project)
-    project(project).projectDir = file(it)
+    project(project).projectDir = file(it.replace('-', '/'))
 }
