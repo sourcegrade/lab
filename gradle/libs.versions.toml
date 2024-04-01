@@ -2,7 +2,7 @@
 kotlin = "1.9.23"
 log4j = "2.23.1"
 graphql = "7.0.2"
-exposedVersion = "0.48.0"
+exposed = "0.49.0"
 
 [libraries]
 annotations = "org.jetbrains:annotations:24.0.1"
@@ -30,12 +30,12 @@ logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "lo
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 logging-slf4jimpl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j" }
 
-exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
-exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposedVersion" }
-exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
-exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposedVersion" }
-exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-crypt = { module = "org.jetbrains.exposed:exposed-crypt", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
 
 postgresql = "org.postgresql:postgresql:42.7.3"
 protobuf-java = "com.google.protobuf:protobuf-java:4.26.1"
