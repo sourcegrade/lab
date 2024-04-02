@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package org.sourcegrade.lab.proto;
+
+import "showcase_string.proto";
+import "test_state.proto";
+
+// Represents the result of a test.
+message TestRun {
+    // The id of the test.
+    string id = 1;
+    // The name of the test.
+    string name = 2;
+    // The state of the test.
+    TestState state = 3;
+    // The message of the test.
+    ShowcaseString message = 4;
+    // The stacktrace of the test.
+    string stacktrace = 5;
+    // The duration of the test in milliseconds.
+    int64 duration = 6;
+    // The children of the test.
+    repeated TestRun children = 7;
+}
