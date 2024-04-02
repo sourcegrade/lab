@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.sourcegrade.lab.proto;
+package org.sourcegrade.lab.model.rubric;
 
 // Enumerates the types of accumulators used to determine achieved points of a criterion.
 enum CriterionAccumulator {

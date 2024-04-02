@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.sourcegrade.lab.proto;
+package org.sourcegrade.lab.model.rubric;
 
 // Represents a string that can have both text and HTML representations.
 message ShowcaseString {

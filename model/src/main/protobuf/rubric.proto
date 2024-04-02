@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package org.sourcegrade.lab.proto;
+package org.sourcegrade.lab.model.rubric;
 
 import "point_range.proto";
 import "criterion.proto";
