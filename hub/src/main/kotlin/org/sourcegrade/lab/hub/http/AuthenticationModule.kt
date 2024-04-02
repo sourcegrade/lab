@@ -3,7 +3,6 @@ package org.sourcegrade.lab.hub.http
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpMethod
@@ -44,19 +43,17 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.sourcegrade.lab.hub.models.User
 import org.sourcegrade.lab.hub.models.Users
 import java.io.File
-import kotlin.collections.List
-import kotlin.collections.firstOrNull
-import kotlin.collections.listOf
-import kotlin.collections.mutableMapOf
 import kotlin.collections.set
 import kotlin.time.Duration.Companion.hours
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation as ServerContentNegotiation
 
 fun Application.authenticationModule() {
     val ktorEnv = environment
 
     val httpClient =
         HttpClient(CIO) {
-            install(ContentNegotiation) {
+            install(ClientContentNegotiation) {
                 json(
                     Json {
                         encodeDefaults = false
@@ -118,7 +115,7 @@ fun Application.authenticationModule() {
     }
     routing {
         route("/api/session") {
-            install(io.ktor.server.plugins.contentnegotiation.ContentNegotiation) {
+            install(ServerContentNegotiation) {
                 json(
                     Json {
                         prettyPrint = true

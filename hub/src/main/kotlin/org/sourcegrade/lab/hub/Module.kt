@@ -46,7 +46,6 @@ fun Application.module() {
     )
 
     install(CORS) {
-//        allowHost("localhost:3000", schemes = listOf("http", "https"))
         allowMethod(HttpMethod.Options)
         allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Get)
@@ -76,7 +75,6 @@ fun Application.module() {
         graphQLGetRoute()
         graphQLPostRoute()
         graphQLSDLRoute()
-//        graphQLSubscriptionsRoute()
         graphiQLRoute()
     }
 
