@@ -3,6 +3,14 @@ plugins {
     alias(libs.plugins.ktor)
 }
 
+sourceSets {
+    main {
+        proto {
+            srcDir("src/main/protobuf")
+        }
+    }
+}
+
 dependencies {
     api(libs.protobuf.java)
     implementation(kotlin("reflect"))
