@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.sourcegrade.lab.model.rubric;
+
+// Enumerates the states of a test.
+enum TestState {
+    // The test is pending, i.e., it has not been executed yet.
+    PENDING = 0;
+    // The test is running, i.e., it is currently being executed.
+    RUNNING = 1;
+    // The test is successful.
+    SUCCESS = 2;
+    // The test is not successful, but no exception has been thrown.
+    FAILURE = 3;
+    // The test is not successful, and an exception has been thrown.
+    ERROR = 4;
+    // The test has been skipped.
+    SKIPPED = 5;
+    // The state of the test is unknown.
+    UNKNOWN = 6;
+}
