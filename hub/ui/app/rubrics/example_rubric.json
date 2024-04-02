@@ -1,0 +1,260 @@
+{
+  "id": "example_rubric",
+  "name": {
+    "text": "H01 | Foreign Contaminants",
+    "html": "<strong>H01</strong> <div class=\"arrow right\"></div> Foreign Contaminants"
+  },
+  "description": {
+    "text": "In dieser Hausübung mussten Sie die Bewegung von mehreren Robotern mithilfe der FOPBot-Bibliothek implementieren.",
+    "html": "In dieser Hausübung mussten Sie die Bewegung von mehreren Robotern mithilfe der FOPBot-Bibliothek implementieren."
+  },
+  "possiblePoints": {
+    "min": 0,
+    "max": 16
+  },
+  "achievedPoints": {
+    "min": 7,
+    "max": 7
+  },
+  "criteria": [
+    {
+      "id": "1",
+      "name": {
+        "text": "H1 | Steuerung des \"CleaningRobot\"",
+        "html": "<strong>H1</strong> <div class=\"arrow right\"></div> Steuerung des \"CleaningRobot\""
+      },
+      "description": {
+        "text": "",
+        "html": null
+      },
+      "possiblePoints": {
+        "min": 0,
+        "max": 4
+      },
+      "achievedPoints": {
+        "min": 1,
+        "max": 1
+      },
+      "tests": [
+        {
+          "id": "1",
+          "name": "Wenn die übergebene Direction < 0 oder > 3 ist, so bleibt der Roboter stehen.",
+          "state": "FAILURE",
+          "message": {
+            "text": "invalid end position.",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "2",
+          "name": "Wenn die übergebene Direction >= 0 und < 4 ist, dann schaut der Roboter in die entsprechende Richtung.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The robot should face LEFT.",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "3",
+          "name": "Wenn die übergebene Direction >= 0 und < 4 ist, so bewegt sich der Roboter in die entsprechende Richtung, falls der Weg frei ist.",
+          "state": "FAILURE",
+          "message": {
+            "text": "invalid end position.",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "4",
+          "name": "shouldPutCoin und shouldPickCoin werden korrekt verarbeitet.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "id": "H2",
+      "name": {
+        "text": "Steuerung der \"Contaminant\"-Roboter",
+        "html": null
+      },
+      "description": {
+        "text": "",
+        "html": null
+      },
+      "possiblePoints": {
+        "min": 0,
+        "max": 8
+      },
+      "achievedPoints": {
+        "min": 3,
+        "max": 3
+      },
+      "tests": [
+        {
+          "id": "5",
+          "name": "Wenn der \"Contaminant1\"-Roboter keine Münzen mehr hat, wird er ausgeschaltet und die Methode doMove() führt keine weiteren Aktionen aus.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The robot should be turned off.",
+            "html": null
+          },
+          "stacktrace": "java.lang.IllegalArgumentException: bound must be positive\n...\n",
+          "duration": 0
+        },
+        {
+          "id": "6",
+          "name": "Der \"Contaminant1\"-Roboter legt korrekt eine zufällige Anzahl an Münzen ab, genau dann wenn er es soll.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "7",
+          "name": "Der \"Contaminant1\"-Roboter prüft alle vier Richtungen ab und dreht sich wieder in die Ausgangsrichtung.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The Method threw an exception\njava.lang.IllegalArgumentException: bound must be positive\n...",
+            "html": null
+          },
+          "stacktrace": "java.lang.IllegalArgumentException: bound must be positive\n...\n",
+          "duration": 0
+        },
+        {
+          "id": "8",
+          "name": "Der \"Contaminant1\"-Roboter bewegt sich korrekt in eine zufällige Richtung, die frei ist, falls eine solche existiert.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The Method threw an exception\njava.lang.IllegalArgumentException: bound must be positive\n...",
+            "html": null
+          },
+          "stacktrace": "java.lang.IllegalArgumentException: bound must be positive\n...\n",
+          "duration": 0
+        },
+        {
+          "id": "9",
+          "name": "Wenn der \"Contaminant2\"-Roboter keine Münzen mehr hat, wird er ausgeschaltet und die Methode doMove() führt keine weiteren Aktionen aus.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The robot should be turned off.",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "10",
+          "name": "Der \"Contaminant2\"-Roboter legt stets die korrekte Anzahl an Münzen ab.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "11",
+          "name": "Der \"Contaminant2\"-Roboter prüft alle vier Richtungen ab und dreht sich wieder in die Ausgangsrichtung.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "12",
+          "name": "Der \"Contaminant2\"-Roboter bewegt sich korrekt nach dem Bewegungsschema.",
+          "state": "FAILURE",
+          "message": {
+            "text": "invalid end position.",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "id": "H3",
+      "name": {
+        "text": "Gewinnbedingungen",
+        "html": null
+      },
+      "description": {
+        "text": "",
+        "html": null
+      },
+      "possiblePoints": {
+        "min": 0,
+        "max": 4
+      },
+      "achievedPoints": {
+        "min": 3,
+        "max": 3
+      },
+      "tests": [
+        {
+          "id": "13",
+          "name": "Der cleaner gewinnt, wenn alle Contaminants ausgeschaltet sind.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "14",
+          "name": "Der cleaner gewinnt, wenn sich in der Abladezone mindestens 200 Münzen befinden.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "15",
+          "name": "Die Contaminants gewinnen, wenn mindestens 50% der Felder mit münzen bedeckt sind.",
+          "state": "FAILURE",
+          "message": {
+            "text": "The winner is not correct",
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        },
+        {
+          "id": "16",
+          "name": "Wenn beide Parteien gleichzeitig gewinnen, so gewinnt der cleaner.",
+          "state": "SUCCESS",
+          "message": {
+            "text": null,
+            "html": null
+          },
+          "stacktrace": null,
+          "duration": 0
+        }
+      ]
+    }
+  ]
+}

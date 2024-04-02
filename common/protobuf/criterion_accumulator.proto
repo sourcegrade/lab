@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.sourcegrade.lab.proto;
+
+// Enumerates the types of accumulators used to determine achieved points of a criterion.
+enum CriterionAccumulator {
+    // Default accumulator: requires all tests to be successful.
+    AND = 0;
+    // Requires at least one test to be successful.
+    OR = 1;
+    // Requires no test to be successful.
+    NOT = 2;
+    // Adds 1 point for each successful test.
+    SUM = 3;
+}

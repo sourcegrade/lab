@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.sourcegrade.lab.proto;
+
+import "number_range.proto";
+
+// Defines a range of points. The range is inclusive.
+message PointRange {
+    oneof value {
+        // Single point value
+        int32 single = 1;
+        // Range of points
+        NumberRange range = 2;
+    }
+}
