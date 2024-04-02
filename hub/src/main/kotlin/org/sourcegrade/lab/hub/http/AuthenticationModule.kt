@@ -22,11 +22,12 @@ import io.ktor.server.auth.oauth
 import io.ktor.server.auth.principal
 import io.ktor.server.auth.session
 import io.ktor.server.config.tryGetString
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
-import io.ktor.server.routing.*
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.cookie
@@ -43,6 +44,11 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.sourcegrade.lab.hub.models.User
 import org.sourcegrade.lab.hub.models.Users
 import java.io.File
+import kotlin.collections.List
+import kotlin.collections.firstOrNull
+import kotlin.collections.listOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
 import kotlin.time.Duration.Companion.hours
 
 fun Application.authenticationModule() {
@@ -85,23 +91,19 @@ fun Application.authenticationModule() {
 
             client = httpClient
 
-            val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
+            val oauthSettings =
+                OAuthServerSettings.OAuth2ServerSettings(
                     name = "Authentik",
-                    authorizeUrl =
-                    ktorEnv.config.property("ktor.oauth.authorizeUrl")
+                    authorizeUrl = ktorEnv.config.property("ktor.oauth.authorizeUrl")
                         .getString(),
-                    accessTokenUrl =
-                    ktorEnv.config.property("ktor.oauth.accessTokenUrl")
+                    accessTokenUrl = ktorEnv.config.property("ktor.oauth.accessTokenUrl")
                         .getString(),
                     requestMethod = HttpMethod.Post,
-                    clientId =
-                    ktorEnv.config.property("ktor.oauth.clientId")
+                    clientId = ktorEnv.config.property("ktor.oauth.clientId")
                         .getString(),
-                    clientSecret =
-                    ktorEnv.config.property("ktor.oauth.clientSecret")
+                    clientSecret = ktorEnv.config.property("ktor.oauth.clientSecret")
                         .getString(),
-                    defaultScopes =
-                    ktorEnv.config.tryGetString("ktor.oauth.scopes")
+                    defaultScopes = ktorEnv.config.tryGetString("ktor.oauth.scopes")
                         ?.split(" ")
                         ?: listOf("openid", "profile", "email"),
                     onStateCreated = { call, state ->
@@ -111,7 +113,7 @@ fun Application.authenticationModule() {
                         }
                     },
                 )
-           providerLookup = { oauthSettings }
+            providerLookup = { oauthSettings }
         }
     }
     routing {
