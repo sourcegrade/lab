@@ -4,21 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation(libs.graphql.server)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.auth)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.server.contentnegotiation)
+    implementation(libs.ktor.client.contentnegotiation)
     implementation(libs.kubernetes.client)
-    implementation(libs.ktor.serialisation.kotlinx.json)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.logging.api)
     implementation(libs.logging.core)
-    implementation(libs.logging.impl)
+    implementation(libs.logging.slf4jimpl)
     implementation(libs.ktor.server.cors)
 //    implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.0")
     implementation(libs.exposed.core)

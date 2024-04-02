@@ -32,6 +32,6 @@
     "workspaces": [
         "common/*",
         "hub/ui",
-        "operator/ui"
+        "supervisor/ui"
     ]
 }

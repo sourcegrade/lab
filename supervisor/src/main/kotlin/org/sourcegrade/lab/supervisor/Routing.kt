@@ -1,4 +1,4 @@
-package org.sourcegrade.lab.operator
+package org.sourcegrade.lab.supervisor
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
