@@ -5,11 +5,14 @@ import com.expediagroup.graphql.server.ktor.graphQLGetRoute
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.Url
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.config.tryGetString
 import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.path
 import io.ktor.server.routing.Routing
 import org.jetbrains.exposed.sql.Database
@@ -20,13 +23,13 @@ import org.sourcegrade.lab.hub.queries.CourseQueries
 import org.sourcegrade.lab.hub.queries.HelloWorldQuery
 import org.sourcegrade.lab.hub.queries.UserMutations
 import org.sourcegrade.lab.hub.queries.UserQueries
-import kotlin.collections.listOf
 
 fun Application.module() {
     val environment = environment
     val url =
         Url(
-            environment.config.tryGetString("ktor.deployment.url") ?: throw IllegalStateException("No deployment url set"),
+            environment.config.tryGetString("ktor.deployment.url")
+                ?: throw IllegalStateException("No deployment url set"),
         )
 
     val databaseConfig =
@@ -41,6 +44,15 @@ fun Application.module() {
         password = environment.config.tryGetString("ktor.db.password") ?: "",
         databaseConfig = databaseConfig,
     )
+
+    install(CORS) {
+        allowMethod(HttpMethod.Options)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Get)
+        allowHeader(HttpHeaders.AccessControlAllowOrigin)
+        allowHeader(HttpHeaders.ContentType)
+        anyHost()
+    }
 
     install(GraphQL) {
         schema {
@@ -63,19 +75,8 @@ fun Application.module() {
         graphQLGetRoute()
         graphQLPostRoute()
         graphQLSDLRoute()
-        //        graphQLSubscriptionsRoute()
         graphiQLRoute()
     }
-
-//    install(ContentNegotiation) {
-//        json(
-//            Json {
-//                prettyPrint = true
-//                isLenient = true
-//                ignoreUnknownKeys = true
-//            },
-//        )
-//    }
 
     authenticationModule()
     configureRouting()

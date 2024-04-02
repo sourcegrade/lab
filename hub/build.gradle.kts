@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.logging.api)
     implementation(libs.logging.core)
     implementation(libs.logging.slf4jimpl)
+    implementation(libs.ktor.server.cors)
     implementation(libs.exposed.core)
     implementation(libs.exposed.crypt)
     implementation(libs.exposed.dao)
@@ -26,6 +27,7 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.client.logging)
+    implementation(libs.kotlin.reflect)
 }
 
 application {

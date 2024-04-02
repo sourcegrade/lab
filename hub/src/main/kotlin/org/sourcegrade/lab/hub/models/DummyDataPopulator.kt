@@ -20,10 +20,13 @@ suspend fun main(args: Array<String>) {
         addLogger(StdOutSqlLogger)
 
         // delete and re-create tables
-        val tables = SchemaUtils.listTables()
-        SchemaUtils.drop(CourseMembers, Courses, Users)
+        val wantedTables = listOf(Users, Courses, CourseMembers)
 
-        SchemaUtils.create(Users)
+        val tables = SchemaUtils.listTables()
+        if (tables.isNotEmpty()) {
+            SchemaUtils.drop(*wantedTables.toTypedArray())
+        }
+        SchemaUtils.create(*wantedTables.toTypedArray())
 
         val dummyUsers =
             listOf(
@@ -43,8 +46,6 @@ suspend fun main(args: Array<String>) {
 //                    password = "meinnameistbernd"
                 },
             )
-
-        SchemaUtils.create(Courses)
 
         val dummyCourses =
             listOf(
@@ -69,8 +70,6 @@ suspend fun main(args: Array<String>) {
                     semesterStartYear = 2023
                 },
             )
-
-        SchemaUtils.create(CourseMembers)
 
         val dummyCourseMembers =
             listOf(

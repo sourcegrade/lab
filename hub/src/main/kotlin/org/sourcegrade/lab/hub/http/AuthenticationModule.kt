@@ -3,7 +3,6 @@ package org.sourcegrade.lab.hub.http
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpMethod
@@ -26,6 +25,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.clear
@@ -43,14 +43,17 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.sourcegrade.lab.hub.models.User
 import org.sourcegrade.lab.hub.models.Users
 import java.io.File
+import kotlin.collections.set
 import kotlin.time.Duration.Companion.hours
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation as ServerContentNegotiation
 
 fun Application.authenticationModule() {
     val ktorEnv = environment
 
     val httpClient =
         HttpClient(CIO) {
-            install(ContentNegotiation) {
+            install(ClientContentNegotiation) {
                 json(
                     Json {
                         encodeDefaults = false
@@ -85,81 +88,96 @@ fun Application.authenticationModule() {
 
             client = httpClient
 
-            val oauthSettings = OAuthServerSettings.OAuth2ServerSettings(
-                name = "Authentik",
-                authorizeUrl = ktorEnv.config.property("ktor.oauth.authorizeUrl").getString(),
-                accessTokenUrl = ktorEnv.config.property("ktor.oauth.accessTokenUrl").getString(),
-                requestMethod = HttpMethod.Post,
-                clientId = ktorEnv.config.property("ktor.oauth.clientId").getString(),
-                clientSecret = ktorEnv.config.property("ktor.oauth.clientSecret").getString(),
-                defaultScopes = ktorEnv.config.tryGetString("ktor.oauth.scopes")
-                    ?.split(" ")
-                    ?: listOf("openid", "profile", "email"),
-                onStateCreated = { call, state ->
-                    // saves new state with redirect url value
-                    call.request.queryParameters["redirectUrl"]?.let {
-                        redirects[state] = it
-                    }
-                },
-            )
-
+            val oauthSettings =
+                OAuthServerSettings.OAuth2ServerSettings(
+                    name = "Authentik",
+                    authorizeUrl = ktorEnv.config.property("ktor.oauth.authorizeUrl")
+                        .getString(),
+                    accessTokenUrl = ktorEnv.config.property("ktor.oauth.accessTokenUrl")
+                        .getString(),
+                    requestMethod = HttpMethod.Post,
+                    clientId = ktorEnv.config.property("ktor.oauth.clientId")
+                        .getString(),
+                    clientSecret = ktorEnv.config.property("ktor.oauth.clientSecret")
+                        .getString(),
+                    defaultScopes = ktorEnv.config.tryGetString("ktor.oauth.scopes")
+                        ?.split(" ")
+                        ?: listOf("openid", "profile", "email"),
+                    onStateCreated = { call, state ->
+                        // saves new state with redirect url value
+                        call.request.queryParameters["redirectUrl"]?.let {
+                            redirects[state] = it
+                        }
+                    },
+                )
             providerLookup = { oauthSettings }
         }
     }
     routing {
-        authenticate("Authentik") {
-            get("/api/session/login") {
-                // Redirects to 'authorizeUrl' automatically
+        route("/api/session") {
+            install(ServerContentNegotiation) {
+                json(
+                    Json {
+                        prettyPrint = true
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    },
+                )
             }
+            authenticate("Authentik") {
+                get("login") {
+                    // Redirects to 'authorizeUrl' automatically
+                }
 
-            get(callback) {
-                val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
+                get("callback") {
+                    val principal: OAuthAccessTokenResponse.OAuth2 = checkNotNull(call.principal()) { "No principal" }
 
-                val userInfo =
-                    httpClient.get(
-                        this@authenticationModule.environment.config.tryGetString("ktor.oauth.userInfoUrl")
-                            ?: throw IllegalStateException("Missing OAuth user info Url"),
-                    ) {
-                        header("Authorization", "Bearer ${principal.accessToken}")
-                    }.body<OAuthUserInfo>()
+                    val userInfo =
+                        httpClient.get(
+                            this@authenticationModule.environment.config.tryGetString("ktor.oauth.userInfoUrl")
+                                ?: throw IllegalStateException("Missing OAuth user info Url"),
+                        ) {
+                            header("Authorization", "Bearer ${principal.accessToken}")
+                        }.body<OAuthUserInfo>()
 
-                // find user in db
+                    // find user in db
 
-                val user =
-                    newSuspendedTransaction {
-                        User.find { Users.email eq userInfo.email }.firstOrNull()
-                    } ?: newSuspendedTransaction {
-                        User.new {
-                            username = userInfo.preferredUsername
-                            email = userInfo.email
+                    val user =
+                        newSuspendedTransaction {
+                            User.find { Users.email eq userInfo.email }.firstOrNull()
+                        } ?: newSuspendedTransaction {
+                            User.new {
+                                username = userInfo.preferredUsername
+                                email = userInfo.email
+                            }
+                        }
+
+                    val session =
+                        UserSession(
+                            user.id.value,
+                            checkNotNull(principal.state) { "No state" },
+                            principal.accessToken,
+                            userInfo.email,
+                        )
+
+                    call.sessions.set(session)
+                    principal.state?.let { state ->
+                        redirects[state]?.let { redirect ->
+                            call.respondRedirect(redirect)
+                            return@get
                         }
                     }
-
-                val session =
-                    UserSession(
-                        user.id.value,
-                        checkNotNull(principal.state) { "No state" },
-                        principal.accessToken,
-                        userInfo.email,
-                    )
-
-                call.sessions.set(session)
-                principal.state?.let { state ->
-                    redirects[state]?.let { redirect ->
-                        call.respondRedirect(redirect)
-                        return@get
-                    }
+                    call.respondRedirect("/")
                 }
-                call.respondRedirect("/")
-            }
 
-            get("/api/session/logout") {
-                call.sessions.clear<UserSession>()
-                call.respondRedirect("/")
+                get("logout") {
+                    call.sessions.clear<UserSession>()
+                    call.respondRedirect("/")
+                }
             }
-        }
-        get("/api/session/current-user") {
-            withUser { call.respond(it.toDTO()) }
+            get("current-user") {
+                withUser { call.respond(it.toDTO()) }
+            }
         }
     }
 }
