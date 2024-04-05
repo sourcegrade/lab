@@ -7,8 +7,7 @@ data class Course(
     override val id: UUID,
     val name: String,
     val description: String,
-    val semester: Semester,
+    val term: Term,
+    val owner: User,
     val assignments: List<Assignment>,
-) : DomainEntity {
-
-}
+) : DomainEntity
