@@ -1,6 +1,5 @@
 package org.sourcegrade.lab.hub.domain
 
-import org.sourcegrade.lab.hub.db.DomainEntity
 import java.time.ZonedDateTime
 import java.util.UUID
 

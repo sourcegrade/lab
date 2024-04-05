@@ -1,4 +1,4 @@
-package org.sourcegrade.lab.hub.db
+package org.sourcegrade.lab.hub.domain
 
 import java.util.UUID
 

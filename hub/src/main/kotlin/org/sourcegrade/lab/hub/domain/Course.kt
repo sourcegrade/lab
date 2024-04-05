@@ -1,6 +1,5 @@
 package org.sourcegrade.lab.hub.domain
 
-import org.sourcegrade.lab.hub.db.DomainEntity
 import java.util.UUID
 
 data class Course(
@@ -9,5 +8,6 @@ data class Course(
     val description: String,
     val term: Term,
     val owner: User,
+    val submissionGroupCategories: List<SubmissionGroupCategory>,
     val assignments: List<Assignment>,
 ) : DomainEntity

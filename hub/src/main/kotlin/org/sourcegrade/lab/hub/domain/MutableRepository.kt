@@ -1,4 +1,4 @@
-package org.sourcegrade.lab.hub.db
+package org.sourcegrade.lab.hub.domain
 
 interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
     suspend fun create(item: C): E

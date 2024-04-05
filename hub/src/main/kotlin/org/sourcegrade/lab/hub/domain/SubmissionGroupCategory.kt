@@ -2,8 +2,9 @@ package org.sourcegrade.lab.hub.domain
 
 import java.util.UUID
 
-data class Role(
+data class SubmissionGroupCategory(
     override val id: UUID,
-    val scope: String,
-    val permissions: List<String>,
+    val name: String,
+    val minSize: Int,
+    val maxSize: Int,
 ) : DomainEntity
