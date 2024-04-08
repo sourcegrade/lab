@@ -10,5 +10,4 @@ interface DomainFacet<E : DomainEntity> {
     suspend fun getOriginal(): E
 }
 
-
 interface Creates<E : DomainEntity>
