@@ -9,5 +9,5 @@ data class Assignment(
     val description: String,
     val course: Course,
     val submissionDeadline: ZonedDateTime,
-    val submissionGroupCategory: SubmissionGroupCategory,
+    val submissionGroupCategory: SubmissionGroup.Category,
 ) : DomainEntity
