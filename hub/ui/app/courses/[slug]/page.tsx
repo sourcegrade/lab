@@ -4,8 +4,8 @@ import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { client } from "@repo/ui/lib/with-apollo";
-import { SemesterType } from "../../__generated__/graphql";
-import type { CourseDto } from "../../__generated__/graphql";
+import type { CourseDto } from "lab-hub/app/__generated__/graphql";
+import { SemesterType } from "lab-hub/app/__generated__/graphql";
 
 const query: TypedDocumentNode<{ course: { fetch: CourseDto }, variables: { slug: string } }>
 = gql`
@@ -32,30 +32,28 @@ export default function Page({ params }: { params: { slug: string } }) {
         {
             client, variables: { slug: params.slug },
         });
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-    if (!data) {
-        return <p>No data</p>;
-    }
-    const courseData = data.course.fetch;
+    const courseData = data?.course.fetch;
     console.log("courses", courseData)
     return (
         <div>
-            <h1>{courseData.name}</h1>
             <h2>Semester</h2>
             <p>{
-                courseData.semesterType === SemesterType.Ss ? "Sommersemester" : "Wintersemester"
-            } {
-                courseData.semesterType === SemesterType.Ws
-                    ? `${courseData.semesterStartYear  }/${  courseData.semesterStartYear + 1}`
-                    : courseData.semesterStartYear
+                courseData
+                    ? `${courseData.semesterType === SemesterType.Ss
+                        ? "Sommersemester"
+                        : "Wintersemester"
+                    } ${courseData.semesterType === SemesterType.Ws
+                        ? `${courseData.semesterStartYear}/${courseData.semesterStartYear + 1}`
+                        : courseData.semesterStartYear
+                    }`
+                    : "Loading semester..."
             }</p>
             <h2>Description</h2>
-            <p>{courseData.description}</p>
+            <p>{courseData?.description ?? "Loading description..."}</p>
+            Tabs for overview, members, and assignments
             <h2>Members</h2>
             <ul>
-                {courseData.members.map((member) => (
+                {courseData?.members.map((member) => (
                     <li key={member.id}>{member.username} ({member.email})</li>
                 ))}
             </ul>

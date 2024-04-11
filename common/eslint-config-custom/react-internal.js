@@ -51,6 +51,7 @@ module.exports = {
         "@typescript-eslint/naming-convention": "warn",
         "@typescript-eslint/require-await": "warn",
         "@typescript-eslint/no-misused-promises": "off",
+        "@typescript-eslint/no-empty-function": "warn",
         "@typescript-eslint/no-unsafe-call": "warn",
         "camelcase": "warn",
         "no-console": "warn",
