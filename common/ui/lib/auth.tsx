@@ -1,9 +1,9 @@
-import { User } from "../models/User";
 import { plainToClass } from "class-transformer";
 import { redirect } from "next/navigation";
 import useSWR from "swr";
 import { useEffect } from "react";
 import { Router } from "next/router";
+import { User } from "../models/User";
 
 export const api_url = process.env.BACKEND_URL ?? "http://localhost:3000";
 
@@ -13,15 +13,15 @@ export const api_url = process.env.BACKEND_URL ?? "http://localhost:3000";
  */
 export function useUser(
   redirectTo?: string,
-  redirectIfFound?: string
+  redirectIfFound?: string,
 ): User | null {
   const { data: userJson, error } = useSWR(`${api_url}/login/me`, () =>
     fetch(`${api_url}/login/me`, {
       method: "GET",
       credentials: "include",
-    }).then((res) => res.json())
+    }).then((res) => res.json()),
   );
-  const finished = !!userJson;
+  const finished = Boolean(userJson);
   console.log("userJson", userJson);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function useUser(
     console.log("error", error);
     return null;
   }
-  return !!userJson ? plainToClass(User, userJson) : null;
+  return userJson ? plainToClass(User, userJson) : null;
 }
 
 /**
@@ -51,7 +51,7 @@ export function useUser(
  */
 export async function loginWithCredentials(
   username: string,
-  password: string
+  password: string,
 ): Promise<User | null> {
   const response = await fetch(`${api_url}/login/login`, {
     method: "POST",
@@ -75,7 +75,7 @@ export async function loginOIDC(): Promise<User | null> {
  * Navigates to the login page and redirects back to the current page after login.
  */
 export function loginFlow() {
-  redirect("/login?returnUrl=" + window.location.pathname);
+  redirect(`/login?returnUrl=${  window.location.pathname}`);
 }
 
 /**
@@ -99,5 +99,5 @@ export async function logoutFlow() {
   if (!logout) {
     throw new Error("Logout failed");
   }
-  redirect("/login?returnUrl=" + window.location.pathname);
+  redirect(`/login?returnUrl=${  window.location.pathname}`);
 }

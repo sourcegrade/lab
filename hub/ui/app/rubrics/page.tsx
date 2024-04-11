@@ -1,8 +1,8 @@
 "use client";
-import {Grid, Paper, Typography} from '@mui/material';
-import * as rubric from './example_rubric.json';
+import { Grid, Paper, Typography } from "@mui/material";
+import * as rubric from "./example_rubric.json";
 
-const RubricPage = () => {
+function RubricPage() {
     // const [rubric, setRubric] = useState<any>(null);
     //
     // useEffect(() => {
@@ -22,18 +22,18 @@ const RubricPage = () => {
         <div className="flex justify-center space-x-6 p-3 rounded-md bg-slate-700">
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="h1" align="center">
-                        Rubric: {rubric?.name?.text}
+                    <Typography align="center" variant="h1">
+                        Rubric: {rubric.name.text}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="body1" align="center">
-                        {rubric?.description?.text}
+                    <Typography align="center" variant="body1">
+                        {rubric.description.text}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    {rubric?.criteria?.map((criterion: any, index: number) => (
-                        <Paper key={index} elevation={3} style={{padding: '20px'}}>
+                    {rubric.criteria.map((criterion: any, index: number) => (
+                        <Paper elevation={3} key={index} style={{ padding: "20px" }}>
                             <Typography variant="h2">{criterion?.name?.text}</Typography>
                             <Typography variant="body1">{criterion?.description?.text}</Typography>
                             <Typography variant="body1">
@@ -46,7 +46,7 @@ const RubricPage = () => {
                                 <>
                                     <Typography variant="h3">Tests:</Typography>
                                     {criterion.tests.map((test: any, idx: number) => (
-                                        <Paper key={idx} elevation={2} style={{padding: '10px', margin: '10px 0'}}>
+                                        <Paper elevation={2} key={idx} style={{ padding: "10px", margin: "10px 0" }}>
                                             <Typography variant="body1">Test {idx + 1}: {test?.name}</Typography>
                                             <Typography variant="body2">State: {test?.state}</Typography>
                                             <Typography variant="body2">Message: {test?.message?.text}</Typography>
@@ -61,6 +61,6 @@ const RubricPage = () => {
             </Grid>
         </div>
     );
-};
+}
 
 export default RubricPage;

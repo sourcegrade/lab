@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "@repo/ui/components/footer";
 import { Box, Container, CssBaseline } from "@mui/material";
-import ThemeRegistry from "@repo/ui/lib/ThemeRegistry";
+import ThemeRegistry from "@repo/ui/lib/theme-registry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +26,7 @@ export default function RootLayout({
                         <CssBaseline />
                         <Navbar />
                         {/* <Showcase /> */}
-                        <Container maxWidth={false} disableGutters>
+                        <Container disableGutters maxWidth={false}>
                             <main className="bg-gray-800 w-[90vw] max-w-7xl mx-auto px-4 py-3 my-6 sm:px-6 lg:px-8 flex-grow rounded min-h-[80vh]">
                                 {children}
                             </main>

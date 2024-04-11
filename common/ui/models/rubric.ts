@@ -1,7 +1,7 @@
 /**
  * A number range defines a range of numbers. The range is inclusive.
  */
-type NumberRange = { min: number; max: number };
+interface NumberRange { min: number; max: number }
 /**
  * A point range defines a range of points. The range is inclusive.
  */
@@ -49,7 +49,7 @@ enum TestState {
 /**
  * A test run is the result of a test. It contains information about the test such as the state, the message, the stacktrace, the duration and the children of the test.
  */
-type TestRun = {
+interface TestRun {
     /**
      * The id of the test
      */
@@ -78,7 +78,7 @@ type TestRun = {
      * The children of the test
      */
     children?: TestRun[];
-};
+}
 
 /**
  * The accumulator that is used to determine the achieved points of a criterion
@@ -105,7 +105,7 @@ enum CriterionAccumulator {
 /**
  * A criterion is a part of a rubric.
  */
-type Criterion = {
+interface Criterion {
     /**
      * The id of the criterion
      */
@@ -146,7 +146,7 @@ type Criterion = {
      * The accumulator that is used to determine the achieved points of the children of the criterion.
      */
     childrenAccumulator?: CriterionAccumulator;
-};
+}
 
 /**
  * A leaf criterion is a criterion that does not have any children.
@@ -167,7 +167,7 @@ type ParentCriterion = Omit<Criterion, "tests" | "testAccumulator"> & {
 /**
  * A rubric is a collection of criteria. It is used to provide feedback to the student about their solution.
  */
-type Rubric = {
+interface Rubric {
     /**
      * The id of the rubric
      */
@@ -192,4 +192,4 @@ type Rubric = {
      * The criteria of the rubric
      */
     criteria: Criterion[];
-};
+}

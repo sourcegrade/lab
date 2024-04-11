@@ -1,10 +1,11 @@
 "use client";
 
-import {TypedDocumentNode} from "@graphql-typed-document-node/core";
-import {CourseDto, SemesterType} from "../../__generated__/graphql";
+import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
 import gql from "graphql-tag";
-import {useQuery} from "@apollo/client";
-import {client} from "@repo/ui/lib/withApollo";
+import { useQuery } from "@apollo/client";
+import { client } from "@repo/ui/lib/with-apollo";
+import { SemesterType } from "../../__generated__/graphql";
+import type { CourseDto } from "../../__generated__/graphql";
 
 const query: TypedDocumentNode<{ course: { fetch: CourseDto }, variables: { slug: string } }>
 = gql`
@@ -25,11 +26,11 @@ const query: TypedDocumentNode<{ course: { fetch: CourseDto }, variables: { slug
         }
     }
 `;
-export default function Page({params}: { params: { slug: string } }) {
-    const {loading, data} = useQuery(
+export default function Page({ params }: { params: { slug: string } }) {
+    const { loading, data } = useQuery(
         query,
         {
-            client, variables: {slug: params.slug}
+            client, variables: { slug: params.slug },
         });
     if (loading) {
         return <p>Loading...</p>;
@@ -37,7 +38,7 @@ export default function Page({params}: { params: { slug: string } }) {
     if (!data) {
         return <p>No data</p>;
     }
-    const courseData = data?.course.fetch;
+    const courseData = data.course.fetch;
     console.log("courses", courseData)
     return (
         <div>
@@ -47,7 +48,7 @@ export default function Page({params}: { params: { slug: string } }) {
                 courseData.semesterType === SemesterType.Ss ? "Sommersemester" : "Wintersemester"
             } {
                 courseData.semesterType === SemesterType.Ws
-                    ? courseData.semesterStartYear + "/" + (courseData.semesterStartYear + 1)
+                    ? `${courseData.semesterStartYear  }/${  courseData.semesterStartYear + 1}`
                     : courseData.semesterStartYear
             }</p>
             <h2>Description</h2>
