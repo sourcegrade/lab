@@ -1,12 +1,13 @@
 "use client";
 
-import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
+import {MaterialReactTable, type MRT_ColumnDef} from "material-react-table";
 import dayjs from "dayjs";
-import Box from "@mui/material/Box";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
-import type { Theme } from "@mui/material/styles";
+import {Box, ListItemIcon, MenuItem,} from '@mui/material';
+import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs"
+import type {Theme} from "@mui/material/styles";
 import React from "react";
+import {Report, Visibility} from '@mui/icons-material';
 
 
 export interface AssignmentDto {
@@ -64,8 +65,8 @@ export default function AssignmentsView(
             filterVariant: "date",
             filterFn: "moreThan",
             sortingFn: "datetime",
-            Cell: ({ cell }) => cell.getValue<Date>().toLocaleDateString("de"), //render Date as a string
-            Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
+            Cell: ({cell}) => cell.getValue<Date>().toLocaleDateString("de"), //render Date as a string
+            Header: ({column}) => <em>{column.columnDef.header}</em>, //custom header markup
             muiFilterTextFieldProps: {
                 sx: {
                     minWidth: "250px",
@@ -75,7 +76,7 @@ export default function AssignmentsView(
         {
             header: "Grade",
             accessorFn: (row) => `${row.status === "submitted" ? "??" : row.actualPoints}/${row.maxPoints}`,
-            Cell: ({ row, cell }) => (
+            Cell: ({row, cell}) => (
                 <Box
                     component="span"
                     sx={(theme) => ({
@@ -91,7 +92,7 @@ export default function AssignmentsView(
         {
             header: "Status",
             accessorFn: (row) => row.status === "not submitted" && demoDate?.isAfter(dayjs(row.dueDate)) ? "overdue" : row.status,
-            Cell: ({ cell }) => (
+            Cell: ({cell}) => (
                 <Box
                     component="span"
                     sx={(theme) => ({
@@ -123,7 +124,7 @@ export default function AssignmentsView(
         <LocalizationProvider
             dateAdapter={AdapterDayjs}
         >
-            <Box sx={{ width: "100%" }}>
+            <Box sx={{width: "100%"}}>
                 <MaterialReactTable
                     columnResizeMode="onEnd"
                     columns={columns}
@@ -132,9 +133,48 @@ export default function AssignmentsView(
                     enableColumnResizing
                     enableRowSelection
                     enableStickyHeader
-                    initialState={{ pagination: { pageSize: 15, pageIndex: 0 } }}
+                    initialState={{
+                        pagination: {pageSize: 5, pageIndex: 0},
+                        columnPinning: {right: ["mrt-row-actions"]},
+                    }}
+                    paginationDisplayMode={"pages"}
                     layoutMode="grid"
                     rowPinningDisplayMode="select-sticky"
+                    muiPaginationProps={{
+                        color: 'secondary',
+                        rowsPerPageOptions: [10, 20, 30],
+                        shape: 'rounded',
+                        variant: 'outlined',
+                    }}
+                    enableRowActions={true}
+                    renderRowActionMenuItems={({closeMenu, row}) => [
+                        <MenuItem
+                            key={0}
+                            // href={`/rubrics/${row.original.id}`}
+                            href={`/rubrics`}
+                            target="_blank"
+                            component="a"
+                            sx={{m: 0}}
+                        >
+                            <ListItemIcon>
+                                <Visibility/>
+                            </ListItemIcon>
+                            View Rubric
+                        </MenuItem>,
+                        <MenuItem
+                            key={0}
+                            href={`/complaints/new?assignmentId=${row.original.id}`}
+                            target="_blank"
+                            component="a"
+                            sx={{m: 0}}
+                        >
+                            <ListItemIcon>
+                                <Report/>
+                            </ListItemIcon>
+                            File Complaint
+                        </MenuItem>,
+                    ]
+                    }
                 />
             </Box>
         </LocalizationProvider>
