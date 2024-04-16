@@ -1,17 +1,14 @@
 package org.sourcegrade.lab.hub.domain
 
+import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.UUIDEntity
+import org.jetbrains.exposed.dao.id.EntityID
+import org.sourcegrade.lab.hub.db.SubmissionGroupTable
 import java.util.UUID
 
-data class SubmissionGroup(
-    override val id: UUID,
-    val users: List<User>,
-    val category: Category,
-) : DomainEntity {
+class SubmissionGroup(id: EntityID<UUID>) : UUIDEntity(id) {
+    val name by SubmissionGroupTable.name
+    val category by SubmissionGroupCategory referencedOn SubmissionGroupTable.categoryId
 
-    data class Category(
-        override val id: UUID,
-        val name: String,
-        val minSize: Int,
-        val maxSize: Int,
-    ) : DomainEntity
+    companion object : EntityClass<UUID, SubmissionGroup>(SubmissionGroupTable)
 }
