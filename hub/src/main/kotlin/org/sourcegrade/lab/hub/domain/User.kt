@@ -5,6 +5,10 @@ import java.util.UUID
 data class User(
     override val id: UUID,
     val username: String,
-    val email: String? = null,
-    val roles: List<Role>,
-) : DomainEntity
+    val email: String,
+) : DomainEntity {
+    data class CreateDto(
+        val username: String,
+        val email: String,
+    ) : Creates<User>
+}

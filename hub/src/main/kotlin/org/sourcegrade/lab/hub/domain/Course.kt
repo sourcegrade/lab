@@ -8,6 +8,6 @@ data class Course(
     val description: String,
     val term: Term,
     val owner: User,
-    val submissionGroupCategories: List<SubmissionGroupCategory>,
+    val submissionGroupCategories: List<SubmissionGroup.Category>,
     val assignments: List<Assignment>,
 ) : DomainEntity
