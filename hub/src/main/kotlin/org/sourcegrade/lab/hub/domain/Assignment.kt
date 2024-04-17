@@ -3,9 +3,9 @@ package org.sourcegrade.lab.hub.domain
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
-import org.sourcegrade.lab.hub.db.AssignmentTable
-import org.sourcegrade.lab.hub.db.CourseTable
-import org.sourcegrade.lab.hub.db.RolePermissionTable.references
+import org.sourcegrade.lab.hub.db.Assignments
+import org.sourcegrade.lab.hub.db.Courses
+import org.sourcegrade.lab.hub.db.RolePermissionBindings.references
 import java.util.UUID
 
 //data class Assignment(
@@ -18,10 +18,10 @@ import java.util.UUID
 //) : DomainEntity
 
 class Assignment(id: EntityID<UUID>) : UUIDEntity(id) {
-    val courseId: EntityID<UUID> by AssignmentTable.courseId references CourseTable.id
-    val course: Course by Course referencedOn AssignmentTable.courseId
-    val name: String by AssignmentTable.name
-    val description: String by AssignmentTable.description
+    val courseId: EntityID<UUID> by Assignments.courseId references Courses.id
+    val course: Course by Course referencedOn Assignments.courseId
+    val name: String by Assignments.name
+    val description: String by Assignments.description
 
-    companion object : EntityClass<UUID, Assignment>(AssignmentTable)
+    companion object : EntityClass<UUID, Assignment>(Assignments)
 }

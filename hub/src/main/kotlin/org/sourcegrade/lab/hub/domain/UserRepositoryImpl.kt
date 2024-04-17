@@ -3,7 +3,7 @@ package org.sourcegrade.lab.hub.domain
 import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.lab.hub.db.UserTable
+import org.sourcegrade.lab.hub.db.Users
 import java.util.UUID
 
 class UserRepositoryImpl(
@@ -11,7 +11,7 @@ class UserRepositoryImpl(
 ) : UserRepository {
 
     override suspend fun create(item: User.CreateDto): User = newSuspendedTransaction {
-        val result = UserTable.insert {
+        val result = Users.insert {
             it[username] = item.username
             it[email] = item.email
         }.resultedValues

@@ -3,7 +3,8 @@ package org.sourcegrade.lab.hub.domain
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
-import org.sourcegrade.lab.hub.db.SubmissionTable
+import org.sourcegrade.lab.hub.db.GradingRuns
+import org.sourcegrade.lab.hub.db.Submissions
 import java.util.UUID
 
 //data class Submission(
@@ -17,9 +18,11 @@ import java.util.UUID
 //) : DomainEntity
 
 class Submission(id: EntityID<UUID>) : UUIDEntity(id) {
-    val assignment by Assignment referencedOn SubmissionTable.assignmentId
-    val submitter by User referencedOn SubmissionTable.submitterId
-    val group by SubmissionGroup referencedOn SubmissionTable.groupId
+    val assignment by Assignment referencedOn Submissions.assignmentId
+    val submitter by User referencedOn Submissions.submitterId
+    val group by SubmissionGroup referencedOn Submissions.groupId
+    val uploaded by Submissions.uploaded
+    val gradingRuns by GradingRun referrersOn GradingRuns.submissionId
 
-    companion object : EntityClass<UUID, Submission>(SubmissionTable)
+    companion object : EntityClass<UUID, Submission>(Submissions)
 }
