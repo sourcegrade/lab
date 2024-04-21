@@ -5,7 +5,7 @@ graphql = "7.0.2"
 exposed = "0.49.0"
 
 [libraries]
-annotations = "org.jetbrains:annotations:24.0.1"
+annotations = "org.jetbrains:annotations:24.1.0"
 coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
