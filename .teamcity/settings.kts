@@ -50,7 +50,7 @@ project {
             displayName = "sourcegrade/lab"
             repositoryURL = "https://github.com/sourcegrade/lab"
             authType = accessToken {
-                accessToken = "credentialsJSON:f57a4fdd-fb30-41c0-9983-620364336d03"
+                accessToken = "credentialsJSON:08139815-d563-4983-b121-8fe707ce8a34"
             }
             param("tokenId", "")
         }
@@ -78,7 +78,7 @@ fun BuildFeatures.configureBaseFeatures() {
         publisher = github {
             githubUrl = "https://api.github.com"
             authType = personalToken {
-                token = "credentialsJSON:f57a4fdd-fb30-41c0-9983-620364336d03"
+                token = "credentialsJSON:08139815-d563-4983-b121-8fe707ce8a34"
             }
         }
     }
