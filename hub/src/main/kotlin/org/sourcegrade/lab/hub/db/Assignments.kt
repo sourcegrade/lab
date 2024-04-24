@@ -8,6 +8,6 @@ internal object Assignments : UUIDTable("sgl_assignments") {
     val courseId = reference("course_id", Courses)
     val name = varchar("name", 255).uniqueIndex()
     val description = varchar("description", 16 * 1024)
-    val submissionDeadline = timestamp("submissionDeadline") // TODO: time zone info
+    val submissionDeadline = timestamp("submissionDeadline")
     val submissionGroupCategory = reference("submission_group_category", SubmissionGroupCategories.id)
 }

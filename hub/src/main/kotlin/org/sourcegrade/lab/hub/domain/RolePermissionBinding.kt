@@ -7,9 +7,9 @@ import org.sourcegrade.lab.hub.db.RolePermissionBindings
 import java.util.UUID
 
 class RolePermissionBinding(id: EntityID<UUID>) : UUIDEntity(id) {
-    val roleId by RolePermissionBindings.roleId
-    val permission by RolePermissionBindings.permission
-    val value by RolePermissionBindings.value
+    val role: Role by Role referencedOn RolePermissionBindings.roleId
+    val permission: String by RolePermissionBindings.permission
+    val value: Boolean by RolePermissionBindings.value
 
     companion object : EntityClass<UUID, RolePermissionBinding>(RolePermissionBindings)
 }

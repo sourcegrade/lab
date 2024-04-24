@@ -7,10 +7,10 @@ import org.sourcegrade.lab.hub.db.SubmissionGroupCategories
 import java.util.UUID
 
 class SubmissionGroupCategory(id: EntityID<UUID>) : UUIDEntity(id) {
-    val name by SubmissionGroupCategories.name
-    val course by Course referencedOn SubmissionGroupCategories.courseId
-    val minSize by SubmissionGroupCategories.minSize
-    val maxSize by SubmissionGroupCategories.maxSize
+    val name: String by SubmissionGroupCategories.name
+    val course: Course by Course referencedOn SubmissionGroupCategories.courseId
+    val minSize: Int by SubmissionGroupCategories.minSize
+    val maxSize: Int by SubmissionGroupCategories.maxSize
 
     companion object : EntityClass<UUID, SubmissionGroupCategory>(SubmissionGroupCategories)
 }
