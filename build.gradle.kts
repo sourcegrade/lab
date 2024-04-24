@@ -30,15 +30,6 @@ allprojects {
             targetCompatibility = "17"
         }
     }
-
-    kotlin {
-        compilerOptions {
-            freeCompilerArgs = listOf(
-                "-opt-in=kotlin.RequiresOptIn",
-                "-Xcontext-receivers",
-            )
-        }
-    }
 }
 
 tasks {
