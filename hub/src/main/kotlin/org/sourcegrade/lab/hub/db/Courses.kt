@@ -16,14 +16,14 @@ internal object Courses : UUIDTable("sgl_courses") {
     val createdUtc = timestamp("createdUtc")
     val name = varchar("name", 255)
     val description = varchar("description", 255)
-    val term = varchar("term", 255)
+    val term = reference("term_id", Terms)
     val ownerId = reference("owner_id", Users)
 }
 
 internal class DBCourse(id: EntityID<UUID>) : UUIDEntity(id), Course {
     override val uuid: UUID = id.value
     override val createdUtc: Instant by Courses.createdUtc
-    override val term: Term by Term referencedOn Courses.term
+    override val term: Term by DBTerm referencedOn Courses.term
     override val submissionGroupCategories: SizedIterable<DBSubmissionGroupCategory> by DBSubmissionGroupCategory referrersOn SubmissionGroupCategories.courseId
     override val assignments: SizedIterable<Assignment> by DBAssignment referrersOn Assignments.courseId
     override val owner: DBUser by DBUser referencedOn Courses.ownerId // TODO: Multiple owners

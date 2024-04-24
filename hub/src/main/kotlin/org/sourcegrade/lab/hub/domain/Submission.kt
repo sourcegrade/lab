@@ -10,4 +10,10 @@ interface Submission : DomainEntity {
     val uploaded: Instant
     val gradingRuns: SizedIterable<GradingRun>
     val lastGradingRun: GradingRun?
+
+    enum class Status {
+        ALL,
+        PENDING_GRADE,
+        GRADED,
+    }
 }

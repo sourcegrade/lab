@@ -1,7 +1,6 @@
 package org.sourcegrade.lab.hub.domain
 
 import kotlinx.datetime.Instant
-import org.jetbrains.exposed.sql.SizedIterable
 
 interface UserMembership<T : TermScoped> : DomainEntity {
     val startUtc: Instant
@@ -9,9 +8,10 @@ interface UserMembership<T : TermScoped> : DomainEntity {
     val user: User
     val target: T
 
-    interface Accessor<T : TermScoped> {
-        suspend fun all(): SizedIterable<UserMembership<T>>
-        suspend fun current(): SizedIterable<UserMembership<T>>
-        suspend fun active(): SizedIterable<UserMembership<T>>
+    enum class Status {
+        ALL,
+        FUTURE,
+        CURRENT,
+        PAST,
     }
 }
