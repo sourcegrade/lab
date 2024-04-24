@@ -10,7 +10,7 @@ coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
-koin = "io.insert-koin:koin-ktor:3.5.3"
+koin = "io.insert-koin:koin-ktor:3.5.6"
 ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
 ktor-client-contentnegotiation = { module = "io.ktor:ktor-client-content-negotiation" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging" }
