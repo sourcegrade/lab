@@ -3,6 +3,7 @@ package org.sourcegrade.lab.hub.domain
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
+import org.sourcegrade.lab.hub.db.GradedRubrics
 import org.sourcegrade.lab.hub.db.GradingRuns
 import java.util.UUID
 
@@ -15,9 +16,10 @@ import java.util.UUID
 
 class GradingRun(id: EntityID<UUID>) : UUIDEntity(id) {
     val submission: Submission by Submission referencedOn GradingRuns.submissionId
-    val maxPoints: Int by GradingRuns.maxPoints
-    val minPoints: Int by GradingRuns.minPoints
-    // TODO: Rubric
+//    val achievedMinPoints: Int by GradingRuns.achievedMinPoints
+//    val achievedMaxPoints: Int by GradingRuns.achievedMaxPoints
+    val rubric: Rubric by Rubric referencedOn GradingRuns.rubricId
+    val gradedRubric: GradedRubric by GradedRubric referencedOn GradingRuns.gradedRubricId
 
     companion object : EntityClass<UUID, GradingRun>(GradingRuns)
 }

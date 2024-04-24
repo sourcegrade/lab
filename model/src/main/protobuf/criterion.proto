@@ -17,7 +17,7 @@ message Criterion {
     // The description of the criterion.
     ShowcaseString description = 3;
     // The possible amount of points that can be achieved.
-    NumberRange possible_points = 4;
+    PointRange possible_points = 4;
     // The points that have been achieved.
     PointRange achieved_points = 5;
     // The message displayed if the criterion is not fulfilled.
