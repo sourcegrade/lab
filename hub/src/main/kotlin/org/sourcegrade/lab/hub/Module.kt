@@ -1,6 +1,5 @@
 package org.sourcegrade.lab.hub
 
-import com.expediagroup.graphql.server.ktor.GraphQL
 import com.expediagroup.graphql.server.ktor.graphQLGetRoute
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
@@ -18,11 +17,6 @@ import io.ktor.server.routing.Routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.sourcegrade.lab.hub.http.authenticationModule
-import org.sourcegrade.lab.hub.queries.CourseMutations
-import org.sourcegrade.lab.hub.queries.CourseQueries
-import org.sourcegrade.lab.hub.queries.HelloWorldQuery
-import org.sourcegrade.lab.hub.queries.UserMutations
-import org.sourcegrade.lab.hub.queries.UserQueries
 
 fun Application.module() {
     val environment = environment
@@ -54,22 +48,22 @@ fun Application.module() {
         anyHost()
     }
 
-    install(GraphQL) {
-        schema {
-            packages = listOf("org.sourcegrade.lab.hub")
-            queries =
-                listOf(
-                    HelloWorldQuery(),
-                    UserQueries(),
-                    CourseQueries(),
-                )
-            mutations =
-                listOf(
-                    UserMutations(),
-                    CourseMutations(),
-                )
-        }
-    }
+//    install(GraphQL) {
+//        schema {
+//            packages = listOf("org.sourcegrade.lab.hub")
+//            queries =
+//                listOf(
+//                    HelloWorldQuery(),
+//                    UserQueries(),
+//                    CourseQueries(),
+//                )
+//            mutations =
+//                listOf(
+//                    UserMutations(),
+//                    CourseMutations(),
+//                )
+//        }
+//    }
 
     install(Routing) {
         graphQLGetRoute()
