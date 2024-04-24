@@ -1,11 +1,8 @@
 import jetbrains.buildServer.configs.kotlin.BuildFeatures
 import jetbrains.buildServer.configs.kotlin.BuildType
 import jetbrains.buildServer.configs.kotlin.DslContext
-import jetbrains.buildServer.configs.kotlin.FailureAction
-import jetbrains.buildServer.configs.kotlin.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
-import jetbrains.buildServer.configs.kotlin.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.project
 import jetbrains.buildServer.configs.kotlin.projectFeatures.githubIssues
@@ -50,7 +47,7 @@ project {
             displayName = "sourcegrade/lab"
             repositoryURL = "https://github.com/sourcegrade/lab"
             authType = accessToken {
-                accessToken = "credentialsJSON:08139815-d563-4983-b121-8fe707ce8a34"
+                accessToken = "credentialsJSON:7828090f-5bd5-448c-99df-b7fae9540192"
             }
             param("tokenId", "")
         }
@@ -78,7 +75,7 @@ fun BuildFeatures.configureBaseFeatures() {
         publisher = github {
             githubUrl = "https://api.github.com"
             authType = personalToken {
-                token = "credentialsJSON:08139815-d563-4983-b121-8fe707ce8a34"
+                token = "credentialsJSON:7828090f-5bd5-448c-99df-b7fae9540192"
             }
         }
     }
