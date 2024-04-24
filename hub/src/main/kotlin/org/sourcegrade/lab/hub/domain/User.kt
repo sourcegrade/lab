@@ -1,14 +1,14 @@
 package org.sourcegrade.lab.hub.domain
 
-import org.jetbrains.exposed.dao.EntityClass
-import org.jetbrains.exposed.dao.UUIDEntity
-import org.jetbrains.exposed.dao.id.EntityID
-import org.sourcegrade.lab.hub.db.Users
-import java.util.UUID
+import org.jetbrains.exposed.sql.SizedIterable
 
-class User(id: EntityID<UUID>) : UUIDEntity(id) {
-    var username: String by Users.username
-    var email: String by Users.email
+interface User : DomainEntity {
+    var username: String
+    var displayname: String
+    var email: String
 
-    companion object : EntityClass<UUID, User>(Users)
+    val courseMemberships: UserMembership.Accessor<Course>
+    val submissionGroupsMemberships: UserMembership.Accessor<SubmissionGroup>
+    suspend fun assignments(): SizedIterable<Assignment>
+    suspend fun submissions(): SizedIterable<Submission>
 }
