@@ -7,8 +7,8 @@ import org.sourcegrade.lab.hub.db.Users
 import java.util.UUID
 
 class User(id: EntityID<UUID>) : UUIDEntity(id) {
-    val username: String by Users.username
-    val email: String by Users.email
+    var username: String by Users.username
+    var email: String by Users.email
 
     companion object : EntityClass<UUID, User>(Users)
 }

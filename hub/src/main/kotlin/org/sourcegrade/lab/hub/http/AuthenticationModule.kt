@@ -40,9 +40,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.lab.hub.models.User
-import org.sourcegrade.lab.hub.models.Users
+import org.sourcegrade.lab.hub.db.Users
+import org.sourcegrade.lab.hub.domain.User
 import java.io.File
+import java.util.UUID
 import kotlin.collections.set
 import kotlin.time.Duration.Companion.hours
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
@@ -154,7 +155,7 @@ fun Application.authenticationModule() {
 
                     val session =
                         UserSession(
-                            user.id.value,
+                            user.id.value.toString(),
                             checkNotNull(principal.state) { "No state" },
                             principal.accessToken,
                             userInfo.email,
@@ -176,7 +177,7 @@ fun Application.authenticationModule() {
                 }
             }
             get("current-user") {
-                withUser { call.respond(it.toDTO()) }
+                withUser { call.respond(it) } // TODO: Conversion to DTO
             }
         }
     }
@@ -194,7 +195,7 @@ suspend fun <T> PipelineContext<Unit, ApplicationCall>.withUserSession(block: su
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
     withUserSession { session ->
-        val user = newSuspendedTransaction { User.findById(session.userId) }
+        val user = newSuspendedTransaction { User.findById(UUID.fromString(session.userId)) }
         checkNotNull(user) { "Could not find user ${session.email} in DB" }
         block(user)
     }
