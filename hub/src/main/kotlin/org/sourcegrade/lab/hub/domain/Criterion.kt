@@ -8,6 +8,9 @@ import org.sourcegrade.lab.hub.db.Criteria
 import java.util.UUID
 
 class Criterion(id: EntityID<UUID>) : UUIDEntity(id) {
+    val minPoints: Int by Criteria.minPoints
+    val maxPoints: Int by Criteria.maxPoints
+    val description: String by Criteria.description
     val parentRubric: Rubric by Rubric referencedOn Criteria.parentRubricId
     val parentCriterion: Criterion? by Criterion optionalReferencedOn Criteria.parentCriterionId
     val childCriteria: SizedIterable<Criterion> by Criterion optionalReferrersOn Criteria.parentCriterionId

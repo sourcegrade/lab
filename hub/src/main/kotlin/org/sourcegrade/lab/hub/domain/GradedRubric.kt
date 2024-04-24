@@ -14,7 +14,8 @@ class GradedRubric(id: EntityID<UUID>) : Entity<UUID>(id) {
     val name: String by GradedRubrics.name
     val achievedMinPoints: Int by GradedRubrics.achievedMinPoints
     val achievedMaxPoints: Int by GradedRubrics.achievedMaxPoints
-    val criteria: SizedIterable<GradedCriterion>
+    val allChildCriteria: SizedIterable<GradedCriterion> by GradedCriterion referrersOn GradedCriteria.parentGradedRubricId
+    val childCriteria: SizedIterable<GradedCriterion>
         get() = GradedCriterion.find { GradedCriteria.parentGradedRubricId eq id and GradedCriteria.parentGradedCriterionId.isNull() }
 
     companion object : EntityClass<UUID, GradedRubric>(GradedRubrics)
