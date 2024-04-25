@@ -10,5 +10,14 @@ interface Assignment : DomainEntity {
     var name: String
     var description: String
     var submissionDeadlineUtc: Instant
-    var submissionGroupCategoryId: UUID
+
+    suspend fun setSubmissionGroupCategoryId(id: UUID): Boolean
+
+    data class CreateDto(
+        val courseId: UUID,
+        val submissionGroupCategoryId: UUID,
+        val name: String,
+        val description: String,
+        val submissionDeadlineUtc: Instant,
+    ) : Creates<Assignment>
 }

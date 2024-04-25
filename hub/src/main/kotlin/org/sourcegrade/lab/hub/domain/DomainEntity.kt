@@ -7,3 +7,9 @@ interface DomainEntity {
     val uuid: UUID
     val createdUtc: Instant
 }
+
+interface Creates<out E : DomainEntity>
+
+interface IdempotentCreates<out E : DomainEntity> : Creates<E> {
+    val uuid: UUID
+}

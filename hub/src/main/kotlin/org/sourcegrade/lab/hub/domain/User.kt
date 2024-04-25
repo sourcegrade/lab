@@ -9,6 +9,8 @@ interface User : DomainEntity {
     var displayname: String
     var email: String
 
+    // TODO: Split into UserActions
+    // TODO: Get from UserMembershipRepository
     suspend fun courseMemberships(
         status: UserMembership.Status = UserMembership.Status.CURRENT,
         term: Term.Matcher = Term.Matcher.Current,
