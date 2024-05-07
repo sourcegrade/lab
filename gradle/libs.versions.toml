@@ -48,7 +48,7 @@ bcrypt = "org.mindrot:jbcrypt:0.4"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
+ktlint = "org.jlleitschuh.gradle.ktlint:12.1.1"
 protobuf = "com.google.protobuf:0.9.4"
 shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 ktor = "io.ktor.plugin:2.3.10"
