@@ -51,13 +51,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             <h2>Description</h2>
             <p>{courseData?.description ?? "Loading description..."}</p>
             Tabs for overview, members, and assignments
-            <h2>Members</h2>
-            <ul>
-                {courseData?.members.map((member) => (
-                    <li key={member.id}>{member.username} ({member.email})</li>
-                ))}
-            </ul>
-            <h2>Assignments</h2>
+            <h2>Upcomming Assignments</h2>
             <p>TODO</p>
         </div>
     );

@@ -1,4 +1,4 @@
-package org.sourcegrade.lab.hub.queries
+package org.sourcegrade.lab.hub.query
 
 import graphql.schema.DataFetchingEnvironment
 import org.jetbrains.exposed.dao.EntityClass

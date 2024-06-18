@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.15.1",
+    "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.1",
     "@mui/x-date-pickers": "^7.1.1",
     "@typegoose/typegoose": "^12.0.0",
@@ -25,6 +26,7 @@
     "passport-local-mongoose": "^8.0.0",
     "react-github-btn": "^1.4.0",
     "react-multi-carousel": "^2.8.4",
+    "react-swipeable-views": "^0.14.0",
     "sass": "^1.69.5",
     "swr": "^2.2.4",
     "typegoose": "^5.9.1"

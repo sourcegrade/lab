@@ -18,11 +18,11 @@ import io.ktor.server.routing.Routing
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
 import org.sourcegrade.lab.hub.http.authenticationModule
-import org.sourcegrade.lab.hub.queries.CourseMutations
-import org.sourcegrade.lab.hub.queries.CourseQueries
-import org.sourcegrade.lab.hub.queries.HelloWorldQuery
-import org.sourcegrade.lab.hub.queries.UserMutations
-import org.sourcegrade.lab.hub.queries.UserQueries
+import org.sourcegrade.lab.hub.query.CourseMutations
+import org.sourcegrade.lab.hub.query.CourseQueries
+import org.sourcegrade.lab.hub.query.HelloWorldQuery
+import org.sourcegrade.lab.hub.query.UserMutations
+import org.sourcegrade.lab.hub.query.UserQueries
 
 fun Application.module() {
     val environment = environment
