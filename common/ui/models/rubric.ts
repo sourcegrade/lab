@@ -1,21 +1,17 @@
 /**
  * A number range defines a range of numbers. The range is inclusive.
  */
-interface NumberRange { min: number; max: number }
-/**
- * A point range defines a range of points. The range is inclusive.
- */
-type PointRange = number | NumberRange;
+export interface NumberRange { min: number; max: number }
 
 /**
  * A showcase string is a string that can either be a simple string or an object that contains a text and an html property. The text property is used for the text representation of the string and the html property is used for the html representation of the string. Both representations should contain the same information.
  */
-type ShowcaseString = string | { text: string; html: HTMLElement };
+export interface ShowcaseString { text: string; html?: string|null }
 
 /**
  * The state of a test
  */
-enum TestState {
+export enum TestState {
     /**
      * The test is pending, i.e. it has not been executed yet
      */
@@ -49,7 +45,7 @@ enum TestState {
 /**
  * A test run is the result of a test. It contains information about the test such as the state, the message, the stacktrace, the duration and the children of the test.
  */
-interface TestRun {
+export interface TestRun {
     /**
      * The id of the test
      */
@@ -61,7 +57,7 @@ interface TestRun {
     /**
      * The state of the test
      */
-    state: TestState;
+    state: string;
     /**
      * The message of the test. It should be empty if the test is successful. If the test is not successful, it should contain the error message as well as context information.
      */
@@ -69,7 +65,7 @@ interface TestRun {
     /**
      * The stacktrace of the test
      */
-    stacktrace?: string;
+    stacktrace?: string|null;
     /**
      * The duration of the test in milliseconds
      */
@@ -83,7 +79,7 @@ interface TestRun {
 /**
  * The accumulator that is used to determine the achieved points of a criterion
  */
-enum CriterionAccumulator {
+export enum CriterionAccumulator {
     /**
      * This is the default accumulator. It is used if no other accumulator is specified. It requires all tests to be successful and sums up to possiblePoints.max. If any test is not successful, the sum is possiblePoints.min.
      */
@@ -105,7 +101,7 @@ enum CriterionAccumulator {
 /**
  * A criterion is a part of a rubric.
  */
-interface Criterion {
+export interface Criterion {
     /**
      * The id of the criterion
      */
@@ -125,7 +121,7 @@ interface Criterion {
     /**
      * The points that have been achieved. Can be a range if the points are not fixed yet
      */
-    achievedPoints: PointRange;
+    achievedPoints: NumberRange;
     /**
      * The message that is displayed if the criterion is not fulfilled
      */
@@ -151,7 +147,7 @@ interface Criterion {
 /**
  * A leaf criterion is a criterion that does not have any children.
  */
-type LeafCriterion = Omit<Criterion, "children" | "childrenAccumulator"> & {
+export type LeafCriterion = Omit<Criterion, "children" | "childrenAccumulator"> & {
     tests: TestRun[];
     testAccumulator: CriterionAccumulator;
 };
@@ -159,7 +155,7 @@ type LeafCriterion = Omit<Criterion, "children" | "childrenAccumulator"> & {
 /**
  *  A parent criterion is a criterion that has children.
  */
-type ParentCriterion = Omit<Criterion, "tests" | "testAccumulator"> & {
+export type ParentCriterion = Omit<Criterion, "tests" | "testAccumulator"> & {
     children: Criterion[];
     childrenAccumulator: CriterionAccumulator;
 };
@@ -167,7 +163,7 @@ type ParentCriterion = Omit<Criterion, "tests" | "testAccumulator"> & {
 /**
  * A rubric is a collection of criteria. It is used to provide feedback to the student about their solution.
  */
-interface Rubric {
+export interface Rubric {
     /**
      * The id of the rubric
      */
@@ -187,7 +183,7 @@ interface Rubric {
     /**
      * The points that have been achieved. Can be a range if the points are not fixed yet
      */
-    achievedPoints: PointRange;
+    achievedPoints: NumberRange;
     /**
      * The criteria of the rubric
      */

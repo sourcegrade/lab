@@ -21,10 +21,10 @@
       "id": "1",
       "name": {
         "text": "H1 | Steuerung des \"CleaningRobot\"",
-        "html": "<strong>H1</strong> <div class=\"arrow right\"></div> Steuerung des \"CleaningRobot\""
+        "html": "<strong>H1</strong> Steuerung des \"CleaningRobot\""
       },
       "description": {
-        "text": "",
+        "text": "In dieser Teilaufgabe mussten Sie die Steuerung des \"CleaningRobot\" implementieren.",
         "html": null
       },
       "possiblePoints": {
@@ -38,16 +38,15 @@
       "tests": [
         {
           "id": "1",
-          "name": "Wenn die übergebene Direction < 0 oder > 3 ist, so bleibt der Roboter stehen.",
+          "name": "fafafa",
           "state": "FAILURE",
           "message": {
-            "text": "invalid end position.",
+            "text": "fififi",
             "html": null
           },
           "stacktrace": null,
           "duration": 0
-        },
-        {
+        },{
           "id": "2",
           "name": "Wenn die übergebene Direction >= 0 und < 4 ist, dann schaut der Roboter in die entsprechende Richtung.",
           "state": "FAILURE",
@@ -74,7 +73,7 @@
           "name": "shouldPutCoin und shouldPickCoin werden korrekt verarbeitet.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -117,7 +116,7 @@
           "name": "Der \"Contaminant1\"-Roboter legt korrekt eine zufällige Anzahl an Münzen ab, genau dann wenn er es soll.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -161,7 +160,7 @@
           "name": "Der \"Contaminant2\"-Roboter legt stets die korrekte Anzahl an Münzen ab.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -172,7 +171,7 @@
           "name": "Der \"Contaminant2\"-Roboter prüft alle vier Richtungen ab und dreht sich wieder in die Ausgangsrichtung.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -215,7 +214,7 @@
           "name": "Der cleaner gewinnt, wenn alle Contaminants ausgeschaltet sind.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -226,7 +225,7 @@
           "name": "Der cleaner gewinnt, wenn sich in der Abladezone mindestens 200 Münzen befinden.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
@@ -248,11 +247,36 @@
           "name": "Wenn beide Parteien gleichzeitig gewinnen, so gewinnt der cleaner.",
           "state": "SUCCESS",
           "message": {
-            "text": null,
+            "text": "",
             "html": null
           },
           "stacktrace": null,
           "duration": 0
+        }
+      ],
+      "children": [
+        {
+          "id": "H3.1",
+          "name": {
+            "text": "H3.1 | TEST",
+            "html": "<strong>H3.1</strong> | TEST"
+          },
+          "description": {
+            "text": "asdf",
+            "html": null
+          },
+          "possiblePoints": {
+            "min": 0,
+            "max": 4
+          },
+          "achievedPoints": {
+            "min": 3,
+            "max": 3
+          },
+          "message": {
+            "text": "asdf",
+            "html": null
+          }
         }
       ]
     }

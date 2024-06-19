@@ -55,6 +55,7 @@ module.exports = {
         "@typescript-eslint/require-await": "warn",
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/no-unsafe-call": "warn",
+        "@typescript-eslint/no-unsafe-return": "warn",
         "@typescript-eslint/no-empty-function": "warn",
         "camelcase": "warn",
         "no-console": "warn",
