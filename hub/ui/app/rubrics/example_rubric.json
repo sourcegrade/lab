@@ -14,7 +14,7 @@
   },
   "achievedPoints": {
     "min": 7,
-    "max": 7
+    "max": 10
   },
   "criteria": [
     {
@@ -76,7 +76,7 @@
             "text": "",
             "html": null
           },
-          "stacktrace": null,
+          "stacktrace": "<i>The Method threw an exception</i> {<div class=\"pl-4\">worldWidth = 1,<br>worldHeight = 1,<br>walls = [],<br>initialCoinsOnField = 10,<br>canMove = false,<br>contaminant1 (before call) = Robot{id='0', at=[0/0], numberOfCoins=10, direction=LEFT},<br>contaminant1 (after call) = Robot{id='0', at=[0/0], numberOfCoins=5, direction=LEFT}</div>}<br><br><div class=\"alert alert-danger\">java.lang.IllegalArgumentException: bound must be positive<br><div class=\"pl-4\">\tjava.base/java.util.Random.nextInt(Random.java:322)<br>\th01.Contaminant1Test.lambda$testMovement$1(Contaminant1Test.java:105)<br>\th01.TestUtils.lambda$withMockedUtilsClass$2(TestUtils.java:141)<br>\torg.mockito.internal.stubbing.StubbedInvocationMatcher.answer(StubbedInvocationMatcher.java:42)<br>\torg.mockito.internal.handler.MockHandlerImpl.handle(MockHandlerImpl.java:103)<br>\torg.mockito.internal.handler.NullResultGuardian.handle(NullResultGuardian.java:29)<br>\torg.mockito.internal.handler.InvocationNotifierHandler.handle(InvocationNotifierHandler.java:34)<br>\torg.mockito.internal.creation.bytebuddy.MockMethodInterceptor.doIntercept(MockMethodInterceptor.java:82)<br>\torg.mockito.internal.creation.bytebuddy.MockMethodAdvice.handleStatic(MockMethodAdvice.java:148)<br>\th01.template.Utils.getRandomInteger(Unknown Source)<br>...<br></div></div>",
           "duration": 0
         }
       ]

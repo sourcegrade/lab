@@ -1,27 +1,39 @@
 "use client";
 
-import type {MRT_ColumnDef} from "material-react-table";
-import {MaterialReactTable, useMaterialReactTable} from "material-react-table";
-import {useMemo} from "react";
-import {useTheme} from "@mui/material";
+import type { MRT_ColumnDef } from "material-react-table";
+import "bootstrap/dist/css/bootstrap.min.css"; // Import bootstrap CSS
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import { useMemo } from "react";
+import { useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
-import type {Criterion, NumberRange, Rubric, ShowcaseString, TestRun} from "../models/rubric";
+import LinearProgress from "@mui/material/LinearProgress";
+import type { Criterion, NumberRange, Rubric, ShowcaseString, TestRun } from "../models/rubric";
 
 function renderShowcaseString(str?: ShowcaseString | null, errorMsg = "No value") {
-    return str?.html ? <div dangerouslySetInnerHTML={{__html: str.html}}/> : <p>{str?.text || errorMsg}</p>;
+    return str?.html ? <div dangerouslySetInnerHTML={{ __html: str.html }}/> : <p>{str?.text || errorMsg}</p>;
 }
 
 function renderNumberRange(range: NumberRange) {
     return range.min === range.max ? range.max : `[${range.min}, ${range.max}]`;
 }
 
+/**
+ * Normalize the points to a value between 0 and 100
+ * @param value the value to normalize
+ * @param possiblePoints the range of possible points
+ */
+function normalizePoints(value: number, possiblePoints: NumberRange) {
+    return ((value - possiblePoints.min)* 100) / (possiblePoints.max - possiblePoints.min);
+}
+
 export default function RubricView(params: { rubric: Rubric }) {
     const theme = useTheme();
+    const rubric = params.rubric;
     const columns = useMemo<MRT_ColumnDef<Criterion>[]>(() => [
             {
                 header: "Kriterium",
                 accessorFn: (row) => row.name,
-                Cell: ({cell}) => {
+                Cell: ({ cell }) => {
                     return renderShowcaseString(cell.getValue() as ShowcaseString, "");
                 },
             },
@@ -36,7 +48,7 @@ export default function RubricView(params: { rubric: Rubric }) {
             {
                 header: "Kommentar",
                 accessorFn: (row) => row.message,
-                Cell: ({cell}) => {
+                Cell: ({ cell }) => {
                     return renderShowcaseString(cell.getValue() as ShowcaseString, "");
                 },
             },
@@ -59,20 +71,23 @@ export default function RubricView(params: { rubric: Rubric }) {
             },
             {
                 header: "Message",
+                grow: true,
                 accessorFn: (row) => row.message,
-                Cell: ({cell}) => {
+                Cell: ({ cell }) => {
                     return renderShowcaseString(cell.getValue() as ShowcaseString, "");
                 },
             },
             {
                 header: "Duration",
+                id: "duration",
                 accessorFn: (row) => row.duration,
             },
             {
                 header: "Stacktrace",
+                id: "stacktrace",
                 accessorFn: (row) => row.stacktrace,
-                Cell: ({cell}) => {
-                    return renderShowcaseString(cell.getValue() as ShowcaseString, "");
+                Cell: ({ cell }) => {
+                    return <div dangerouslySetInnerHTML={{ __html: cell.getValue() as string }}/>;
                 },
             },
         ],
@@ -97,14 +112,14 @@ export default function RubricView(params: { rubric: Rubric }) {
                         : "rgba(0,0,0,0.1)",
             }),
         }),
-        muiPaginationProps: ({table}) => ({
+        muiPaginationProps: ({ table }) => ({
             color: "secondary",
             shape: "rounded",
             variant: "outlined",
         }),
-        renderDetailPanel: ({row}) => {
+        renderDetailPanel: ({ row }) => {
             const testRunData = row.original.tests;
-            let result = renderShowcaseString(row.original.description, "No Description.");
+            const result = renderShowcaseString(row.original.description, "No Description.");
 
             if (!testRunData) {
                 return result;
@@ -117,17 +132,22 @@ export default function RubricView(params: { rubric: Rubric }) {
                 enableColumnResizing: true,
                 enableStickyHeader: true,
                 layoutMode: "grid",
+                // initialState: { columnVisibility: { "duration": false, "stacktrace": false } },
             });
-            return <div>
+            return <Box sx={{ width: "100%" }}>
                 {result}
                 <MaterialReactTable table={testRunTable}/>
-            </div>
+            </Box>;
         },
         initialState: {}, //expand all rows by default
         paginateExpandedRows: false, //When rows are expanded, do not count sub-rows as number of rows on the page towards pagination
     });
 
-    return <Box sx={{width: "100%"}}>
+    return <Box sx={{ width: "100%" }}>
+        <h1>{renderShowcaseString(rubric.name)}</h1>
+        <p>{renderShowcaseString(rubric.description)}</p>
+        <p>Erreichte Punkte: {renderNumberRange(rubric.achievedPoints)}/{rubric.possiblePoints.max} ({normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)})% <LinearProgress
+            value={normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)} valueBuffer={normalizePoints(rubric.achievedPoints.max, rubric.possiblePoints)} variant="buffer"/></p>
         <MaterialReactTable table={table}/>
     </Box>;
 }

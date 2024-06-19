@@ -9,7 +9,9 @@
         "watch": "turbo run watch"
     },
     "dependencies": {
-        "lodash": "^4.17.21"
+        "bootstrap": "^5.3.3",
+        "lodash": "^4.17.21",
+        "react-bootstrap": "^2.10.2"
     },
     "devDependencies": {
         "@graphql-codegen/cli": "^5.0.2",
