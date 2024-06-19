@@ -16,15 +16,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain
+package org.sourcegrade.lab.hub.db
 
-import org.jetbrains.exposed.sql.SizedIterable
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+import org.sourcegrade.lab.hub.domain.repo.AssignmentRepository
+import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
+import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
+import org.sourcegrade.lab.hub.domain.repo.UserRepository
 
-interface Course : TermScoped {
-    val submissionGroupCategories: SizedIterable<SubmissionGroupCategory>
-    val assignments: SizedIterable<Assignment>
-    val owner: User
-
-    var name: String
-    var description: String
+val DBModule = module {
+    singleOf(::DBAssignmentRepository) {
+        bind<AssignmentRepository>()
+        bind<MutableAssignmentRepository>()
+    }
+    singleOf(::DBUserRepository) {
+        bind<UserRepository>()
+        bind<MutableUserRepository>()
+    }
 }

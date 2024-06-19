@@ -1,5 +1,5 @@
 /*
- *   Anvil - AnvilPowered.org
+ *   Lab - SourceGrade.org
  *   Copyright (C) 2019-2024 Contributors
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,11 +18,13 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import java.util.UUID
 
+@GraphQLIgnore
 interface Repository<out E : DomainEntity> {
     suspend fun findById(id: UUID): E? // TODO: Eager loading
+    suspend fun deleteById(id: UUID): Boolean
     suspend fun exists(id: UUID): Boolean
     suspend fun countAll(): Long
-    suspend fun deleteById(id: UUID): Boolean
 }

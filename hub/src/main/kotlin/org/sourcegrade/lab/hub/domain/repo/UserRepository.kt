@@ -16,15 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain
+package org.sourcegrade.lab.hub.domain.repo
 
 import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.domain.MutableRepository
+import org.sourcegrade.lab.hub.domain.Repository
+import org.sourcegrade.lab.hub.domain.User
 
-interface Course : TermScoped {
-    val submissionGroupCategories: SizedIterable<SubmissionGroupCategory>
-    val assignments: SizedIterable<Assignment>
-    val owner: User
+interface UserRepository : Repository<User> {
+    suspend fun findByUsername(username: String): User?
 
-    var name: String
-    var description: String
+    suspend fun findAllByUsername(partialUsername: String): SizedIterable<User.Snapshot>
+
+    suspend fun findByEmail(email: String): User?
 }
+
+interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>

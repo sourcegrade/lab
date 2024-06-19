@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(libs.graphql.server)
+    implementation(libs.koin)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.contentnegotiation)
@@ -32,4 +33,18 @@ dependencies {
 
 application {
     mainClass.set("org.sourcegrade.lab.hub.MainKt")
+}
+
+tasks {
+    named<JavaExec>("runShadow") {
+        environment("SGL_DB_URL", "jdbc:postgresql://localhost:5432/sgl")
+        environment("SGL_DB_USER", "admin")
+        environment("SGL_DB_PASSWORD", "admin")
+        environment("SGL_DEPLOYMENT_URL", "http://localhost:8080")
+        environment("SGL_AUTH_URL", "http://localhost:8080/auth")
+        environment("SGL_AUTH_CLIENT_ID", "sgl")
+        environment("SGL_AUTH_CLIENT_SECRET", "sgl")
+        environment("SGL_AUTH_ACCESS_TOKEN_URL", "http://localhost:8080/auth/token")
+        environment("SGL_AUTH_SCOPES", "openid profile email")
+    }
 }

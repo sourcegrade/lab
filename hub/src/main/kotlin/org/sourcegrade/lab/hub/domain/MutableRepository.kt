@@ -1,5 +1,5 @@
 /*
- *   Anvil - AnvilPowered.org
+ *   Lab - SourceGrade.org
  *   Copyright (C) 2019-2024 Contributors
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,9 +18,12 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+
+@GraphQLIgnore
 interface MutableRepository<out E : DomainEntity, C : Creates<E>> : Repository<E> {
     suspend fun create(item: C): E
     suspend fun put(item: C): PutResult<E>
 
-    data class PutResult<E : DomainEntity>(val entity: E, val created: Boolean)
+    data class PutResult<out E : DomainEntity>(val entity: E, val created: Boolean)
 }

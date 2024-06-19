@@ -1,5 +1,25 @@
+/*
+ *   Lab - SourceGrade.org
+ *   Copyright (C) 2019-2024 Contributors
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.sourcegrade.lab.hub.db
 
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
@@ -8,6 +28,7 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.sourcegrade.lab.hub.db.Users.clientDefault
 import org.sourcegrade.lab.hub.domain.Assignment
 import org.sourcegrade.lab.hub.domain.MutableRepository
 import org.sourcegrade.lab.hub.domain.Repository
@@ -15,7 +36,7 @@ import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
 import java.util.UUID
 
 internal object Assignments : UUIDTable("sgl_assignments") {
-    val createdUtc = timestamp("createdUtc")
+    val createdUtc = timestamp("createdUtc").clientDefault { Clock.System.now() }
     val courseId = reference("course_id", Courses)
     val submissionGroupCategory = reference("submission_group_category", SubmissionGroupCategories.id)
 
@@ -24,6 +45,7 @@ internal object Assignments : UUIDTable("sgl_assignments") {
     val submissionDeadline = timestamp("submissionDeadline")
 }
 
+@GraphQLIgnore
 internal class DBAssignment(id: EntityID<UUID>) : UUIDEntity(id), Assignment {
     override val uuid: UUID = id.value
     override val createdUtc: Instant by Assignments.createdUtc
@@ -41,8 +63,9 @@ internal class DBAssignment(id: EntityID<UUID>) : UUIDEntity(id), Assignment {
 }
 
 internal class DBAssignmentRepository : MutableAssignmentRepository, Repository<Assignment> by UUIDEntityClassRepository(DBAssignment) {
-    override suspend fun findByCourse(courseId: UUID): SizedIterable<Assignment> =
-        newSuspendedTransaction { DBAssignment.find { Assignments.courseId eq courseId } }
+    override suspend fun findByCourse(courseId: UUID): SizedIterable<Assignment> = newSuspendedTransaction {
+        DBAssignment.find { Assignments.courseId eq courseId }
+    }
 
     override suspend fun create(item: Assignment.CreateDto): Assignment = newSuspendedTransaction {
         DBAssignment.new {

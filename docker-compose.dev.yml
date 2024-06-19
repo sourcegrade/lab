@@ -11,7 +11,7 @@ services:
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=lab
+      - POSTGRES_DB=sgl
     ports:
       - "5432:5432"
 
