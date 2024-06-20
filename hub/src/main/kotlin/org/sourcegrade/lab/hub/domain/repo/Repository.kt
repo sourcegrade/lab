@@ -16,11 +16,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.sourcegrade.lab.hub.domain.Relation
+import java.util.UUID
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface Repository<E : DomainEntity> {
+    suspend fun findById(id: UUID, relations: List<Relation<E>> = emptyList()): E?
+    suspend fun deleteById(id: UUID): Boolean
+    suspend fun exists(id: UUID): Boolean
+    suspend fun countAll(): Long
 }

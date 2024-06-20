@@ -21,6 +21,8 @@ package org.sourcegrade.lab.hub.db
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import org.sourcegrade.lab.hub.db.assignment.DBAssignmentRepository
+import org.sourcegrade.lab.hub.db.user.DBUserRepository
 import org.sourcegrade.lab.hub.domain.repo.AssignmentRepository
 import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
 import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository

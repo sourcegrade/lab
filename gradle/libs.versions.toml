@@ -44,6 +44,8 @@ protobuf-kotlin = "com.google.protobuf:protobuf-kotlin:4.26.1"
 
 bcrypt = "org.mindrot:jbcrypt:0.4"
 
+shiro = "org.apache.shiro:shiro-core:2.0.1"
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

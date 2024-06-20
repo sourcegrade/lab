@@ -20,6 +20,7 @@ package org.sourcegrade.lab.hub.graphql
 
 import graphql.GraphQLContext
 import graphql.execution.CoercedVariables
+import graphql.language.IntValue
 import graphql.language.StringValue
 import graphql.language.Value
 import graphql.schema.Coercing
@@ -80,8 +81,15 @@ internal object Scalars {
         .name("Long")
         .coercing(
             object : Coercing<Long, String> {
+                override fun parseLiteral(
+                    input: Value<*>,
+                    variables: CoercedVariables,
+                    graphQLContext: GraphQLContext,
+                    locale: Locale,
+                ): Long = (input as IntValue).value.toLong()
+
                 override fun parseValue(input: Any, graphQLContext: GraphQLContext, locale: Locale): Long =
-                    input.toString().toLong()
+                    (input as Int).toLong()
 
                 override fun serialize(dataFetcherResult: Any, graphQLContext: GraphQLContext, locale: Locale): String =
                     dataFetcherResult.toString()
@@ -105,7 +113,7 @@ internal object Scalars {
         .coercing(
             object : Coercing<SizedIterable<*>, List<*>> {
                 override fun serialize(dataFetcherResult: Any, graphQLContext: GraphQLContext, locale: Locale): List<*> {
-                    val result =  transaction { (dataFetcherResult as SizedIterable<*>).toList() }
+                    val result = transaction { (dataFetcherResult as SizedIterable<*>).toList() }
                     println("SizedIterable serialized to $result")
                     return result
                 }

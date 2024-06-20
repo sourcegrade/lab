@@ -20,6 +20,7 @@ package org.sourcegrade.lab.hub.domain
 
 import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlin.reflect.KProperty1
 
 interface DomainEntity {
     val uuid: UUID
@@ -31,3 +32,5 @@ interface Creates<out E : DomainEntity>
 interface IdempotentCreates<out E : DomainEntity> : Creates<E> {
     val uuid: UUID
 }
+
+typealias Relation<T> = KProperty1<T, Any?>

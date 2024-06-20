@@ -21,8 +21,6 @@ package org.sourcegrade.lab.hub.domain.repo
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.jetbrains.exposed.sql.SizedIterable
-import org.sourcegrade.lab.hub.domain.MutableRepository
-import org.sourcegrade.lab.hub.domain.Repository
 import org.sourcegrade.lab.hub.domain.Term
 import org.sourcegrade.lab.hub.domain.TermScoped
 import org.sourcegrade.lab.hub.domain.UserMembership

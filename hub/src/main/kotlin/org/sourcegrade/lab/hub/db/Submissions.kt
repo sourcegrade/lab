@@ -28,7 +28,10 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
-import org.sourcegrade.lab.hub.db.Users.clientDefault
+import org.sourcegrade.lab.hub.db.assignment.Assignments
+import org.sourcegrade.lab.hub.db.assignment.DBAssignment
+import org.sourcegrade.lab.hub.db.user.DBUser
+import org.sourcegrade.lab.hub.db.user.Users
 import org.sourcegrade.lab.hub.domain.Submission
 import java.util.UUID
 

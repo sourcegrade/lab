@@ -16,11 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.db
+package org.sourcegrade.lab.hub.db.assignment
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
@@ -28,11 +29,23 @@ import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.lab.hub.db.Users.clientDefault
+import org.sourcegrade.lab.hub.db.ConversionBody
+import org.sourcegrade.lab.hub.db.Courses
+import org.sourcegrade.lab.hub.db.DBCourse
+import org.sourcegrade.lab.hub.db.DBSubmissionGroupCategory
+import org.sourcegrade.lab.hub.db.EntityConversionContext
+import org.sourcegrade.lab.hub.db.EntityConversionContextImpl
+import org.sourcegrade.lab.hub.db.SubmissionGroupCategories
+import org.sourcegrade.lab.hub.db.UUIDEntityClassRepository
+import org.sourcegrade.lab.hub.db.findByIdNotNull
 import org.sourcegrade.lab.hub.domain.Assignment
-import org.sourcegrade.lab.hub.domain.MutableRepository
-import org.sourcegrade.lab.hub.domain.Repository
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
+import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.MutableAssignment
+import org.sourcegrade.lab.hub.domain.SizedIterableCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
+import org.sourcegrade.lab.hub.domain.repo.MutableRepository
+import org.sourcegrade.lab.hub.domain.repo.Repository
 import java.util.UUID
 
 internal object Assignments : UUIDTable("sgl_assignments") {
@@ -46,7 +59,7 @@ internal object Assignments : UUIDTable("sgl_assignments") {
 }
 
 @GraphQLIgnore
-internal class DBAssignment(id: EntityID<UUID>) : UUIDEntity(id), Assignment {
+internal class DBAssignment(id: EntityID<UUID>) : UUIDEntity(id), MutableAssignment {
     override val uuid: UUID = id.value
     override val createdUtc: Instant by Assignments.createdUtc
 
@@ -57,15 +70,22 @@ internal class DBAssignment(id: EntityID<UUID>) : UUIDEntity(id), Assignment {
     override var description: String by Assignments.description
     override var submissionDeadlineUtc: Instant by Assignments.submissionDeadline
 
-    override suspend fun setSubmissionGroupCategoryId(id: UUID): Boolean = ::course.mutateReference(id)
+//    override suspend fun setSubmissionGroupCategoryId(id: UUID): Boolean = ::course.mutateReference(id)
 
     companion object : EntityClass<UUID, DBAssignment>(Assignments)
 }
 
-internal class DBAssignmentRepository : MutableAssignmentRepository, Repository<Assignment> by UUIDEntityClassRepository(DBAssignment) {
+private val conversionContext = EntityConversionContextImpl<Assignment, DBAssignment>(AssignmentSnapshot::of)
+
+internal class DBAssignmentRepository(
+    private val logger: Logger,
+) : MutableAssignmentRepository, Repository<Assignment> by UUIDEntityClassRepository(DBAssignment, conversionContext),
+    EntityConversionContext<Assignment, DBAssignment> by conversionContext {
     override suspend fun findByCourse(courseId: UUID): SizedIterable<Assignment> = newSuspendedTransaction {
         DBAssignment.find { Assignments.courseId eq courseId }
     }
+
+    override suspend fun findAll(): AssignmentCollection = DBAssignmentCollection { DBAssignment.all().bindIterable() }
 
     override suspend fun create(item: Assignment.CreateDto): Assignment = newSuspendedTransaction {
         DBAssignment.new {
@@ -81,3 +101,11 @@ internal class DBAssignmentRepository : MutableAssignmentRepository, Repository<
         TODO("Not yet implemented")
     }
 }
+
+internal class DBAssignmentCollection(
+    private val limit: Pair<Int, Long>? = null,
+    private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    private val body: ConversionBody<Assignment, DBAssignment, SizedIterable<Assignment>>,
+) : AssignmentCollection,
+    DomainEntityCollection<Assignment, AssignmentCollection>
+    by SizedIterableCollection(Assignments, conversionContext, ::DBAssignmentCollection, limit, orders, body)

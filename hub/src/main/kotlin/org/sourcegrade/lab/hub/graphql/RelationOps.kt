@@ -16,15 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain
+package org.sourcegrade.lab.hub.graphql
 
-import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import java.util.UUID
+import graphql.schema.DataFetchingEnvironment
+import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.sourcegrade.lab.hub.domain.Relation
+import kotlin.reflect.KProperty1
 
-@GraphQLIgnore
-interface Repository<out E : DomainEntity> {
-    suspend fun findById(id: UUID): E? // TODO: Eager loading
-    suspend fun deleteById(id: UUID): Boolean
-    suspend fun exists(id: UUID): Boolean
-    suspend fun countAll(): Long
-}
+internal inline fun <reified E : DomainEntity> DataFetchingEnvironment.extractRelations(): List<Relation<E>> =
+    selectionSet.immediateFields.map { field -> coerceRelation<E>(field.name) }
+
+internal inline fun <reified E : DomainEntity> coerceRelation(relation: String): Relation<E> =
+    E::class.members.find { it.name == relation }?.let {
+        @Suppress("UNCHECKED_CAST")
+        it as KProperty1<E, Any?>
+    } ?: error("No relation $relation found on ${E::class.simpleName}, available relations are: ${E::class.members.map { it.name }}")

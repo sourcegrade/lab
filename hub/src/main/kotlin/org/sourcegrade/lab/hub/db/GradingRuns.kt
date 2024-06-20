@@ -27,7 +27,6 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.kotlin.datetime.duration
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
-import org.sourcegrade.lab.hub.db.Users.clientDefault
 import org.sourcegrade.lab.hub.domain.GradingRun
 import java.util.UUID
 import kotlin.time.Duration

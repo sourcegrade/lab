@@ -19,8 +19,6 @@
 package org.sourcegrade.lab.hub.domain.repo
 
 import org.jetbrains.exposed.sql.SizedIterable
-import org.sourcegrade.lab.hub.domain.MutableRepository
-import org.sourcegrade.lab.hub.domain.Repository
 import org.sourcegrade.lab.hub.domain.Submission
 import java.util.UUID
 

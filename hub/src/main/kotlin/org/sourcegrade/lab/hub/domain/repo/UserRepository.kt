@@ -19,16 +19,16 @@
 package org.sourcegrade.lab.hub.domain.repo
 
 import org.jetbrains.exposed.sql.SizedIterable
-import org.sourcegrade.lab.hub.domain.MutableRepository
-import org.sourcegrade.lab.hub.domain.Repository
+import org.sourcegrade.lab.hub.domain.Relation
 import org.sourcegrade.lab.hub.domain.User
+import org.sourcegrade.lab.hub.domain.UserCollection
 
-interface UserRepository : Repository<User> {
-    suspend fun findByUsername(username: String): User?
+interface UserRepository : CollectionRepository<User, UserCollection> {
+    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
 
-    suspend fun findAllByUsername(partialUsername: String): SizedIterable<User.Snapshot>
+    suspend fun findAllByUsername(partialUsername: String, relations: List<Relation<User>> = emptyList()): SizedIterable<User>
 
-    suspend fun findByEmail(email: String): User?
+    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
 }
 
 interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>

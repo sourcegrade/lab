@@ -43,7 +43,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
-import org.sourcegrade.lab.hub.db.Assignments
+import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.CourseMemberships
 import org.sourcegrade.lab.hub.db.Courses
 import org.sourcegrade.lab.hub.db.Criteria
@@ -56,7 +56,7 @@ import org.sourcegrade.lab.hub.db.SubmissionGroupCategories
 import org.sourcegrade.lab.hub.db.SubmissionGroupMemberships
 import org.sourcegrade.lab.hub.db.Submissions
 import org.sourcegrade.lab.hub.db.Terms
-import org.sourcegrade.lab.hub.db.Users
+import org.sourcegrade.lab.hub.db.user.Users
 import org.sourcegrade.lab.hub.graphql.Scalars
 import org.sourcegrade.lab.hub.graphql.UserMutations
 import org.sourcegrade.lab.hub.graphql.UserQueries
@@ -118,8 +118,6 @@ fun Application.module() {
         allowHeader(HttpHeaders.ContentType)
         anyHost()
     }
-
-
 
     install(GraphQL) {
         schema {

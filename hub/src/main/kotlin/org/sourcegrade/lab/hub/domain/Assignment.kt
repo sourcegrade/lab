@@ -18,18 +18,18 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import graphql.schema.DataFetchingEnvironment
 import kotlinx.datetime.Instant
+import org.sourcegrade.lab.hub.graphql.extractRelations
 import java.util.UUID
 
 interface Assignment : DomainEntity {
     val course: Course
     val submissionGroupCategory: SubmissionGroupCategory
 
-    var name: String
-    var description: String
-    var submissionDeadlineUtc: Instant
-
-    suspend fun setSubmissionGroupCategoryId(id: UUID): Boolean
+    val name: String
+    val description: String
+    val submissionDeadlineUtc: Instant
 
     data class CreateDto(
         val courseId: UUID,
@@ -38,4 +38,19 @@ interface Assignment : DomainEntity {
         val description: String,
         val submissionDeadlineUtc: Instant,
     ) : Creates<Assignment>
+}
+
+interface MutableAssignment : Assignment {
+    override var name: String
+    override var description: String
+    override var submissionDeadlineUtc: Instant
+}
+
+interface AssignmentCollection : DomainEntityCollection<Assignment, AssignmentCollection> {
+    override fun limit(num: Int, offset: Long): AssignmentCollection
+    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): AssignmentCollection
+    override suspend fun count(): Long
+    override suspend fun empty(): Boolean
+
+    suspend fun list(dfe: DataFetchingEnvironment): List<Assignment> = list(dfe.extractRelations())
 }

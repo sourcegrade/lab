@@ -16,12 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain
+package org.sourcegrade.lab.hub.domain.repo
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import org.sourcegrade.lab.hub.domain.Creates
+import org.sourcegrade.lab.hub.domain.DomainEntity
 
 @GraphQLIgnore
-interface MutableRepository<out E : DomainEntity, C : Creates<E>> : Repository<E> {
+interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
     suspend fun create(item: C): E
     suspend fun put(item: C): PutResult<E>
 

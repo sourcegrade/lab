@@ -19,6 +19,12 @@
 package org.sourcegrade.lab.hub.domain
 
 import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
+import org.jetbrains.exposed.sql.and
+import org.sourcegrade.lab.hub.db.Terms
 import java.util.UUID
 
 interface Term : DomainEntity {
@@ -33,9 +39,13 @@ interface Term : DomainEntity {
             init {
                 require(name.isNotBlank())
             }
-        }
-        data class ById(val id: UUID) : Matcher
 
+            override fun toString(): String = "ByName($name)"
+        }
+
+        data class ById(val id: UUID) : Matcher {
+            override fun toString(): String = "ById($id)"
+        }
 
         companion object {
             fun fromString(value: String): Matcher = when (value) {
@@ -53,7 +63,15 @@ interface Term : DomainEntity {
                     } ?: throw IllegalArgumentException("Invalid matcher: $value")
                 }
             }
+
             private val regex = "(?<type>[a-zA-Z])\\((?<param>.+\\))".toRegex()
         }
     }
+}
+
+internal fun Query.termPredicate(term: Term.Matcher, now: Instant): Query = when (term) {
+    is Term.Matcher.All -> this
+    is Term.Matcher.Current -> where { (Terms.start lessEq now) and (Terms.end greaterEq now) }
+    is Term.Matcher.ByName -> where { Terms.name.eq(term.name) }
+    is Term.Matcher.ById -> where { Terms.id.eq(term.id) }
 }

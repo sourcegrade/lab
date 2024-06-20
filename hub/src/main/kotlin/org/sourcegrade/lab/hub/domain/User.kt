@@ -18,87 +18,33 @@
 
 package org.sourcegrade.lab.hub.domain
 
-import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import org.jetbrains.exposed.sql.SizedIterable
-import java.util.UUID
+import graphql.schema.DataFetchingEnvironment
+import org.sourcegrade.lab.hub.graphql.extractRelations
 
 interface User : DomainEntity {
-    var email: String
-    var username: String
-    var displayname: String
-
-    // TODO: Split into UserActions
-    // TODO: Get from UserMembershipRepository
-    @GraphQLIgnore
-    suspend fun courseMemberships(
-        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
-        term: Term.Matcher = Term.Matcher.Current,
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<UserMembership<Course>>
-
-    suspend fun courseMemberships(
-        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
-        term: String = Term.Matcher.Current.toString(),
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<UserMembership<Course>> = courseMemberships(status, Term.Matcher.fromString(term), now)
-
-    @GraphQLIgnore
-    suspend fun submissionGroupMemberships(
-        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
-        term: Term.Matcher = Term.Matcher.Current,
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<UserMembership<SubmissionGroup>>
-
-    suspend fun submissionGroupMemberships(
-        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
-        term: String = Term.Matcher.Current.toString(),
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<UserMembership<SubmissionGroup>> = submissionGroupMemberships(status, Term.Matcher.fromString(term), now)
-
-//    suspend fun assignmentParticipations(
-//        status: AssignmentParticipation.Status = AssignmentParticipation.Status.OPEN,
-//        term: Term.Matcher = Term.Matcher.Current,
-//        now: Instant = Clock.System.now(),
-//    ): SizedIterable<AssignmentParticipation>
-
-    @GraphQLIgnore
-    suspend fun assignments(
-        term: Term.Matcher = Term.Matcher.Current,
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<Assignment>
-
-    suspend fun assignments(
-        term: String = Term.Matcher.Current.toString(),
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<Assignment> = assignments(Term.Matcher.fromString(term), now)
-
-    @GraphQLIgnore
-    suspend fun submissions(
-        status: Submission.SubmissionStatus = Submission.SubmissionStatus.ALL,
-        term: Term.Matcher = Term.Matcher.Current,
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<Submission>
-
-    suspend fun submissions(
-        status: Submission.SubmissionStatus = Submission.SubmissionStatus.ALL,
-        term: String = Term.Matcher.Current.toString(),
-        now: Instant = Clock.System.now(),
-    ): SizedIterable<Submission> = submissions(status, Term.Matcher.fromString(term), now)
+    val email: String
+    val username: String
+    val displayname: String
 
     data class CreateDto(
         val email: String,
         val username: String,
         val displayname: String = username,
     ) : Creates<User>
+}
 
-    data class Snapshot(
-        val uuid: UUID,
-        val email: String,
-        val username: String,
-        val displayname: String,
-    )
+interface MutableUser : User {
+    override var email: String
+    override var username: String
+    override var displayname: String
+}
 
-    fun toSnapshot(): Snapshot = Snapshot(uuid, email, username, displayname)
+interface UserCollection : DomainEntityCollection<User, UserCollection> {
+    override fun limit(num: Int, offset: Long): UserCollection
+    override fun page(page: Int, pageSize: Int): UserCollection
+    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): UserCollection
+    override suspend fun count(): Long
+    override suspend fun empty(): Boolean
+
+    suspend fun list(dfe: DataFetchingEnvironment): List<User> = list(dfe.extractRelations())
 }

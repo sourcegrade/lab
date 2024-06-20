@@ -18,24 +18,21 @@
 
 package org.sourcegrade.lab.hub.db
 
-import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
+import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.DomainEntity
-import org.sourcegrade.lab.hub.domain.Repository
+import org.sourcegrade.lab.hub.domain.Relation
+import org.sourcegrade.lab.hub.domain.repo.Repository
 import java.util.UUID
 
-internal class UUIDEntityClassRepository<E>(private val entityClass: EntityClass<UUID, E>) : Repository<E>
-    where E : Entity<UUID>, E : DomainEntity {
+internal class UUIDEntityClassRepository<E : DomainEntity, N : UUIDEntity>(
+    private val entityClass: EntityClass<UUID, N>,
+    private val conversionContext: EntityConversionContext<E, N>,
+) : Repository<E>, EntityConversionContext<E, N> by conversionContext {
 
-    override suspend fun findById(id: UUID): E? =
-        newSuspendedTransaction { entityClass.findById(id) }
-
-    override suspend fun exists(id: UUID): Boolean =
-        newSuspendedTransaction { entityClass.findById(id) != null }
-
-    override suspend fun countAll(): Long =
-        newSuspendedTransaction { entityClass.all().count() }
+    override suspend fun findById(id: UUID, relations: List<Relation<E>>): E? =
+        entityConversion(relations) { entityClass.findById(id).bindNullable() }
 
     override suspend fun deleteById(id: UUID): Boolean =
         newSuspendedTransaction {
@@ -43,4 +40,10 @@ internal class UUIDEntityClassRepository<E>(private val entityClass: EntityClass
                 ?.let { it.delete(); true }
                 ?: false
         }
+
+    override suspend fun exists(id: UUID): Boolean =
+        newSuspendedTransaction { entityClass.findById(id) != null }
+
+    override suspend fun countAll(): Long =
+        newSuspendedTransaction { entityClass.all().count() }
 }

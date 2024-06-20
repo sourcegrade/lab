@@ -16,11 +16,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.db.assignment
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.sourcegrade.lab.hub.domain.Assignment
+import java.util.UUID
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+suspend fun Assignment.setSubmissionGroupCategoryId(id: UUID): Boolean {
+    TODO("Not yet implemented")
 }

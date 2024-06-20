@@ -20,11 +20,11 @@ package org.sourcegrade.lab.hub.domain.repo
 
 import org.jetbrains.exposed.sql.SizedIterable
 import org.sourcegrade.lab.hub.domain.Assignment
-import org.sourcegrade.lab.hub.domain.MutableRepository
-import org.sourcegrade.lab.hub.domain.Repository
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
 import java.util.UUID
+import kotlin.reflect.KProperty1
 
-interface AssignmentRepository : Repository<Assignment> {
+interface AssignmentRepository : CollectionRepository<Assignment, AssignmentCollection> {
     suspend fun findByCourse(courseId: UUID): SizedIterable<Assignment>
 }
 
