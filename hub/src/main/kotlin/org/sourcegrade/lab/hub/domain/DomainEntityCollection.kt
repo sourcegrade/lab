@@ -63,17 +63,21 @@ internal class SizedIterableCollection<E : DomainEntity, N : UUIDEntity, C : Dom
     private val orders: List<DomainEntityCollection.FieldOrdering>,
     private val body: ConversionBody<E, N, SizedIterable<E>>,
 ) : DomainEntityCollection<E, C>, EntityConversionContext<E, N> by conversionContext {
-    override fun limit(num: Int, offset: Long): C = ctor(limit?.let { (n, o) -> minOf(num, n) to offset + o }, orders, body)
+    override fun limit(num: Int, offset: Long): C =
+        ctor(limit?.let { (n, o) -> minOf(num, n) to offset + o } ?: (num to offset), orders, body)
 
     // Note that this is not *technically* correct because nested orderings are not supported
     // But its close enough, because it would only be noticeable in an order -> limit -> order scenario
-    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): C = ctor(limit, orders, body)
+    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): C =
+        ctor(limit, orders, body)
 
     override suspend fun list(relations: List<Relation<E>>): List<E> =
-        entityConversion(relations, body)
-            .let { if (limit != null) it.limit(limit.first, limit.second) else it }
-            .let { if (orders.isNotEmpty()) it.orderBy(table, orders) else it }
-            .toList()
+        entityConversion(relations) {
+            body().result
+                .let { if (limit != null) it.limit(limit.first, limit.second) else it }
+                .let { if (orders.isNotEmpty()) it.orderBy(table, orders) else it }
+                .toList().bindT()
+        }
 
     override suspend fun count(): Long = entityConversion { body().result.count().bindT() }
 
