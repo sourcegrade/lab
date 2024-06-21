@@ -16,11 +16,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.domain.Assignment
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
+import java.util.UUID
+import kotlin.reflect.KProperty1
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface AssignmentRepository : CollectionRepository<Assignment, AssignmentCollection> {
+    suspend fun findByCourse(courseId: UUID): SizedIterable<Assignment>
 }
+
+interface MutableAssignmentRepository : AssignmentRepository, MutableRepository<Assignment, Assignment.CreateDto>

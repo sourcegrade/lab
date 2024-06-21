@@ -16,11 +16,28 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.SizedIterable
+import java.util.UUID
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface Submission : DomainEntity {
+    val assignment: Assignment
+    val submitter: User
+    val group: SubmissionGroup
+    val uploaded: Instant
+    val gradingRuns: SizedIterable<GradingRun>
+    val lastGradingRun: GradingRun?
+
+    enum class SubmissionStatus {
+        ALL,
+        PENDING_GRADE,
+        GRADED,
+    }
+
+    data class CreateDto(
+        val assignmentId: UUID,
+        val bytes: ByteArray,
+    ) : Creates<Submission>
 }

@@ -16,11 +16,25 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.db
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
+import org.sourcegrade.lab.hub.db.assignment.DBAssignmentRepository
+import org.sourcegrade.lab.hub.db.user.DBUserRepository
+import org.sourcegrade.lab.hub.domain.repo.AssignmentRepository
+import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
+import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
+import org.sourcegrade.lab.hub.domain.repo.UserRepository
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+val DBModule = module {
+    singleOf(::DBAssignmentRepository) {
+        bind<AssignmentRepository>()
+        bind<MutableAssignmentRepository>()
+    }
+    singleOf(::DBUserRepository) {
+        bind<UserRepository>()
+        bind<MutableUserRepository>()
+    }
 }

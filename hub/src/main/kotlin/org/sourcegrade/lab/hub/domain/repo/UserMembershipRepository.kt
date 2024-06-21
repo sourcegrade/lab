@@ -16,11 +16,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.domain.Term
+import org.sourcegrade.lab.hub.domain.TermScoped
+import org.sourcegrade.lab.hub.domain.UserMembership
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface UserMembershipRepository<T : TermScoped> : Repository<UserMembership<T>> {
+    suspend fun find(
+        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
+        term: Term.Matcher = Term.Matcher.Current,
+        now: Instant = Clock.System.now(),
+    ): SizedIterable<T>
 }
+
+interface MutableUserMembershipRepository<T : TermScoped> : UserMembershipRepository<T>,
+    MutableRepository<UserMembership<T>, UserMembership.CreateDto<T>>

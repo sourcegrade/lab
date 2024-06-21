@@ -16,11 +16,18 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.graphql
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import graphql.schema.DataFetchingEnvironment
+import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.sourcegrade.lab.hub.domain.Relation
+import kotlin.reflect.KProperty1
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
-}
+internal inline fun <reified E : DomainEntity> DataFetchingEnvironment.extractRelations(): List<Relation<E>> =
+    selectionSet.immediateFields.map { field -> coerceRelation<E>(field.name) }
+
+internal inline fun <reified E : DomainEntity> coerceRelation(relation: String): Relation<E> =
+    E::class.members.find { it.name == relation }?.let {
+        @Suppress("UNCHECKED_CAST")
+        it as KProperty1<E, Any?>
+    } ?: error("No relation $relation found on ${E::class.simpleName}, available relations are: ${E::class.members.map { it.name }}")

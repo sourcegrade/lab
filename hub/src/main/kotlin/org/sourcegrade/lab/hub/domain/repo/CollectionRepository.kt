@@ -16,11 +16,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.sourcegrade.lab.hub.domain.DomainEntityCollection
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface CollectionRepository<E : DomainEntity, C : DomainEntityCollection<E, C>> : Repository<E> {
+    suspend fun findAll(): C
 }

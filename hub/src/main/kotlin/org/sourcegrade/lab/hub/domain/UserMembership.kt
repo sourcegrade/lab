@@ -16,11 +16,27 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import kotlinx.datetime.Instant
+import java.util.UUID
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface UserMembership<T : TermScoped> : DomainEntity {
+    val startUtc: Instant
+    val endUtc: Instant?
+    val user: User
+    val target: T
+
+    data class CreateDto<T : TermScoped>(
+        val userId: UUID,
+        val targetId: UUID,
+        val startUtc: Instant? = null, // or else now
+    ) : Creates<UserMembership<T>>
+
+    enum class UserMembershipStatus {
+        ALL,
+        FUTURE,
+        CURRENT,
+        PAST,
+    }
 }

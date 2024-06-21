@@ -16,11 +16,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.domain.Submission
+import java.util.UUID
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface SubmissionRepository : Repository<Submission> {
+    suspend fun findByAssignment(assignmentId: UUID): SizedIterable<Submission>
+    suspend fun findByUserAndAssignment(userId: UUID, assignmentId: UUID): SizedIterable<Submission>
 }
+
+interface MutableSubmissionRepository : SubmissionRepository, MutableRepository<Submission, Submission.CreateDto>

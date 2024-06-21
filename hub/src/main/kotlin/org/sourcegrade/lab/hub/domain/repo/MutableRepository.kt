@@ -16,11 +16,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import org.sourcegrade.lab.hub.domain.Creates
+import org.sourcegrade.lab.hub.domain.DomainEntity
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+@GraphQLIgnore
+interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
+    suspend fun create(item: C): E
+    suspend fun put(item: C): PutResult<E>
+
+    data class PutResult<out E : DomainEntity>(val entity: E, val created: Boolean)
 }

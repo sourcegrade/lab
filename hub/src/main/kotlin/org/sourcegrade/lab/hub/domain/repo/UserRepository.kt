@@ -16,11 +16,19 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain.repo
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.domain.Relation
+import org.sourcegrade.lab.hub.domain.User
+import org.sourcegrade.lab.hub.domain.UserCollection
 
-fun main() {
-    embeddedServer(Netty) { module() }.start(wait = true)
+interface UserRepository : CollectionRepository<User, UserCollection> {
+    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
+
+    suspend fun findAllByUsername(partialUsername: String, relations: List<Relation<User>> = emptyList()): SizedIterable<User>
+
+    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
 }
+
+interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>
