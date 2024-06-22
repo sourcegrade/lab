@@ -27,16 +27,13 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.Relation
 
-interface EntityConversionContext<E, N : UUIDEntity> {
+interface EntityConversionContext<E : DomainEntity, N : UUIDEntity> {
 
     fun createSnapshot(entity: N, relations: Set<String>): E
 
     fun convertRelation(relation: Relation<E>): Relation<N>
 
-    suspend fun <T> entityConversion(
-        relations: List<Relation<E>> = emptyList(),
-        statement: ConversionBody<E, N, T>,
-    ): T
+    suspend fun <T> entityConversion(relations: List<Relation<E>> = emptyList(), statement: ConversionBody<E, N, T>): T
 }
 
 typealias ConversionBody<E, N, T> = suspend EntityConversion<E, N>.() -> EntityConversion.BindResult<T>
@@ -61,7 +58,10 @@ class EntityConversionContextImpl<E : DomainEntity, N : UUIDEntity>(
     }
 }
 
-class EntityConversion<E, N : UUIDEntity>(
+@DslMarker
+annotation class EntityConversionDsl
+
+class EntityConversion<E : DomainEntity, N : UUIDEntity>(
     private val context: EntityConversionContext<E, N>,
     relations: List<Relation<E>>,
 ) {
@@ -70,15 +70,19 @@ class EntityConversion<E, N : UUIDEntity>(
     private val relationArray: Array<Relation<N>> = relations.map { context.convertRelation(it) }.toTypedArray()
     private fun N.createSnapshot(): E = context.createSnapshot(this, relationSet)
 
-    fun N.bind(): BindResult<E> =
-        BindResult((if (relationArray.isNotEmpty()) load(*relationArray) else this).createSnapshot())
-
+    @EntityConversionDsl
     fun N?.bindNullable(): BindResult<E?> =
         this?.bind() ?: BindResult(null)
 
+    @EntityConversionDsl
+    fun N.bind(): BindResult<E> =
+        BindResult((if (relationArray.isNotEmpty()) load(*relationArray) else this).createSnapshot())
+
+    @EntityConversionDsl
     fun SizedIterable<N>.bindIterable(): BindResult<SizedIterable<E>> =
         BindResult((if (relationArray.isNotEmpty()) with(*relationArray) else this).mapLazy { it.createSnapshot() })
 
+    @EntityConversionDsl
     fun <T> T.bindT(): BindResult<T> = BindResult(this)
 
     class BindResult<out T>(val result: T)

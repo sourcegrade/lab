@@ -28,7 +28,7 @@ import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.CourseMemberships
-import org.sourcegrade.lab.hub.db.Courses
+import org.sourcegrade.lab.hub.db.course.Courses
 import org.sourcegrade.lab.hub.db.assignment.DBAssignment
 import org.sourcegrade.lab.hub.db.DBCourseMembership
 import org.sourcegrade.lab.hub.db.DBSubmission

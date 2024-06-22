@@ -26,6 +26,8 @@ import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
+import org.sourcegrade.lab.hub.db.course.Courses
+import org.sourcegrade.lab.hub.db.course.DBCourse
 import org.sourcegrade.lab.hub.domain.SubmissionGroupCategory
 import java.util.UUID
 

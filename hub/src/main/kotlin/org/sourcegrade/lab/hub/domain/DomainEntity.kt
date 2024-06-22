@@ -20,6 +20,7 @@ package org.sourcegrade.lab.hub.domain
 
 import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
 
 interface DomainEntity {

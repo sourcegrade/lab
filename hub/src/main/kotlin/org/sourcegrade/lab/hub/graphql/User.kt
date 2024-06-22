@@ -23,9 +23,11 @@ import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.apache.logging.log4j.Logger
+import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
 import org.sourcegrade.lab.hub.domain.repo.UserRepository
+import java.util.UUID
 
 class UserQueries(
     private val logger: Logger,
@@ -39,22 +41,18 @@ class UserQuery(
     private val logger: Logger,
     private val repository: UserRepository,
 ) {
+    suspend fun findAll(): UserCollection = repository.findAll()
+    suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = repository.findById(id, dfe.extractRelations())
+    suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
+    suspend fun exists(id: UUID): Boolean = repository.exists(id)
+    suspend fun countAll(): Long = repository.countAll()
 
-    suspend fun findAll(dfe: DataFetchingEnvironment): UserCollection {
-        val relations = dfe.selectionSet.fields.map { it.name }
-//        logger.info("Relations: $relations")
+    suspend fun findByUsername(dfe: DataFetchingEnvironment, username: String): User? =
+        repository.findByUsername(username, dfe.extractRelations())
 
-
-        dfe.selectionSet.immediateFields
-        return repository.findAll()
+    suspend fun findAllByUsername(dfe: DataFetchingEnvironment, partialUsername: String): UserCollection {
+        return repository.findAllByUsername(partialUsername)
     }
-
-//    suspend fun findById(id: UUID): User? = repository.findById(id)
-
-    //    suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
-//    suspend fun exists(id: UUID): Boolean = repository.exists(id)
-//    suspend fun countAll(): Long = repository.countAll()
-    fun hello1(): String = "Hello, World!"
 }
 
 class UserMutations(

@@ -30,8 +30,8 @@ import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.db.ConversionBody
-import org.sourcegrade.lab.hub.db.Courses
-import org.sourcegrade.lab.hub.db.DBCourse
+import org.sourcegrade.lab.hub.db.course.Courses
+import org.sourcegrade.lab.hub.db.course.DBCourse
 import org.sourcegrade.lab.hub.db.DBSubmissionGroupCategory
 import org.sourcegrade.lab.hub.db.EntityConversionContext
 import org.sourcegrade.lab.hub.db.EntityConversionContextImpl

@@ -16,17 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.db
+package org.sourcegrade.lab.hub.db.course
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.apache.logging.log4j.Logger
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.UUIDTable
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
+import org.sourcegrade.lab.hub.db.DBSubmissionGroupCategory
+import org.sourcegrade.lab.hub.db.DBTerm
+import org.sourcegrade.lab.hub.db.EntityConversionContextImpl
+import org.sourcegrade.lab.hub.db.SubmissionGroupCategories
+import org.sourcegrade.lab.hub.db.Terms
+import org.sourcegrade.lab.hub.db.UUIDEntityClassRepository
 import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.assignment.DBAssignment
 import org.sourcegrade.lab.hub.db.user.DBUser
@@ -34,6 +41,8 @@ import org.sourcegrade.lab.hub.db.user.Users
 import org.sourcegrade.lab.hub.domain.Assignment
 import org.sourcegrade.lab.hub.domain.Course
 import org.sourcegrade.lab.hub.domain.Term
+import org.sourcegrade.lab.hub.domain.repo.MutableCourseRepository
+import org.sourcegrade.lab.hub.domain.repo.Repository
 import java.util.UUID
 
 internal object Courses : UUIDTable("sgl_courses") {
@@ -58,3 +67,10 @@ internal class DBCourse(id: EntityID<UUID>) : UUIDEntity(id), Course {
 
     companion object : EntityClass<UUID, DBCourse>(Courses)
 }
+
+
+//private val conversionContext = EntityConversionContextImpl<Course, DBCourse>()
+
+//internal class DBCourseRepository(
+//    private val logger: Logger,
+//) : MutableCourseRepository, Repository<Course> by UUIDEntityClassRepository(DBAssignment)

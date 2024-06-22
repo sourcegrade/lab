@@ -18,13 +18,38 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import com.expediagroup.graphql.generator.execution.OptionalInput
+import graphql.schema.DataFetchingEnvironment
 import org.jetbrains.exposed.sql.SizedIterable
+import org.sourcegrade.lab.hub.graphql.extractRelations
+import java.util.UUID
 
 interface Course : TermScoped {
     val submissionGroupCategories: SizedIterable<SubmissionGroupCategory>
     val assignments: SizedIterable<Assignment>
     val owner: User
 
-    var name: String
-    var description: String
+    val name: String
+    val description: String
+
+    data class CreateDto(
+        val ownerUUID: UUID,
+        val name: String,
+        val description: OptionalInput<String>,
+    ) : Creates<Course>
+}
+
+interface MutableCourse : Course {
+    override var name: String
+    override var description: String
+}
+
+interface CourseCollection : DomainEntityCollection<Course, CourseCollection> {
+    override fun limit(num: Int, offset: Long): CourseCollection
+    override fun page(page: Int, pageSize: Int): CourseCollection
+    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): CourseCollection
+    override suspend fun count(): Long
+    override suspend fun empty(): Boolean
+
+    suspend fun list(dfe: DataFetchingEnvironment): List<Course> = list(dfe.extractRelations())
 }

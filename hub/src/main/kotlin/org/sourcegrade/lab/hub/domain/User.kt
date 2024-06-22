@@ -18,6 +18,7 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import com.expediagroup.graphql.generator.execution.OptionalInput
 import graphql.schema.DataFetchingEnvironment
 import org.sourcegrade.lab.hub.graphql.extractRelations
 
@@ -29,7 +30,7 @@ interface User : DomainEntity {
     data class CreateDto(
         val email: String,
         val username: String,
-        val displayname: String = username,
+        val displayname: OptionalInput<String> = OptionalInput.Defined(username),
     ) : Creates<User>
 }
 

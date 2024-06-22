@@ -34,6 +34,12 @@ internal class UUIDEntityClassRepository<E : DomainEntity, N : UUIDEntity>(
     override suspend fun findById(id: UUID, relations: List<Relation<E>>): E? =
         entityConversion(relations) { entityClass.findById(id).bindNullable() }
 
+    suspend fun findById2(id: UUID) {
+        entityConversion {
+            entityClass.findById(id).bindNullable()
+        }
+    }
+
     override suspend fun deleteById(id: UUID): Boolean =
         newSuspendedTransaction {
             entityClass.findById(id)

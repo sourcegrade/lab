@@ -18,17 +18,21 @@
 
 package org.sourcegrade.lab.hub.domain.repo
 
+import org.sourcegrade.lab.hub.domain.Course
+import org.sourcegrade.lab.hub.domain.CourseCollection
 import org.sourcegrade.lab.hub.domain.Relation
 import org.sourcegrade.lab.hub.domain.User
-import org.sourcegrade.lab.hub.domain.UserCollection
+import java.util.UUID
 
-interface UserRepository : CollectionRepository<User, UserCollection> {
+interface CourseRepository : CollectionRepository<Course, CourseCollection> {
 
-    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findByName(name: String, relations: List<Relation<User>> = emptyList()): Course?
 
-    suspend fun findAllByUsername(partialUsername: String): UserCollection
+    suspend fun findAllByName(partialName: String): CourseCollection
 
-    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findAllByDescription(partialDescription: String): CourseCollection // TODO: maybe instead CollectionRepo.search?
+
+    suspend fun findAllByOwner(ownerId: UUID): CourseCollection
 }
 
-interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>
+interface MutableCourseRepository : CourseCollection, MutableRepository<Course, Course.CreateDto>

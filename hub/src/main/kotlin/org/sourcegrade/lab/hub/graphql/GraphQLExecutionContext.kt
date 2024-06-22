@@ -16,19 +16,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain.repo
+package org.sourcegrade.lab.hub.graphql
 
-import org.sourcegrade.lab.hub.domain.Relation
-import org.sourcegrade.lab.hub.domain.User
-import org.sourcegrade.lab.hub.domain.UserCollection
+import org.jetbrains.exposed.sql.Transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
-interface UserRepository : CollectionRepository<User, UserCollection> {
+interface GraphQLExecutionContext {
+    fun submitTransaction(transaction: suspend Transaction.() -> Unit)
 
-    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
-
-    suspend fun findAllByUsername(partialUsername: String): UserCollection
-
-    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun execute()
 }
 
-interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>
+class GraphQLExecutionContextImpl : GraphQLExecutionContext {
+
+    private val transactions = mutableListOf<suspend Transaction.() -> Unit>()
+
+    override fun submitTransaction(transaction: suspend Transaction.() -> Unit) {
+        transactions += transaction
+    }
+
+    override suspend fun execute() = newSuspendedTransaction { transactions.forEach { it() } }
+}

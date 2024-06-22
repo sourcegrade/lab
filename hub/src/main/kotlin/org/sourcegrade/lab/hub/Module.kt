@@ -45,7 +45,7 @@ import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.CourseMemberships
-import org.sourcegrade.lab.hub.db.Courses
+import org.sourcegrade.lab.hub.db.course.Courses
 import org.sourcegrade.lab.hub.db.Criteria
 import org.sourcegrade.lab.hub.db.DBModule
 import org.sourcegrade.lab.hub.db.GradedCriteria

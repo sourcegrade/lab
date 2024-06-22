@@ -19,6 +19,7 @@
 package org.sourcegrade.lab.hub.db.user
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import com.expediagroup.graphql.generator.execution.OptionalInput
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.apache.logging.log4j.Logger
@@ -74,10 +75,8 @@ internal class DBUserRepository(
             DBUser.find { Users.username eq username }.firstOrNull().bindNullable()
         }
 
-    override suspend fun findAllByUsername(partialUsername: String, relations: List<Relation<User>>): SizedIterable<User> =
-        entityConversion(relations) {
-            DBUser.find { Users.username like "%$partialUsername%" }.bindIterable()
-        }
+    override suspend fun findAllByUsername(partialUsername: String): UserCollection =
+        DBUserCollection { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
 
     override suspend fun findByEmail(email: String, relations: List<Relation<User>>): User? =
         entityConversion(relations) {
@@ -88,9 +87,11 @@ internal class DBUserRepository(
 
     override suspend fun create(item: User.CreateDto): User = entityConversion(emptyList()) {
         DBUser.new {
-            username = item.username
-            displayname = item.displayname
             email = item.email
+            username = item.username
+            if (item.displayname is OptionalInput.Defined) {
+                displayname = requireNotNull(item.displayname.value) { "displayname" }
+            }
         }.also {
             logger.info("Created new user ${it.uuid} with data $item")
         }.bind()
