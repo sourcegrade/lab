@@ -7,6 +7,13 @@ import { useMemo } from "react";
 import { useTheme } from "@mui/material";
 import Box from "@mui/material/Box";
 import LinearProgress from "@mui/material/LinearProgress";
+import Paper from "@mui/material/Paper";
+import {
+    Chart, Legend,
+    PieSeries,
+    Title,
+} from "@devexpress/dx-react-chart-material-ui";
+import { Animation } from "@devexpress/dx-react-chart";
 import type { Criterion, NumberRange, Rubric, ShowcaseString, TestRun } from "../models/rubric";
 
 function renderShowcaseString(str?: ShowcaseString | null, errorMsg = "No value") {
@@ -136,7 +143,7 @@ export default function RubricView(params: { rubric: Rubric }) {
             });
             return <Box sx={{ width: "100%" }}>
                 {result}
-                <MaterialReactTable table={testRunTable}/>
+                {/*<MaterialReactTable table={testRunTable}/>*/}
             </Box>;
         },
         initialState: {}, //expand all rows by default
@@ -146,8 +153,35 @@ export default function RubricView(params: { rubric: Rubric }) {
     return <Box sx={{ width: "100%" }}>
         <h1>{renderShowcaseString(rubric.name)}</h1>
         <p>{renderShowcaseString(rubric.description)}</p>
-        <p>Erreichte Punkte: {renderNumberRange(rubric.achievedPoints)}/{rubric.possiblePoints.max} ({normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)})% <LinearProgress
-            value={normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)} valueBuffer={normalizePoints(rubric.achievedPoints.max, rubric.possiblePoints)} variant="buffer"/></p>
+        <p>Erreichte Punkte: {renderNumberRange(rubric.achievedPoints)}/{rubric.possiblePoints.max} ({normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)})%
+            {/*<LinearProgress*/}
+            {/*value={normalizePoints(rubric.achievedPoints.min, rubric.possiblePoints)} valueBuffer={normalizePoints(rubric.achievedPoints.max, rubric.possiblePoints)} variant="buffer"/>*/}
+            <Paper>
+                <Chart
+                    data={[
+                        ...(rubric.achievedPoints.min === rubric.achievedPoints.max)
+                            ? [{ argument: "Erreicht", value: rubric.achievedPoints.min }]
+                            : [{ argument: "Garantiert erreichte Punkte", value: rubric.achievedPoints.min }, { argument: "Zusätzlich mögliche Punkte", value: rubric.achievedPoints.max - rubric.achievedPoints.min }],
+                        { argument: "Nicht erreichte Punkte", value: rubric.possiblePoints.max - rubric.achievedPoints.max },
+                    ]}
+                >
+                    <PieSeries
+                        argumentField="argument"
+                        valueField="value"
+                        innerRadius={0.6}
+                    >
+                        {/*<Label visible={true}>*/}
+                        {/*    <Connector visible={true}/>*/}
+                        {/*</Label>*/}
+                    </PieSeries>
+                    <Legend position="bottom"/>
+                    <Title
+                        text="Punkteverteilung"
+                    />
+                    <Animation />
+                </Chart>
+            </Paper>
+        </p>
         <MaterialReactTable table={table}/>
     </Box>;
 }

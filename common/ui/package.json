@@ -9,6 +9,9 @@
     "generate:component": "turbo gen react-component"
   },
   "dependencies": {
+    "@devexpress/dx-react-chart": "^4.0.8",
+    "@devexpress/dx-react-chart-material-ui": "^4.0.8",
+    "@devexpress/dx-react-core": "^4.0.8",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/roboto": "^5.0.8",

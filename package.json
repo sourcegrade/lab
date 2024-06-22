@@ -9,6 +9,9 @@
         "watch": "turbo run watch"
     },
     "dependencies": {
+        "@devexpress/dx-core": "^4.0.8",
+        "@devexpress/dx-react-chart": "^4.0.8",
+        "@devexpress/dx-react-chart-material-ui": "^4.0.8",
         "bootstrap": "^5.3.3",
         "lodash": "^4.17.21",
         "react-bootstrap": "^2.10.2"
