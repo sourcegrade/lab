@@ -24,7 +24,6 @@ import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.mapLazy
 import org.sourcegrade.lab.hub.domain.DomainEntity
-import org.sourcegrade.lab.hub.domain.ExecutionContext
 import org.sourcegrade.lab.hub.domain.Relation
 
 interface EntityConversionContext<E : DomainEntity, N : UUIDEntity> {
@@ -34,7 +33,6 @@ interface EntityConversionContext<E : DomainEntity, N : UUIDEntity> {
     fun convertRelation(relation: Relation<E>): Relation<N>
 
     suspend fun <T> entityConversion(
-        executionContext: ExecutionContext,
         relations: List<Relation<E>> = emptyList(),
         statement: ConversionBody<E, N, T>,
     ): T
@@ -54,12 +52,11 @@ class EntityConversionContextImpl<E : DomainEntity, N : UUIDEntity>(
     }
 
     override suspend fun <T> entityConversion(
-        executionContext: ExecutionContext,
         relations: List<Relation<E>>,
         statement: ConversionBody<E, N, T>,
-    ): T = executionContext.execute {
+    ): T {
         val ec = EntityConversion(context = this, relations)
-        statement(ec).result
+        return statement(ec).result
     }
 }
 

@@ -58,23 +58,22 @@ interface DomainEntityCollection<E : DomainEntity, C : DomainEntityCollection<E,
 internal class SizedIterableCollection<E : DomainEntity, N : UUIDEntity, C : DomainEntityCollection<E, C>>(
     private val table: Table,
     private val conversionContext: EntityConversionContext<E, N>,
-    private val ctor: (ExecutionContext, Pair<Int, Long>?, List<DomainEntityCollection.FieldOrdering>, ConversionBody<E, N, SizedIterable<E>>) -> C,
-    private val context: ExecutionContext,
+    private val ctor: (Pair<Int, Long>?, List<DomainEntityCollection.FieldOrdering>, ConversionBody<E, N, SizedIterable<E>>) -> C,
     private val limit: Pair<Int, Long>?,
     private val orders: List<DomainEntityCollection.FieldOrdering>,
     private val body: ConversionBody<E, N, SizedIterable<E>>,
 ) : DomainEntityCollection<E, C>, EntityConversionContext<E, N> by conversionContext {
     override fun limit(num: Int, offset: Long): C =
-        ctor(context, limit?.let { (n, o) -> minOf(num, n) to offset + o } ?: (num to offset), orders, body)
+        ctor(limit?.let { (n, o) -> minOf(num, n) to offset + o } ?: (num to offset), orders, body)
 
     // Note that this is not *technically* correct because nested orderings are not supported
     // But its close enough, because it would only be noticeable in an order -> limit -> order scenario
     override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): C =
-        ctor(context, limit, orders, body)
+        ctor(limit, orders, body)
 
     override suspend fun list(relations: List<Relation<E>>): List<E> {
         println("list start: ${Thread.currentThread().name}")
-        val result = entityConversion(context, relations) {
+        val result = entityConversion {
             body().result
                 .let { if (limit != null) it.limit(limit.first, limit.second) else it }
                 .let { if (orders.isNotEmpty()) it.orderBy(table, orders) else it }
@@ -84,9 +83,9 @@ internal class SizedIterableCollection<E : DomainEntity, N : UUIDEntity, C : Dom
         return result
     }
 
-    override suspend fun count(): Long = entityConversion(context) { body().result.count().bindT() }
+    override suspend fun count(): Long = entityConversion { body().result.count().bindT() }
 
-    override suspend fun empty(): Boolean = entityConversion(context) { body().result.empty().bindT() }
+    override suspend fun empty(): Boolean = entityConversion { body().result.empty().bindT() }
 }
 
 private fun <E : DomainEntity> SizedIterable<E>.orderBy(

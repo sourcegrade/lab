@@ -19,15 +19,13 @@
 package org.sourcegrade.lab.hub.domain.repo
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
 import org.sourcegrade.lab.hub.domain.Creates
 import org.sourcegrade.lab.hub.domain.DomainEntity
-import org.sourcegrade.lab.hub.domain.ExecutionContext
 
 @GraphQLIgnore
 interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
-    suspend fun create(item: C, context: ExecutionContext = UnconfinedExecutionContext): E
-    suspend fun put(item: C, context: ExecutionContext = UnconfinedExecutionContext): PutResult<E>
+    suspend fun create(item: C): E
+    suspend fun put(item: C): PutResult<E>
 
     data class PutResult<out E : DomainEntity>(val entity: E, val created: Boolean)
 }

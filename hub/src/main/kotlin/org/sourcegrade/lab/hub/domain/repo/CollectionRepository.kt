@@ -18,13 +18,11 @@
 
 package org.sourcegrade.lab.hub.domain.repo
 
-import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
-import org.sourcegrade.lab.hub.domain.ExecutionContext
 
 interface CollectionRepository<E : DomainEntity, C : DomainEntityCollection<E, C>> : Repository<E> {
-    suspend fun findAll(context: ExecutionContext = UnconfinedExecutionContext): C
+    suspend fun findAll(): C
 }
 //
 //data class CollectionParameters(

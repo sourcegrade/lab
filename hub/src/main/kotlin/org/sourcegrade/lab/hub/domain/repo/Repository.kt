@@ -18,15 +18,13 @@
 
 package org.sourcegrade.lab.hub.domain.repo
 
-import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
 import org.sourcegrade.lab.hub.domain.DomainEntity
-import org.sourcegrade.lab.hub.domain.ExecutionContext
 import org.sourcegrade.lab.hub.domain.Relation
 import java.util.UUID
 
 interface Repository<E : DomainEntity> {
-    suspend fun findById(id: UUID, context: ExecutionContext = UnconfinedExecutionContext, relations: List<Relation<E>> = emptyList()): E?
-    suspend fun deleteById(id: UUID, context: ExecutionContext = UnconfinedExecutionContext): Boolean
-    suspend fun exists(id: UUID, context: ExecutionContext = UnconfinedExecutionContext): Boolean
-    suspend fun countAll(context: ExecutionContext = UnconfinedExecutionContext): Long
+    suspend fun findById(id: UUID, relations: List<Relation<E>> = emptyList()): E?
+    suspend fun deleteById(id: UUID): Boolean
+    suspend fun exists(id: UUID): Boolean
+    suspend fun countAll(): Long
 }
