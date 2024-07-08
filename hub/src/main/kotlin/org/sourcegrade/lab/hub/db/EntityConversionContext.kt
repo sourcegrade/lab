@@ -23,8 +23,8 @@ import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.mapLazy
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 import org.sourcegrade.lab.hub.domain.Relation
 
 interface EntityConversionContext<E : DomainEntity, N : UUIDEntity> {
@@ -33,7 +33,11 @@ interface EntityConversionContext<E : DomainEntity, N : UUIDEntity> {
 
     fun convertRelation(relation: Relation<E>): Relation<N>
 
-    suspend fun <T> entityConversion(relations: List<Relation<E>> = emptyList(), statement: ConversionBody<E, N, T>): T
+    suspend fun <T> entityConversion(
+        executionContext: ExecutionContext,
+        relations: List<Relation<E>> = emptyList(),
+        statement: ConversionBody<E, N, T>,
+    ): T
 }
 
 typealias ConversionBody<E, N, T> = suspend EntityConversion<E, N>.() -> EntityConversion.BindResult<T>
@@ -50,11 +54,12 @@ class EntityConversionContextImpl<E : DomainEntity, N : UUIDEntity>(
     }
 
     override suspend fun <T> entityConversion(
+        executionContext: ExecutionContext,
         relations: List<Relation<E>>,
         statement: ConversionBody<E, N, T>,
-    ): T {
+    ): T = executionContext.execute {
         val ec = EntityConversion(context = this, relations)
-        return newSuspendedTransaction { statement(ec).result }
+        statement(ec).result
     }
 }
 

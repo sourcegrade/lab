@@ -18,9 +18,29 @@
 
 package org.sourcegrade.lab.hub.domain.repo
 
+import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 
 interface CollectionRepository<E : DomainEntity, C : DomainEntityCollection<E, C>> : Repository<E> {
-    suspend fun findAll(): C
+    suspend fun findAll(context: ExecutionContext = UnconfinedExecutionContext): C
 }
+//
+//data class CollectionParameters(
+//    val page: OptionalInput<Page>,
+//    val order: List<FieldOrdering>,
+//) {
+//    data class Page(val num: Long, val size: OptionalInput<Int>)
+//
+//    data class FieldOrdering(val field: String, val sortOrder: SortOrder = SortOrder.DESC)
+//
+//    enum class SortOrder(val exposed: org.jetbrains.exposed.sql.SortOrder) {
+//        ASC(org.jetbrains.exposed.sql.SortOrder.ASC),
+//        DESC(org.jetbrains.exposed.sql.SortOrder.DESC),
+//        ASC_NULLS_FIRST(org.jetbrains.exposed.sql.SortOrder.ASC_NULLS_FIRST),
+//        DESC_NULLS_FIRST(org.jetbrains.exposed.sql.SortOrder.DESC_NULLS_FIRST),
+//        ASC_NULLS_LAST(org.jetbrains.exposed.sql.SortOrder.ASC_NULLS_LAST),
+//        DESC_NULLS_LAST(org.jetbrains.exposed.sql.SortOrder.DESC_NULLS_LAST)
+//    }
+//}

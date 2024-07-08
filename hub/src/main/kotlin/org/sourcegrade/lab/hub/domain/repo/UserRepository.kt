@@ -18,17 +18,30 @@
 
 package org.sourcegrade.lab.hub.domain.repo
 
+import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 import org.sourcegrade.lab.hub.domain.Relation
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
 
 interface UserRepository : CollectionRepository<User, UserCollection> {
 
-    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findByUsername(
+        username: String,
+        context: ExecutionContext = UnconfinedExecutionContext,
+        relations: List<Relation<User>> = emptyList(),
+    ): User?
 
-    suspend fun findAllByUsername(partialUsername: String): UserCollection
+    suspend fun findAllByUsername(
+        partialUsername: String,
+        context: ExecutionContext = UnconfinedExecutionContext,
+    ): UserCollection
 
-    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findByEmail(
+        email: String,
+        context: ExecutionContext = UnconfinedExecutionContext,
+        relations: List<Relation<User>> = emptyList(),
+    ): User?
 }
 
 interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>

@@ -207,7 +207,7 @@ suspend fun <T> PipelineContext<Unit, ApplicationCall>.withUserSession(block: su
 
 suspend fun PipelineContext<Unit, ApplicationCall>.withUser(userRepository: UserRepository, block: suspend (User) -> Unit) {
     withUserSession { session ->
-        val user = userRepository.findById(UUID.fromString(session.userId))
+        val user = userRepository.findById(UUID.fromString(session.userId),)
         checkNotNull(user) { "Could not find user ${session.email} in DB" }
         block(user)
     }

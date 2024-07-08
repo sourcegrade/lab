@@ -46,6 +46,7 @@ import org.sourcegrade.lab.hub.domain.SizedIterableCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
 import org.sourcegrade.lab.hub.domain.repo.MutableRepository
 import org.sourcegrade.lab.hub.domain.repo.Repository
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 import java.util.UUID
 
 internal object Assignments : UUIDTable("sgl_assignments") {
@@ -85,9 +86,9 @@ internal class DBAssignmentRepository(
         DBAssignment.find { Assignments.courseId eq courseId }
     }
 
-    override suspend fun findAll(): AssignmentCollection = DBAssignmentCollection { DBAssignment.all().bindIterable() }
+    override suspend fun findAll(context: ExecutionContext): AssignmentCollection = DBAssignmentCollection(context) { DBAssignment.all().bindIterable() }
 
-    override suspend fun create(item: Assignment.CreateDto): Assignment = newSuspendedTransaction {
+    override suspend fun create(item: Assignment.CreateDto, context: ExecutionContext): Assignment = newSuspendedTransaction {
         DBAssignment.new {
             course = DBCourse.findByIdNotNull(item.courseId)
             submissionGroupCategory = DBSubmissionGroupCategory.findByIdNotNull(item.submissionGroupCategoryId)
@@ -97,15 +98,16 @@ internal class DBAssignmentRepository(
         }
     }
 
-    override suspend fun put(item: Assignment.CreateDto): MutableRepository.PutResult<Assignment> {
+    override suspend fun put(item: Assignment.CreateDto, context: ExecutionContext): MutableRepository.PutResult<Assignment> {
         TODO("Not yet implemented")
     }
 }
 
 internal class DBAssignmentCollection(
+    private val context: ExecutionContext,
     private val limit: Pair<Int, Long>? = null,
     private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
     private val body: ConversionBody<Assignment, DBAssignment, SizedIterable<Assignment>>,
 ) : AssignmentCollection,
     DomainEntityCollection<Assignment, AssignmentCollection>
-    by SizedIterableCollection(Assignments, conversionContext, ::DBAssignmentCollection, limit, orders, body)
+    by SizedIterableCollection(Assignments, conversionContext, ::DBAssignmentCollection, context, limit, orders, body)

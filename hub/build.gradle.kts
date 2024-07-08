@@ -29,7 +29,7 @@ dependencies {
     implementation(libs.ktor.server.call.logging)
     implementation(libs.ktor.client.logging)
     implementation(libs.kotlin.reflect)
-    implementation(libs.shiro)
+    implementation(libs.kotlinx.coroutines)
 }
 
 application {

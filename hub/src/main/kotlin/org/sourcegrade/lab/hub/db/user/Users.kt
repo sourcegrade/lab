@@ -35,6 +35,7 @@ import org.sourcegrade.lab.hub.db.EntityConversionContext
 import org.sourcegrade.lab.hub.db.EntityConversionContextImpl
 import org.sourcegrade.lab.hub.db.UUIDEntityClassRepository
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 import org.sourcegrade.lab.hub.domain.MutableUser
 import org.sourcegrade.lab.hub.domain.Relation
 import org.sourcegrade.lab.hub.domain.SizedIterableCollection
@@ -70,22 +71,27 @@ internal class DBUserRepository(
 ) : MutableUserRepository, Repository<User> by UUIDEntityClassRepository(DBUser, conversionContext),
     EntityConversionContext<User, DBUser> by conversionContext {
 
-    override suspend fun findByUsername(username: String, relations: List<Relation<User>>): User? =
-        entityConversion(relations) {
+    override suspend fun findByUsername(username: String, context: ExecutionContext, relations: List<Relation<User>>): User? =
+        entityConversion(context, relations) {
             DBUser.find { Users.username eq username }.firstOrNull().bindNullable()
         }
 
-    override suspend fun findAllByUsername(partialUsername: String): UserCollection =
-        DBUserCollection { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
+    override suspend fun findAllByUsername(partialUsername: String, context: ExecutionContext): UserCollection =
+        DBUserCollection(context) { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
 
-    override suspend fun findByEmail(email: String, relations: List<Relation<User>>): User? =
-        entityConversion(relations) {
+    override suspend fun findByEmail(email: String, context: ExecutionContext, relations: List<Relation<User>>): User? =
+        entityConversion(context, relations) {
             DBUser.find { Users.email eq email }.firstOrNull().bindNullable()
         }
 
-    override suspend fun findAll(): UserCollection = DBUserCollection { DBUser.all().bindIterable() }
+    override suspend fun findAll(context: ExecutionContext): UserCollection {
+        println("findAll start: ${Thread.currentThread().name}")
+        val result = DBUserCollection(context) { DBUser.all().bindIterable() }
+        println("findAll end: ${Thread.currentThread().name}")
+        return result
+    }
 
-    override suspend fun create(item: User.CreateDto): User = entityConversion(emptyList()) {
+    override suspend fun create(item: User.CreateDto, context: ExecutionContext): User = entityConversion(context, emptyList()) {
         DBUser.new {
             email = item.email
             username = item.username
@@ -97,7 +103,7 @@ internal class DBUserRepository(
         }.bind()
     }
 
-    override suspend fun put(item: User.CreateDto): MutableRepository.PutResult<User> = newSuspendedTransaction {
+    override suspend fun put(item: User.CreateDto, context: ExecutionContext): MutableRepository.PutResult<User> = newSuspendedTransaction {
         val existingUser = findByUsername(item.username)
         if (existingUser == null) {
             MutableRepository.PutResult(create(item), created = true)
@@ -112,9 +118,10 @@ internal class DBUserRepository(
 }
 
 internal class DBUserCollection(
+    private val context: ExecutionContext,
     private val limit: Pair<Int, Long>? = null,
     private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
     private val body: ConversionBody<User, DBUser, SizedIterable<User>>,
 ) : UserCollection,
     DomainEntityCollection<User, UserCollection>
-    by SizedIterableCollection(Users, conversionContext, ::DBUserCollection, limit, orders, body)
+    by SizedIterableCollection(Users, conversionContext, ::DBUserCollection, context, limit, orders, body)

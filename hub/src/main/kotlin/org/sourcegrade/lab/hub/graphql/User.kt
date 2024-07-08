@@ -23,6 +23,9 @@ import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.apache.logging.log4j.Logger
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.sourcegrade.lab.hub.db.SuspendedExecutionContext
+import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
@@ -41,14 +44,23 @@ class UserQuery(
     private val logger: Logger,
     private val repository: UserRepository,
 ) {
-    suspend fun findAll(): UserCollection = repository.findAll()
-    suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = repository.findById(id, dfe.extractRelations())
+    suspend fun findAll(): UserCollection {
+        val context = SuspendedExecutionContext()
+        val result = repository.findAll(context)
+        context.execute()
+        return result
+    }
+
+    suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = newSuspendedTransaction {
+        repository.findById(id, UnconfinedExecutionContext, dfe.extractRelations())
+    }
+
     suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
     suspend fun exists(id: UUID): Boolean = repository.exists(id)
     suspend fun countAll(): Long = repository.countAll()
 
     suspend fun findByUsername(dfe: DataFetchingEnvironment, username: String): User? =
-        repository.findByUsername(username, dfe.extractRelations())
+        repository.findByUsername(username, relations = dfe.extractRelations())
 
     suspend fun findAllByUsername(dfe: DataFetchingEnvironment, partialUsername: String): UserCollection {
         return repository.findAllByUsername(partialUsername)

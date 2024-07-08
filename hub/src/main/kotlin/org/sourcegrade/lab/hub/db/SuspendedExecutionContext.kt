@@ -16,24 +16,34 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.graphql
+package org.sourcegrade.lab.hub.db
 
-import org.jetbrains.exposed.sql.Transaction
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.completeWith
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.sourcegrade.lab.hub.domain.ExecutionContext
 
-interface GraphQLExecutionContext {
-    fun submitTransaction(transaction: suspend Transaction.() -> Unit)
+class SuspendedExecutionContext : ExecutionContext {
 
-    suspend fun execute()
-}
+    private val executionScopes = mutableListOf<ExecutionScope<*>>()
 
-class GraphQLExecutionContextImpl : GraphQLExecutionContext {
-
-    private val transactions = mutableListOf<suspend Transaction.() -> Unit>()
-
-    override fun submitTransaction(transaction: suspend Transaction.() -> Unit) {
-        transactions += transaction
+    private class ExecutionScope<T>(private val statement: suspend () -> T) {
+        val future = CompletableDeferred<T>()
+        suspend fun execute() {
+            future.completeWith(runCatching { statement() })
+        }
     }
 
-    override suspend fun execute() = newSuspendedTransaction { transactions.forEach { it() } }
+    override suspend fun <T> execute(statement: suspend () -> T): T {
+        val scope = ExecutionScope(statement)
+        executionScopes.add(scope)
+
+        return scope.future.await()
+    }
+
+    override suspend fun execute() = newSuspendedTransaction {
+        executionScopes.forEach { scope ->
+            scope.execute()
+        }
+    }
 }

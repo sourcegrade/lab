@@ -16,18 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain.repo
+package org.sourcegrade.lab.hub.db
 
-import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import org.sourcegrade.lab.hub.db.UnconfinedExecutionContext
-import org.sourcegrade.lab.hub.domain.Creates
-import org.sourcegrade.lab.hub.domain.DomainEntity
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.ExecutionContext
 
-@GraphQLIgnore
-interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
-    suspend fun create(item: C, context: ExecutionContext = UnconfinedExecutionContext): E
-    suspend fun put(item: C, context: ExecutionContext = UnconfinedExecutionContext): PutResult<E>
+object UnconfinedExecutionContext : ExecutionContext {
+    override suspend fun <T> execute(statement: suspend () -> T): T =
+        newSuspendedTransaction { statement() }
 
-    data class PutResult<out E : DomainEntity>(val entity: E, val created: Boolean)
+    override suspend fun execute() = Unit
 }
