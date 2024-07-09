@@ -19,10 +19,12 @@
 package org.sourcegrade.lab.hub.graphql
 
 import com.expediagroup.graphql.generator.annotations.GraphQLDescription
+import com.expediagroup.graphql.generator.execution.OptionalInput
 import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.apache.logging.log4j.Logger
+import org.sourcegrade.lab.hub.domain.DomainEntityCollection
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableRepository
@@ -42,7 +44,14 @@ class UserQuery(
     private val logger: Logger,
     private val repository: UserRepository,
 ) {
-    suspend fun findAll(): UserCollection = repository.findAll()
+    suspend fun findAll(
+        limit: OptionalInput<DomainEntityCollection.Limit>,
+        orders: OptionalInput<List<DomainEntityCollection.FieldOrdering>>,
+    ): UserCollection = repository.findAll(
+        limit = (limit as? OptionalInput.Defined)?.value,
+        orders = (orders as? OptionalInput.Defined)?.value ?: emptyList(),
+    )
+
     suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = repository.findById(id, dfe.extractRelations())
     suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
     suspend fun exists(id: UUID): Boolean = repository.exists(id)

@@ -45,9 +45,6 @@ interface MutableCourse : Course {
 }
 
 interface CourseCollection : DomainEntityCollection<Course, CourseCollection> {
-    override fun limit(num: Int, offset: Long): CourseCollection
-    override fun page(page: Int, pageSize: Int): CourseCollection
-    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): CourseCollection
     override suspend fun count(): Long
     override suspend fun empty(): Boolean
 

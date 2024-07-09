@@ -83,12 +83,8 @@ internal class DBUserRepository(
             DBUser.find { Users.email eq email }.firstOrNull().bindNullable()
         }
 
-    override suspend fun findAll(): UserCollection {
-        println("findAll start: ${Thread.currentThread().name}")
-        val result = DBUserCollection { DBUser.all().bindIterable() }
-        println("findAll end: ${Thread.currentThread().name}")
-        return result
-    }
+    override suspend fun findAll(limit: DomainEntityCollection.Limit?, orders: List<DomainEntityCollection.FieldOrdering>): UserCollection =
+        DBUserCollection(limit, orders) { DBUser.all().bindIterable() }
 
     override suspend fun create(item: User.CreateDto, relations: List<Relation<User>>): User = entityConversion(relations) {
         DBUser.new {
@@ -122,9 +118,9 @@ internal class DBUserRepository(
 }
 
 internal class DBUserCollection(
-    private val limit: Pair<Int, Long>? = null,
+    private val limit: DomainEntityCollection.Limit? = null,
     private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
     private val body: ConversionBody<User, DBUser, SizedIterable<User>>,
 ) : UserCollection,
     DomainEntityCollection<User, UserCollection>
-    by SizedIterableCollection(Users, conversionContext, ::DBUserCollection, limit, orders, body)
+    by SizedIterableCollection(Users, conversionContext, limit, orders, body)

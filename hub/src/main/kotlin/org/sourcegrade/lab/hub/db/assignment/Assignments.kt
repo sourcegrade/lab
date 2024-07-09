@@ -86,7 +86,8 @@ internal class DBAssignmentRepository(
         DBAssignment.find { Assignments.courseId eq courseId }
     }
 
-    override suspend fun findAll(): AssignmentCollection = DBAssignmentCollection { DBAssignment.all().bindIterable() }
+    override suspend fun findAll(limit: DomainEntityCollection.Limit?, orders: List<DomainEntityCollection.FieldOrdering>): AssignmentCollection =
+        DBAssignmentCollection(limit, orders) { DBAssignment.all().bindIterable() }
 
     override suspend fun create(item: Assignment.CreateDto, relations: List<Relation<Assignment>>): Assignment = newSuspendedTransaction {
         DBAssignment.new {
@@ -104,9 +105,9 @@ internal class DBAssignmentRepository(
 }
 
 internal class DBAssignmentCollection(
-    private val limit: Pair<Int, Long>? = null,
-    private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    private val limit: DomainEntityCollection.Limit?,
+    private val orders: List<DomainEntityCollection.FieldOrdering>,
     private val body: ConversionBody<Assignment, DBAssignment, SizedIterable<Assignment>>,
 ) : AssignmentCollection,
     DomainEntityCollection<Assignment, AssignmentCollection>
-    by SizedIterableCollection(Assignments, conversionContext, ::DBAssignmentCollection, limit, orders, body)
+    by SizedIterableCollection(Assignments, conversionContext, limit, orders, body)

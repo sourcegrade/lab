@@ -47,8 +47,6 @@ interface MutableAssignment : Assignment {
 }
 
 interface AssignmentCollection : DomainEntityCollection<Assignment, AssignmentCollection> {
-    override fun limit(num: Int, offset: Long): AssignmentCollection
-    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): AssignmentCollection
     override suspend fun count(): Long
     override suspend fun empty(): Boolean
 

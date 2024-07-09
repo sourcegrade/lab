@@ -22,7 +22,10 @@ import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
 
 interface CollectionRepository<E : DomainEntity, C : DomainEntityCollection<E, C>> : Repository<E> {
-    suspend fun findAll(): C
+    suspend fun findAll(
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): C
 }
 //
 //data class CollectionParameters(

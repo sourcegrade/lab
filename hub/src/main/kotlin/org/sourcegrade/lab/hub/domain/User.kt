@@ -41,9 +41,6 @@ interface MutableUser : User {
 }
 
 interface UserCollection : DomainEntityCollection<User, UserCollection> {
-    override fun limit(num: Int, offset: Long): UserCollection
-    override fun page(page: Int, pageSize: Int): UserCollection
-    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): UserCollection
     override suspend fun count(): Long
     override suspend fun empty(): Boolean
 

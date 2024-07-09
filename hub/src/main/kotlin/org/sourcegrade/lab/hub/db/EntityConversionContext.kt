@@ -86,7 +86,10 @@ class EntityConversion<E : DomainEntity, N : UUIDEntity>(
         BindResult((if (relationArray.isNotEmpty()) with(*relationArray) else this).mapLazy { it.createSnapshot() })
 
     @EntityConversionDsl
-    fun <T> T.bindT(): BindResult<T> = BindResult(this)
+    fun SizedIterable<N>.bindToList(): BindResult<List<E>> = bindIterable().result.toList().bindNoop()
+
+    @EntityConversionDsl
+    fun <T> T.bindNoop(): BindResult<T> = BindResult(this)
 
     class BindResult<out T>(val result: T)
 }

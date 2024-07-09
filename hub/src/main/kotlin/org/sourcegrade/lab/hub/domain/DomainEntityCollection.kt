@@ -30,18 +30,12 @@ import org.jetbrains.exposed.sql.SortOrder as ExposedSortOrder
 @GraphQLIgnore
 interface DomainEntityCollection<E : DomainEntity, C : DomainEntityCollection<E, C>> {
 
-    fun limit(num: Int, offset: Long = 0): C
-
-    fun page(page: Int, pageSize: Int): C = limit(pageSize, (page - 1) * pageSize.toLong())
-
-    fun orderBy(orders: List<FieldOrdering>): C
-
-    @GraphQLIgnore
-    suspend fun list(relations: List<Relation<E>> = emptyList()): List<E>
-
     suspend fun count(): Long
 
     suspend fun empty(): Boolean
+
+    @GraphQLIgnore
+    suspend fun list(relations: List<Relation<E>> = emptyList()): List<E>
 
     data class FieldOrdering(val field: String, val sortOrder: SortOrder = SortOrder.DESC)
 
@@ -53,39 +47,33 @@ interface DomainEntityCollection<E : DomainEntity, C : DomainEntityCollection<E,
         ASC_NULLS_LAST(ExposedSortOrder.ASC_NULLS_LAST),
         DESC_NULLS_LAST(ExposedSortOrder.DESC_NULLS_LAST)
     }
+
+    data class Limit(val num: Int, val offset: Long)
 }
 
 internal class SizedIterableCollection<E : DomainEntity, N : UUIDEntity, C : DomainEntityCollection<E, C>>(
     private val table: Table,
     private val conversionContext: EntityConversionContext<E, N>,
-    private val ctor: (Pair<Int, Long>?, List<DomainEntityCollection.FieldOrdering>, ConversionBody<E, N, SizedIterable<E>>) -> C,
-    private val limit: Pair<Int, Long>?,
+    private val limit: DomainEntityCollection.Limit?,
     private val orders: List<DomainEntityCollection.FieldOrdering>,
     private val body: ConversionBody<E, N, SizedIterable<E>>,
 ) : DomainEntityCollection<E, C>, EntityConversionContext<E, N> by conversionContext {
-    override fun limit(num: Int, offset: Long): C =
-        ctor(limit?.let { (n, o) -> minOf(num, n) to offset + o } ?: (num to offset), orders, body)
-
-    // Note that this is not *technically* correct because nested orderings are not supported
-    // But its close enough, because it would only be noticeable in an order -> limit -> order scenario
-    override fun orderBy(orders: List<DomainEntityCollection.FieldOrdering>): C =
-        ctor(limit, orders, body)
 
     override suspend fun list(relations: List<Relation<E>>): List<E> {
         println("list start: ${Thread.currentThread().name}")
-        val result = entityConversion {
+        val result = entityConversion(relations) {
             body().result
-                .let { if (limit != null) it.limit(limit.first, limit.second) else it }
+                .let { if (limit != null) it.limit(limit.num, limit.offset) else it }
                 .let { if (orders.isNotEmpty()) it.orderBy(table, orders) else it }
-                .toList().bindT()
+                .toList().bindNoop() // eager loading is done in body
         }
         println("list end: ${Thread.currentThread().name}")
         return result
     }
 
-    override suspend fun count(): Long = entityConversion { body().result.count().bindT() }
+    override suspend fun count(): Long = entityConversion { body().result.count().bindNoop() }
 
-    override suspend fun empty(): Boolean = entityConversion { body().result.empty().bindT() }
+    override suspend fun empty(): Boolean = entityConversion { body().result.empty().bindNoop() }
 }
 
 private fun <E : DomainEntity> SizedIterable<E>.orderBy(
@@ -93,6 +81,8 @@ private fun <E : DomainEntity> SizedIterable<E>.orderBy(
     orders: List<DomainEntityCollection.FieldOrdering>,
 ): SizedIterable<E> = orderBy(
     *orders.map { order ->
-        table::class.members.find { it.name == order.field }?.call(table) as Expression<*> to order.sortOrder.exposed
+        val field = (table::class.members.find { it.name == order.field }?.call(table) as? Expression<*>
+            ?: throw NoSuchFieldException("Field '${order.field}' does not exist on table '${table::class.simpleName}'"))
+        field to order.sortOrder.exposed
     }.toTypedArray(),
 )
