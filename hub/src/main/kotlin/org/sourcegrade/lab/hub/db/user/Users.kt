@@ -71,17 +71,13 @@ internal class DBUserRepository(
     EntityConversionContext<User, DBUser> by conversionContext {
 
     override suspend fun findByUsername(username: String, relations: List<Relation<User>>): User? =
-        entityConversion {
-            DBUser.find { Users.username eq username }.firstOrNull().bindNullable()
-        }
+        entityConversion { DBUser.find { Users.username eq username }.firstOrNull().bindNullable() }
 
     override suspend fun findAllByUsername(partialUsername: String): UserCollection =
         DBUserCollection { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
 
     override suspend fun findByEmail(email: String, relations: List<Relation<User>>): User? =
-        entityConversion {
-            DBUser.find { Users.email eq email }.firstOrNull().bindNullable()
-        }
+        entityConversion { DBUser.find { Users.email eq email }.firstOrNull().bindNullable() }
 
     override suspend fun findAll(limit: DomainEntityCollection.Limit?, orders: List<DomainEntityCollection.FieldOrdering>): UserCollection =
         DBUserCollection(limit, orders) { DBUser.all().bindIterable() }
