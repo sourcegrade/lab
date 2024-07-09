@@ -6,7 +6,6 @@ exposed = "0.49.0"
 
 [libraries]
 annotations = "org.jetbrains:annotations:24.0.1"
-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 # com.expediagroup:graphql-kotlin-ktor-server:7.0.2
 graphql-server = { module = "com.expediagroup:graphql-kotlin-ktor-server", version.ref = "graphql" }
 graphql-client = { module = "com.expediagroup:graphql-kotlin-ktor-client", version.ref = "graphql" }
@@ -25,7 +24,7 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
 ktor-serialization-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json" } # TODO: Remove
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-
+kotlinx-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0"
 kubernetes-client = "io.fabric8:kubernetes-client:6.11.0"
 logging-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
 logging-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
@@ -44,11 +43,13 @@ protobuf-kotlin = "com.google.protobuf:protobuf-kotlin:4.26.1"
 
 bcrypt = "org.mindrot:jbcrypt:0.4"
 
+shiro = "org.apache.shiro:shiro-core:2.0.1"
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
 protobuf = "com.google.protobuf:0.9.4"
-shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+shadow = { id = "io.github.goooler.shadow", version = "8.1.7" }
 ktor = "io.ktor.plugin:2.3.10"

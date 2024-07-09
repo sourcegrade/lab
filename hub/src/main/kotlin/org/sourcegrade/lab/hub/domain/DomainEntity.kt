@@ -16,11 +16,22 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import kotlinx.datetime.Instant
+import java.util.UUID
+import kotlin.reflect.KProperty0
+import kotlin.reflect.KProperty1
 
-fun main() {
-    embeddedServer(Netty, port = 7500) { module() }.start(wait = true)
+interface DomainEntity {
+    val uuid: UUID
+    val createdUtc: Instant
 }
+
+interface Creates<out E : DomainEntity>
+
+interface IdempotentCreates<out E : DomainEntity> : Creates<E> {
+    val uuid: UUID
+}
+
+typealias Relation<T> = KProperty1<T, Any?>

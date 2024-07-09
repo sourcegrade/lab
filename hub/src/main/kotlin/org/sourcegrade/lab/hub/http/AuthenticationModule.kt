@@ -1,3 +1,21 @@
+/*
+ *   Lab - SourceGrade.org
+ *   Copyright (C) 2019-2024 Contributors
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU Affero General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU Affero General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Affero General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package org.sourcegrade.lab.hub.http
 
 import io.ktor.client.HttpClient
@@ -39,10 +57,13 @@ import io.ktor.util.pipeline.PipelineContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.lab.hub.models.User
-import org.sourcegrade.lab.hub.models.Users
+import org.koin.ktor.ext.inject
+import org.sourcegrade.lab.hub.domain.MutableUserRepository
+import org.sourcegrade.lab.hub.domain.User
+import org.sourcegrade.lab.hub.domain.UserRepository
+import org.sourcegrade.lab.hub.getEnv
 import java.io.File
+import java.util.UUID
 import kotlin.collections.set
 import kotlin.time.Duration.Companion.hours
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
@@ -82,7 +103,7 @@ fun Application.authenticationModule() {
         }
         // oidc authentication
         oauth("Authentik") {
-            val url = ktorEnv.config.property("ktor.deployment.url").getString()
+            val url = getEnv("SGL_DEPLOYMENT_URL")
 
             urlProvider = { "$url$callback" }
 
@@ -91,18 +112,12 @@ fun Application.authenticationModule() {
             val oauthSettings =
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "Authentik",
-                    authorizeUrl = ktorEnv.config.property("ktor.oauth.authorizeUrl")
-                        .getString(),
-                    accessTokenUrl = ktorEnv.config.property("ktor.oauth.accessTokenUrl")
-                        .getString(),
+                    authorizeUrl = getEnv("SGL_AUTH_URL"),
+                    accessTokenUrl = getEnv("SGL_AUTH_ACCESS_TOKEN_URL"),
                     requestMethod = HttpMethod.Post,
-                    clientId = ktorEnv.config.property("ktor.oauth.clientId")
-                        .getString(),
-                    clientSecret = ktorEnv.config.property("ktor.oauth.clientSecret")
-                        .getString(),
-                    defaultScopes = ktorEnv.config.tryGetString("ktor.oauth.scopes")
-                        ?.split(" ")
-                        ?: listOf("openid", "profile", "email"),
+                    clientId = getEnv("SGL_AUTH_CLIENT_ID"),
+                    clientSecret = getEnv("SGL_AUTH_CLIENT_SECRET"),
+                    defaultScopes = getEnv("SGL_AUTH_SCOPES").split(" "),
                     onStateCreated = { call, state ->
                         // saves new state with redirect url value
                         call.request.queryParameters["redirectUrl"]?.let {
@@ -114,6 +129,7 @@ fun Application.authenticationModule() {
         }
     }
     routing {
+        val userRepository = inject<MutableUserRepository>().value
         route("/api/session") {
             install(ServerContentNegotiation) {
                 json(
@@ -140,21 +156,18 @@ fun Application.authenticationModule() {
                             header("Authorization", "Bearer ${principal.accessToken}")
                         }.body<OAuthUserInfo>()
 
+                    val createDto = User.CreateUserDto(
+                        email = userInfo.email,
+                        username = userInfo.preferredUsername,
+                    )
+
                     // find user in db
 
-                    val user =
-                        newSuspendedTransaction {
-                            User.find { Users.email eq userInfo.email }.firstOrNull()
-                        } ?: newSuspendedTransaction {
-                            User.new {
-                                username = userInfo.preferredUsername
-                                email = userInfo.email
-                            }
-                        }
+                    val user = userRepository.put(createDto).entity
 
                     val session =
                         UserSession(
-                            user.id.value,
+                            user.uuid.toString(),
                             checkNotNull(principal.state) { "No state" },
                             principal.accessToken,
                             userInfo.email,
@@ -176,7 +189,7 @@ fun Application.authenticationModule() {
                 }
             }
             get("current-user") {
-                withUser { call.respond(it.toDTO()) }
+                withUser(userRepository) { call.respond(it) } // TODO: Conversion to DTO
             }
         }
     }
@@ -192,9 +205,9 @@ suspend fun <T> PipelineContext<Unit, ApplicationCall>.withUserSession(block: su
     }
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.withUser(block: suspend (User) -> Unit) {
+suspend fun PipelineContext<Unit, ApplicationCall>.withUser(userRepository: UserRepository, block: suspend (User) -> Unit) {
     withUserSession { session ->
-        val user = newSuspendedTransaction { User.findById(session.userId) }
+        val user = userRepository.findById(UUID.fromString(session.userId),)
         checkNotNull(user) { "Could not find user ${session.email} in DB" }
         block(user)
     }

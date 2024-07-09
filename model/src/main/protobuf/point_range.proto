@@ -2,14 +2,10 @@ syntax = "proto3";
 
 package org.sourcegrade.lab.model.rubric;
 
-import "number_range.proto";
-
-// Defines a range of points. The range is inclusive.
+// Defines a range of numbers. The range is inclusive.
 message PointRange {
-    oneof value {
-        // Single point value
-        int32 single = 1;
-        // Range of points
-        NumberRange range = 2;
-    }
+    // Minimum value of the range (inclusive)
+    int32 min = 1;
+    // Maximum value of the range (inclusive)
+    int32 max = 2;
 }

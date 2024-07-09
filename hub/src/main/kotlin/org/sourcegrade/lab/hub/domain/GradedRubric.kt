@@ -16,11 +16,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub
+package org.sourcegrade.lab.hub.domain
 
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
+import org.jetbrains.exposed.sql.SizedIterable
 
-fun main() {
-    embeddedServer(Netty, port = 7500) { module() }.start(wait = true)
+interface GradedRubric : DomainEntity {
+    val rubric: Rubric
+    val name: String
+    val achievedMinPoints: Int
+    val achievedMaxPoints: Int
+    val allChildCriteria: SizedIterable<GradedCriterion>
+    val childCriteria: SizedIterable<GradedCriterion>
 }
