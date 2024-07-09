@@ -18,18 +18,17 @@
 
 package org.sourcegrade.lab.hub.db.user
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import org.jetbrains.exposed.sql.Query
+import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.SizedIterable
-import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.innerJoin
 import org.jetbrains.exposed.sql.mapLazy
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.CourseMemberships
-import org.sourcegrade.lab.hub.db.course.Courses
-import org.sourcegrade.lab.hub.db.assignment.DBAssignment
 import org.sourcegrade.lab.hub.db.DBCourseMembership
 import org.sourcegrade.lab.hub.db.DBSubmission
 import org.sourcegrade.lab.hub.db.DBSubmissionGroupMembership
@@ -37,8 +36,11 @@ import org.sourcegrade.lab.hub.db.SubmissionGroupMemberships
 import org.sourcegrade.lab.hub.db.SubmissionGroups
 import org.sourcegrade.lab.hub.db.Submissions
 import org.sourcegrade.lab.hub.db.Terms
-import org.sourcegrade.lab.hub.domain.Assignment
+import org.sourcegrade.lab.hub.db.course.Courses
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
+import org.sourcegrade.lab.hub.domain.AssignmentRepository
 import org.sourcegrade.lab.hub.domain.Course
+import org.sourcegrade.lab.hub.domain.DomainEntityCollection
 import org.sourcegrade.lab.hub.domain.Submission
 import org.sourcegrade.lab.hub.domain.SubmissionGroup
 import org.sourcegrade.lab.hub.domain.Term
@@ -46,24 +48,21 @@ import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserMembership
 import org.sourcegrade.lab.hub.domain.termPredicate
 
-private fun Query.membershipStatusPredicate(status: UserMembership.UserMembershipStatus, now: Instant): Query = when (status) {
-    UserMembership.UserMembershipStatus.ALL -> this
-    UserMembership.UserMembershipStatus.FUTURE -> where { CourseMemberships.startUtc greater now }
-    UserMembership.UserMembershipStatus.PAST -> where { CourseMemberships.endUtc less now }
-    UserMembership.UserMembershipStatus.CURRENT -> where { CourseMemberships.endUtc.isNull() }
-}
+internal fun SqlExpressionBuilder.membershipStatusPredicate(status: UserMembership.UserMembershipStatus, now: Instant): Op<Boolean> =
+    when (status) {
+        UserMembership.UserMembershipStatus.ALL -> Op.TRUE
+        UserMembership.UserMembershipStatus.FUTURE -> CourseMemberships.startUtc greater now
+        UserMembership.UserMembershipStatus.PAST -> CourseMemberships.endUtc less now
+        UserMembership.UserMembershipStatus.CURRENT -> CourseMemberships.endUtc.isNull()
+    }
 
 suspend fun User.assignments(
-    term: Term.Matcher,
-    now: Instant,
-): SizedIterable<Assignment> = newSuspendedTransaction {
-    Assignments.innerJoin(Courses).innerJoin(Terms).innerJoin(CourseMemberships).selectAll()
-        .where { CourseMemberships.userId eq uuid }
-        .termPredicate(term, now)
-        .membershipStatusPredicate(UserMembership.UserMembershipStatus.CURRENT, now)
-        .mapLazy { DBAssignment.wrapRow(it) }
-        .orderBy(Assignments.submissionDeadline to SortOrder.DESC)
-}
+    assignmentRepository: AssignmentRepository,
+    term: Term.Matcher = Term.Matcher.Current,
+    now: Instant = Clock.System.now(),
+    limit: DomainEntityCollection.Limit? = null,
+    orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+): AssignmentCollection = assignmentRepository.findAllByUser(uuid, term, now, limit, orders)
 
 suspend fun User.courseMemberships(
     status: UserMembership.UserMembershipStatus,
@@ -71,9 +70,11 @@ suspend fun User.courseMemberships(
     now: Instant,
 ): SizedIterable<UserMembership<Course>> = newSuspendedTransaction {
     CourseMemberships.innerJoin(Courses).innerJoin(Terms).selectAll()
-        .where { (CourseMemberships.userId eq uuid) }
-        .termPredicate(term, now)
-        .membershipStatusPredicate(status, now)
+        .where {
+            (CourseMemberships.userId eq uuid)
+                .and(termPredicate(term, now))
+                .and(membershipStatusPredicate(status, now))
+        }
         .mapLazy { DBCourseMembership.wrapRow(it) }
 }
 
@@ -83,9 +84,11 @@ suspend fun User.submissionGroupMemberships(
     now: Instant,
 ): SizedIterable<UserMembership<SubmissionGroup>> = newSuspendedTransaction {
     SubmissionGroupMemberships.innerJoin(SubmissionGroups).innerJoin(Terms).selectAll()
-        .where { (CourseMemberships.userId eq uuid) }
-        .termPredicate(term, now)
-        .membershipStatusPredicate(status, now)
+        .where {
+            (CourseMemberships.userId eq uuid)
+                .and(termPredicate(term, now))
+                .and(membershipStatusPredicate(status, now))
+        }
         .mapLazy { DBSubmissionGroupMembership.wrapRow(it) }
 }
 
@@ -94,8 +97,8 @@ suspend fun User.submissions(
     term: Term.Matcher,
     now: Instant,
 ): SizedIterable<Submission> = newSuspendedTransaction {
-    Submissions.innerJoin(SubmissionGroupMemberships) { SubmissionGroupMemberships.userId eq uuid }.selectAll()
-        .termPredicate(term, now)
+    Submissions.innerJoin(SubmissionGroupMemberships) { (SubmissionGroupMemberships.userId eq uuid) and termPredicate(term, now) }
+        .selectAll()
         .mapLazy { DBSubmission.wrapRow(it) }
 }
 

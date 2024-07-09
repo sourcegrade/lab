@@ -20,6 +20,7 @@ package org.sourcegrade.lab.hub.domain
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
 import graphql.schema.DataFetchingEnvironment
+import kotlinx.datetime.Instant
 import org.sourcegrade.lab.hub.graphql.extractRelations
 
 interface User : DomainEntity {
@@ -27,7 +28,14 @@ interface User : DomainEntity {
     val username: String
     val displayname: String
 
-    data class CreateDto(
+    suspend fun assignments(
+        term: OptionalInput<String>,
+        now: OptionalInput<Instant>,
+        limit: OptionalInput<DomainEntityCollection.Limit>,
+        orders: OptionalInput<List<DomainEntityCollection.FieldOrdering>>,
+    ): AssignmentCollection
+
+    data class CreateUserDto(
         val email: String,
         val username: String,
         val displayname: OptionalInput<String> = OptionalInput.Defined(username),
@@ -40,9 +48,16 @@ interface MutableUser : User {
     override var displayname: String
 }
 
+interface UserRepository : CollectionRepository<User, UserCollection> {
+    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList()): User?
+    suspend fun findAllByUsername(partialUsername: String): UserCollection
+}
+
+interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateUserDto>
+
 interface UserCollection : DomainEntityCollection<User, UserCollection> {
     override suspend fun count(): Long
     override suspend fun empty(): Boolean
-
     suspend fun list(dfe: DataFetchingEnvironment): List<User> = list(dfe.extractRelations())
 }

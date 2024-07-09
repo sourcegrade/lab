@@ -19,6 +19,7 @@
 package org.sourcegrade.lab.hub.domain
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import com.expediagroup.graphql.generator.execution.OptionalInput
 import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.sql.Expression
 import org.jetbrains.exposed.sql.SizedIterable

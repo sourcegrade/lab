@@ -24,26 +24,7 @@ import com.expediagroup.graphql.server.ktor.graphQLGetRoute
 import com.expediagroup.graphql.server.ktor.graphQLPostRoute
 import com.expediagroup.graphql.server.ktor.graphQLSDLRoute
 import com.expediagroup.graphql.server.ktor.graphiQLRoute
-import graphql.ExecutionInput
-import graphql.ExecutionResult
-import graphql.execution.ExecutionContext
-import graphql.execution.instrumentation.DocumentAndVariables
-import graphql.execution.instrumentation.ExecutionStrategyInstrumentationContext
-import graphql.execution.instrumentation.Instrumentation
-import graphql.execution.instrumentation.InstrumentationContext
-import graphql.execution.instrumentation.InstrumentationState
-import graphql.execution.instrumentation.parameters.InstrumentationExecuteOperationParameters
-import graphql.execution.instrumentation.parameters.InstrumentationExecutionParameters
-import graphql.execution.instrumentation.parameters.InstrumentationExecutionStrategyParameters
-import graphql.execution.instrumentation.parameters.InstrumentationFieldCompleteParameters
-import graphql.execution.instrumentation.parameters.InstrumentationFieldFetchParameters
-import graphql.execution.instrumentation.parameters.InstrumentationFieldParameters
-import graphql.execution.instrumentation.parameters.InstrumentationValidationParameters
-import graphql.language.Document
-import graphql.schema.DataFetcher
-import graphql.schema.GraphQLSchema
 import graphql.schema.GraphQLType
-import graphql.validation.ValidationError
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application
@@ -76,11 +57,14 @@ import org.sourcegrade.lab.hub.db.Terms
 import org.sourcegrade.lab.hub.db.assignment.Assignments
 import org.sourcegrade.lab.hub.db.course.Courses
 import org.sourcegrade.lab.hub.db.user.Users
+import org.sourcegrade.lab.hub.graphql.AssignmentMutations
+import org.sourcegrade.lab.hub.graphql.AssignmentQueries
+import org.sourcegrade.lab.hub.graphql.CourseMutations
+import org.sourcegrade.lab.hub.graphql.CourseQueries
 import org.sourcegrade.lab.hub.graphql.Scalars
 import org.sourcegrade.lab.hub.graphql.UserMutations
 import org.sourcegrade.lab.hub.graphql.UserQueries
 import org.sourcegrade.lab.hub.http.authenticationModule
-import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KType
 
 fun Application.module() {
@@ -90,6 +74,10 @@ fun Application.module() {
                 single<Logger> { LogManager.getLogger("SGL Supervisor") }
                 singleOf(::UserQueries)
                 singleOf(::UserMutations)
+                singleOf(::AssignmentQueries)
+                singleOf(::AssignmentMutations)
+                singleOf(::CourseQueries)
+                singleOf(::CourseMutations)
             },
             DBModule,
         )
@@ -148,10 +136,14 @@ fun Application.module() {
             queries =
                 listOf(
                     inject<UserQueries>().value,
+                    inject<AssignmentQueries>().value,
+                    inject<CourseQueries>().value,
                 )
             mutations =
                 listOf(
                     inject<UserMutations>().value,
+                    inject<AssignmentMutations>().value,
+                    inject<CourseMutations>().value,
                 )
         }
     }

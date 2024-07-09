@@ -18,7 +18,9 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.jetbrains.exposed.sql.SizedIterable
 import java.util.UUID
 
 interface UserMembership<T : TermScoped> : DomainEntity {
@@ -40,3 +42,14 @@ interface UserMembership<T : TermScoped> : DomainEntity {
         PAST,
     }
 }
+
+interface UserMembershipRepository<T : TermScoped> : Repository<UserMembership<T>> {
+    suspend fun find(
+        status: UserMembership.UserMembershipStatus = UserMembership.UserMembershipStatus.CURRENT,
+        term: Term.Matcher = Term.Matcher.Current,
+        now: Instant = Clock.System.now(),
+    ): SizedIterable<T>
+}
+
+interface MutableUserMembershipRepository<T : TermScoped> : UserMembershipRepository<T>,
+    MutableRepository<UserMembership<T>, UserMembership.CreateDto<T>>

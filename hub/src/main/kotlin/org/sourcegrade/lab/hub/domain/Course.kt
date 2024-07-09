@@ -20,20 +20,28 @@ package org.sourcegrade.lab.hub.domain
 
 import com.expediagroup.graphql.generator.execution.OptionalInput
 import graphql.schema.DataFetchingEnvironment
-import org.jetbrains.exposed.sql.SizedIterable
 import org.sourcegrade.lab.hub.graphql.extractRelations
 import java.util.UUID
 
 interface Course : TermScoped {
-    val submissionGroupCategories: SizedIterable<SubmissionGroupCategory>
-    val assignments: SizedIterable<Assignment>
     val owner: User
 
     val name: String
     val description: String
 
+    fun submissionGroupCategories(
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): SubmissionGroupCategoryCollection
+
+    fun assignments(
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): AssignmentCollection
+
     data class CreateDto(
-        val ownerUUID: UUID,
+        val ownerUuid: UUID,
+        val termUuid: UUID,
         val name: String,
         val description: OptionalInput<String>,
     ) : Creates<Course>
@@ -43,6 +51,19 @@ interface MutableCourse : Course {
     override var name: String
     override var description: String
 }
+
+interface CourseRepository : CollectionRepository<Course, CourseCollection> {
+
+    suspend fun findByName(name: String, relations: List<Relation<Course>> = emptyList()): Course?
+
+    suspend fun findAllByName(partialName: String): CourseCollection
+
+    suspend fun findAllByDescription(partialDescription: String): CourseCollection // TODO: maybe instead CollectionRepo.search?
+
+    suspend fun findAllByOwner(ownerId: UUID): CourseCollection
+}
+
+interface MutableCourseRepository : CourseRepository, MutableRepository<Course, Course.CreateDto>
 
 interface CourseCollection : DomainEntityCollection<Course, CourseCollection> {
     override suspend fun count(): Long

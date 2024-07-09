@@ -43,4 +43,4 @@ internal suspend inline fun <ID : Comparable<ID>, reified E : Entity<ID>> KMutab
 }
 
 internal inline fun <ID : Comparable<ID>, reified E : Entity<ID>> EntityClass<ID, E>.findByIdNotNull(id: ID): E =
-    findById(id) ?: error("${E::class.simpleName} $id not found")
+    findById(id) ?: error("${E::class.simpleName} with uuid $id not found")

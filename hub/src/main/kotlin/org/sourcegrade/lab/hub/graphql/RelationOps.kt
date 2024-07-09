@@ -18,16 +18,28 @@
 
 package org.sourcegrade.lab.hub.graphql
 
+import com.expediagroup.graphql.generator.execution.OptionalInput
 import graphql.schema.DataFetchingEnvironment
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.Relation
+import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 
 internal inline fun <reified E : DomainEntity> DataFetchingEnvironment.extractRelations(): List<Relation<E>> =
-    selectionSet.immediateFields.map { field -> coerceRelation<E>(field.name) }
+    selectionSet.immediateFields.mapNotNull { field -> coerceRelation<E>(field.name) }
 
-internal inline fun <reified E : DomainEntity> coerceRelation(relation: String): Relation<E> =
-    E::class.members.find { it.name == relation }?.let {
+internal inline fun <reified E : DomainEntity> coerceRelation(relation: String): Relation<E>? =
+    E::class.members.find { it.name == relation }?.let { prop ->
         @Suppress("UNCHECKED_CAST")
-        it as KProperty1<E, Any?>
-    } ?: error("No relation $relation found on ${E::class.simpleName}, available relations are: ${E::class.members.map { it.name }}")
+        when (prop) {
+            is KProperty1<*, *> -> (prop as KProperty1<E, Any?>)
+            is KFunction<*> -> null
+            else -> error("No relation $relation found on ${E::class.simpleName}, available relations are: ${E::class.members.map { it.name }}")
+        }
+    }
+
+fun <T> OptionalInput<T>.flatten(): T? = (this as? OptionalInput.Defined)?.value
+
+fun <T> OptionalInput<T>.flatten(default: () -> T): T = flatten() ?: default()
+
+fun <T> OptionalInput<List<T>>.flattenList(): List<T> = (this as? OptionalInput.Defined)?.value ?: emptyList()

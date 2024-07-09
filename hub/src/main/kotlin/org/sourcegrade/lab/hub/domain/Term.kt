@@ -18,19 +18,25 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import graphql.schema.DataFetchingEnvironment
 import kotlinx.datetime.Instant
-import org.jetbrains.exposed.sql.Query
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
+import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.SqlExpressionBuilder
 import org.jetbrains.exposed.sql.and
 import org.sourcegrade.lab.hub.db.Terms
+import org.sourcegrade.lab.hub.graphql.extractRelations
 import java.util.UUID
 
 interface Term : DomainEntity {
     val name: String
     val start: Instant
     val end: Instant?
+
+    data class CreateDto(
+        val name: String,
+        val start: Instant,
+        val end: Instant?,
+    ) : Creates<Term>
 
     sealed interface Matcher {
         data object All : Matcher
@@ -64,14 +70,30 @@ interface Term : DomainEntity {
                 }
             }
 
+            fun fromNullableString(value: String?): Matcher = value?.let { fromString(it) } ?: Current
+
             private val regex = "(?<type>[a-zA-Z])\\((?<param>.+\\))".toRegex()
         }
     }
 }
 
-internal fun Query.termPredicate(term: Term.Matcher, now: Instant): Query = when (term) {
-    is Term.Matcher.All -> this
-    is Term.Matcher.Current -> where { (Terms.start lessEq now) and (Terms.end greaterEq now) }
-    is Term.Matcher.ByName -> where { Terms.name.eq(term.name) }
-    is Term.Matcher.ById -> where { Terms.id.eq(term.id) }
+interface TermRepository : CollectionRepository<Term, TermCollection> {
+    suspend fun findByName(name: String, relations: List<Relation<Term>>): Term?
+    suspend fun findByTime(now: Instant, relations: List<Relation<Term>>): Term?
+}
+
+interface MutableTermRepository : TermRepository, MutableRepository<Term, Term.CreateDto>
+
+interface TermCollection : DomainEntityCollection<Term, TermCollection> {
+    override suspend fun count(): Long
+    override suspend fun empty(): Boolean
+
+    suspend fun list(dfe: DataFetchingEnvironment): List<Term> = list(dfe.extractRelations())
+}
+
+internal fun SqlExpressionBuilder.termPredicate(term: Term.Matcher, now: Instant): Op<Boolean> = when (term) {
+    is Term.Matcher.All -> Op.TRUE
+    is Term.Matcher.Current -> (Terms.start lessEq now) and (Terms.end greaterEq now)
+    is Term.Matcher.ByName -> Terms.name.eq(term.name)
+    is Term.Matcher.ById -> Terms.id.eq(term.id)
 }

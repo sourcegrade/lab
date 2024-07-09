@@ -20,26 +20,50 @@ package org.sourcegrade.lab.hub.db.course
 
 import kotlinx.datetime.Instant
 import org.sourcegrade.lab.hub.db.RelationOption
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
+import org.sourcegrade.lab.hub.domain.Course
+import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.SubmissionGroupCategoryCollection
 import org.sourcegrade.lab.hub.domain.Term
 import org.sourcegrade.lab.hub.domain.User
 import java.util.UUID
 
-//internal class CourseSnapshot(
-//    uuidOption: RelationOption<UUID>,
-//    createdUtcOption: RelationOption<Instant>,
-//    termOption: RelationOption<Term>,
-//    submissionGroupCategoriesOption: RelationOption<String>,
-//    displaynameOption: RelationOption<String>,
-//) : User {
-//
-//    override val uuid: UUID by uuidOption
-//    override val createdUtc: Instant by createdUtcOption
-//    override val email: String by emailOption
-//    override val username: String by usernameOption
-//    override val displayname: String by displaynameOption
-//
-//    companion object {
-//        fun of(user: User, relations: Set<String>): CourseSnapshot = with(relations) {
+internal class CourseSnapshot(
+    uuidOption: RelationOption<UUID>,
+    createdUtcOption: RelationOption<Instant>,
+    termOption: RelationOption<Term>,
+    submissionGroupCategoriesOption: RelationOption<String>,
+    displaynameOption: RelationOption<String>,
+) : Course {
+
+    override val uuid: UUID by uuidOption
+    override val createdUtc: Instant by createdUtcOption
+    override val term: Term by termOption
+
+    override val owner: User
+        get() = TODO("Not yet implemented")
+    override val name: String
+        get() = TODO("Not yet implemented")
+    override val description: String
+        get() = TODO("Not yet implemented")
+
+    override fun submissionGroupCategories(
+        limit: DomainEntityCollection.Limit?,
+        orders: List<DomainEntityCollection.FieldOrdering>,
+    ): SubmissionGroupCategoryCollection {
+        TODO("Not yet implemented")
+    }
+
+    override fun assignments(
+        limit: DomainEntityCollection.Limit?,
+        orders: List<DomainEntityCollection.FieldOrdering>,
+    ): AssignmentCollection {
+        TODO("Not yet implemented")
+    }
+
+    companion object {
+        fun of(user: Course, relations: Set<String>): CourseSnapshot = with(relations) {
+            TODO()
 //            CourseSnapshot(
 //                RelationOption.of(user::uuid),
 //                RelationOption.of(user::createdUtc),
@@ -47,6 +71,6 @@ import java.util.UUID
 //                RelationOption.of(user::username),
 //                RelationOption.of(user::displayname),
 //            )
-//        }
-//    }
-//}
+        }
+    }
+}

@@ -25,11 +25,11 @@ import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.apache.logging.log4j.Logger
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.MutableRepository
+import org.sourcegrade.lab.hub.domain.MutableUserRepository
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
-import org.sourcegrade.lab.hub.domain.repo.MutableRepository
-import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
-import org.sourcegrade.lab.hub.domain.repo.UserRepository
+import org.sourcegrade.lab.hub.domain.UserRepository
 import java.util.UUID
 
 class UserQueries(
@@ -47,10 +47,7 @@ class UserQuery(
     suspend fun findAll(
         limit: OptionalInput<DomainEntityCollection.Limit>,
         orders: OptionalInput<List<DomainEntityCollection.FieldOrdering>>,
-    ): UserCollection = repository.findAll(
-        limit = (limit as? OptionalInput.Defined)?.value,
-        orders = (orders as? OptionalInput.Defined)?.value ?: emptyList(),
-    )
+    ): UserCollection = repository.findAll(limit.flatten(), orders.flattenList())
 
     suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = repository.findById(id, dfe.extractRelations())
     suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
@@ -76,10 +73,10 @@ class UserMutation(
     private val logger: Logger,
     private val repository: MutableUserRepository,
 ) {
-    suspend fun create(dfe: DataFetchingEnvironment, item: User.CreateDto): User = repository.create(item, dfe.extractRelations())
-    suspend fun put(dfe: DataFetchingEnvironment, item: User.CreateDto): PutResult = repository.put(item, dfe.extractRelations()).convert()
+    suspend fun create(dfe: DataFetchingEnvironment, item: User.CreateUserDto): User = repository.create(item, dfe.extractRelations())
+    suspend fun put(dfe: DataFetchingEnvironment, item: User.CreateUserDto): UserPutResult = repository.put(item, dfe.extractRelations()).convert()
 
-    data class PutResult(val entity: User, val created: Boolean)
+    data class UserPutResult(val entity: User, val created: Boolean)
 
-    private fun MutableRepository.PutResult<User>.convert(): PutResult = PutResult(entity, created)
+    private fun MutableRepository.PutResult<User>.convert(): UserPutResult = UserPutResult(entity, created)
 }

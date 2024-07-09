@@ -58,9 +58,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.koin.ktor.ext.inject
+import org.sourcegrade.lab.hub.domain.MutableUserRepository
 import org.sourcegrade.lab.hub.domain.User
-import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
-import org.sourcegrade.lab.hub.domain.repo.UserRepository
+import org.sourcegrade.lab.hub.domain.UserRepository
 import org.sourcegrade.lab.hub.getEnv
 import java.io.File
 import java.util.UUID
@@ -156,7 +156,7 @@ fun Application.authenticationModule() {
                             header("Authorization", "Bearer ${principal.accessToken}")
                         }.body<OAuthUserInfo>()
 
-                    val createDto = User.CreateDto(
+                    val createDto = User.CreateUserDto(
                         email = userInfo.email,
                         username = userInfo.preferredUsername,
                     )

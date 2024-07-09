@@ -19,6 +19,7 @@
 package org.sourcegrade.lab.hub.domain
 
 import graphql.schema.DataFetchingEnvironment
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.sourcegrade.lab.hub.graphql.extractRelations
 import java.util.UUID
@@ -31,7 +32,7 @@ interface Assignment : DomainEntity {
     val description: String
     val submissionDeadlineUtc: Instant
 
-    data class CreateDto(
+    data class CreateAssignmentDto(
         val courseId: UUID,
         val submissionGroupCategoryId: UUID,
         val name: String,
@@ -46,9 +47,32 @@ interface MutableAssignment : Assignment {
     override var submissionDeadlineUtc: Instant
 }
 
+interface AssignmentRepository : CollectionRepository<Assignment, AssignmentCollection> {
+    suspend fun findAllByCourse(
+        courseId: UUID,
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): AssignmentCollection
+
+    suspend fun findAllByName(
+        partialName: String,
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): AssignmentCollection
+
+    suspend fun findAllByUser(
+        userId: UUID,
+        term: Term.Matcher = Term.Matcher.Current,
+        now: Instant = Clock.System.now(),
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): AssignmentCollection
+}
+
+interface MutableAssignmentRepository : AssignmentRepository, MutableRepository<Assignment, Assignment.CreateAssignmentDto>
+
 interface AssignmentCollection : DomainEntityCollection<Assignment, AssignmentCollection> {
     override suspend fun count(): Long
     override suspend fun empty(): Boolean
-
     suspend fun list(dfe: DataFetchingEnvironment): List<Assignment> = list(dfe.extractRelations())
 }

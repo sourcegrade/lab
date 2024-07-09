@@ -48,6 +48,7 @@ class EntityConversionContextImpl<E : DomainEntity, N : UUIDEntity>(
     override fun createSnapshot(entity: N, relations: Set<String>): E = snapshotFun(entity, relations)
 
     override fun convertRelation(relation: Relation<E>): Relation<N> {
+
         @Suppress("UNCHECKED_CAST")
         return (relation as Relation<N>)
     }

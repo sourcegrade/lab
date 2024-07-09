@@ -16,10 +16,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain.repo
-
-import org.sourcegrade.lab.hub.domain.DomainEntity
-import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+package org.sourcegrade.lab.hub.domain
 
 interface CollectionRepository<E : DomainEntity, C : DomainEntityCollection<E, C>> : Repository<E> {
     suspend fun findAll(

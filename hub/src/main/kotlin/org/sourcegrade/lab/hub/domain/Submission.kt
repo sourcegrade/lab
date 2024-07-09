@@ -41,3 +41,10 @@ interface Submission : DomainEntity {
         val bytes: ByteArray,
     ) : Creates<Submission>
 }
+
+interface SubmissionRepository : Repository<Submission> {
+    suspend fun findByAssignment(assignmentId: UUID): SizedIterable<Submission>
+    suspend fun findByUserAndAssignment(userId: UUID, assignmentId: UUID): SizedIterable<Submission>
+}
+
+interface MutableSubmissionRepository : SubmissionRepository, MutableRepository<Submission, Submission.CreateDto>

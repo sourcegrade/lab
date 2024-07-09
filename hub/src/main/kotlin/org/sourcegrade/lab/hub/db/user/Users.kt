@@ -32,17 +32,17 @@ import org.jetbrains.exposed.sql.kotlin.datetime.timestamp
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.db.ConversionBody
 import org.sourcegrade.lab.hub.db.EntityConversionContext
-import org.sourcegrade.lab.hub.db.EntityConversionContextImpl
 import org.sourcegrade.lab.hub.db.UUIDEntityClassRepository
+import org.sourcegrade.lab.hub.domain.AssignmentCollection
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
+import org.sourcegrade.lab.hub.domain.MutableRepository
 import org.sourcegrade.lab.hub.domain.MutableUser
+import org.sourcegrade.lab.hub.domain.MutableUserRepository
 import org.sourcegrade.lab.hub.domain.Relation
+import org.sourcegrade.lab.hub.domain.Repository
 import org.sourcegrade.lab.hub.domain.SizedIterableCollection
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
-import org.sourcegrade.lab.hub.domain.repo.MutableRepository
-import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
-import org.sourcegrade.lab.hub.domain.repo.Repository
 import java.util.UUID
 
 internal object Users : UUIDTable("sgl_users") {
@@ -60,29 +60,37 @@ internal class DBUser(id: EntityID<UUID>) : UUIDEntity(id), MutableUser {
     override var username: String by Users.username
     override var displayname: String by Users.displayname
 
+    override suspend fun assignments(
+        term: OptionalInput<String>,
+        now: OptionalInput<Instant>,
+        limit: OptionalInput<DomainEntityCollection.Limit>,
+        orders: OptionalInput<List<DomainEntityCollection.FieldOrdering>>,
+    ): AssignmentCollection {
+        TODO("Not yet implemented")
+    }
+
     companion object : EntityClass<UUID, DBUser>(Users)
 }
 
-private val conversionContext = EntityConversionContextImpl<User, DBUser>(UserSnapshot::of)
-
 internal class DBUserRepository(
     private val logger: Logger,
+    private val conversionContext: EntityConversionContext<User, DBUser>,
 ) : MutableUserRepository, Repository<User> by UUIDEntityClassRepository(DBUser, conversionContext),
     EntityConversionContext<User, DBUser> by conversionContext {
 
     override suspend fun findByUsername(username: String, relations: List<Relation<User>>): User? =
-        entityConversion { DBUser.find { Users.username eq username }.firstOrNull().bindNullable() }
-
-    override suspend fun findAllByUsername(partialUsername: String): UserCollection =
-        DBUserCollection { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
+        entityConversion(relations) { DBUser.find { Users.username eq username }.firstOrNull().bindNullable() }
 
     override suspend fun findByEmail(email: String, relations: List<Relation<User>>): User? =
         entityConversion { DBUser.find { Users.email eq email }.firstOrNull().bindNullable() }
 
-    override suspend fun findAll(limit: DomainEntityCollection.Limit?, orders: List<DomainEntityCollection.FieldOrdering>): UserCollection =
-        DBUserCollection(limit, orders) { DBUser.all().bindIterable() }
+    override suspend fun findAllByUsername(partialUsername: String): UserCollection =
+        DBUserCollection(conversionContext) { DBUser.find { Users.username like "%$partialUsername%" }.bindIterable() }
 
-    override suspend fun create(item: User.CreateDto, relations: List<Relation<User>>): User = entityConversion(relations) {
+    override suspend fun findAll(limit: DomainEntityCollection.Limit?, orders: List<DomainEntityCollection.FieldOrdering>): UserCollection =
+        DBUserCollection(conversionContext, limit, orders) { DBUser.all().bindIterable() }
+
+    override suspend fun create(item: User.CreateUserDto, relations: List<Relation<User>>): User = entityConversion(relations) {
         DBUser.new {
             email = item.email
             username = item.username
@@ -97,7 +105,7 @@ internal class DBUserRepository(
     }
 
     override suspend fun put(
-        item: User.CreateDto,
+        item: User.CreateUserDto,
         relations: List<Relation<User>>,
     ): MutableRepository.PutResult<User> = newSuspendedTransaction {
         val existingUser = findByUsername(item.username, relations)
@@ -114,9 +122,9 @@ internal class DBUserRepository(
 }
 
 internal class DBUserCollection(
+    private val conversionContext: EntityConversionContext<User, DBUser>,
     private val limit: DomainEntityCollection.Limit? = null,
     private val orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
     private val body: ConversionBody<User, DBUser, SizedIterable<User>>,
 ) : UserCollection,
-    DomainEntityCollection<User, UserCollection>
-    by SizedIterableCollection(Users, conversionContext, limit, orders, body)
+    DomainEntityCollection<User, UserCollection> by SizedIterableCollection(Users, conversionContext, limit, orders, body)

@@ -16,19 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.sourcegrade.lab.hub.domain.repo
+package org.sourcegrade.lab.hub.domain
 
-import org.sourcegrade.lab.hub.domain.Relation
-import org.sourcegrade.lab.hub.domain.User
-import org.sourcegrade.lab.hub.domain.UserCollection
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 
-interface UserRepository : CollectionRepository<User, UserCollection> {
+@GraphQLIgnore
+interface MutableRepository<E : DomainEntity, C : Creates<E>> : Repository<E> {
+    suspend fun create(item: C, relations: List<Relation<E>> = emptyList()): E
+    suspend fun put(item: C, relations: List<Relation<E>> = emptyList()): PutResult<E>
 
-    suspend fun findByUsername(username: String, relations: List<Relation<User>> = emptyList(), ): User?
-
-    suspend fun findAllByUsername(partialUsername: String, ): UserCollection
-
-    suspend fun findByEmail(email: String, relations: List<Relation<User>> = emptyList(), ): User?
+    data class PutResult<out E : DomainEntity>(val entity: E, val created: Boolean)
 }
-
-interface MutableUserRepository : UserRepository, MutableRepository<User, User.CreateDto>

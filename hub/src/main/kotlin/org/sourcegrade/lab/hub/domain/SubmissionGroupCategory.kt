@@ -18,9 +18,38 @@
 
 package org.sourcegrade.lab.hub.domain
 
+import graphql.schema.DataFetchingEnvironment
+import org.sourcegrade.lab.hub.graphql.extractRelations
+import java.util.UUID
+
 interface SubmissionGroupCategory : DomainEntity {
     val course: Course
     var name: String
     var minSize: Int
     var maxSize: Int
+
+    data class CreateDto(
+        val courseUuid: UUID,
+        val name: String,
+        val minSize: Int,
+        val maxSize: Int,
+    ) : Creates<SubmissionGroupCategory>
+}
+
+interface SubmissionGroupCategoryRepository : CollectionRepository<SubmissionGroupCategory, SubmissionGroupCategoryCollection> {
+    suspend fun findByName(name: String, relations: List<Relation<SubmissionGroupCategory>> = emptyList()): SubmissionGroupCategory?
+    suspend fun findAllByName(
+        partialName: String,
+        limit: DomainEntityCollection.Limit? = null,
+        orders: List<DomainEntityCollection.FieldOrdering> = emptyList(),
+    ): SubmissionGroupCategoryCollection
+}
+
+interface MutableSubmissionGroupCategoryRepository : MutableRepository<SubmissionGroupCategory, SubmissionGroupCategory.CreateDto>,
+    SubmissionGroupCategoryRepository
+
+interface SubmissionGroupCategoryCollection : DomainEntityCollection<SubmissionGroupCategory, SubmissionGroupCategoryCollection> {
+    override suspend fun count(): Long
+    override suspend fun empty(): Boolean
+    suspend fun list(dfe: DataFetchingEnvironment): List<SubmissionGroupCategory> = list(dfe.extractRelations())
 }

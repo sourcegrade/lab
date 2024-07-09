@@ -23,7 +23,7 @@ import org.jetbrains.exposed.dao.UUIDEntity
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.Relation
-import org.sourcegrade.lab.hub.domain.repo.Repository
+import org.sourcegrade.lab.hub.domain.Repository
 import java.util.UUID
 
 internal class UUIDEntityClassRepository<E : DomainEntity, N : UUIDEntity>(
