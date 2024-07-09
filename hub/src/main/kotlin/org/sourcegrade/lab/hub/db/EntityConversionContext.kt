@@ -23,6 +23,7 @@ import org.jetbrains.exposed.dao.load
 import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.SizedIterable
 import org.jetbrains.exposed.sql.mapLazy
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.DomainEntity
 import org.sourcegrade.lab.hub.domain.Relation
 
@@ -56,7 +57,7 @@ class EntityConversionContextImpl<E : DomainEntity, N : UUIDEntity>(
         statement: ConversionBody<E, N, T>,
     ): T {
         val ec = EntityConversion(context = this, relations)
-        return statement(ec).result
+        return newSuspendedTransaction { statement(ec).result }
     }
 }
 

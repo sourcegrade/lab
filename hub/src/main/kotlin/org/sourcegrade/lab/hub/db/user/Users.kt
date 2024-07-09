@@ -90,22 +90,27 @@ internal class DBUserRepository(
         return result
     }
 
-    override suspend fun create(item: User.CreateDto): User = entityConversion(emptyList()) {
+    override suspend fun create(item: User.CreateDto, relations: List<Relation<User>>): User = entityConversion(relations) {
         DBUser.new {
             email = item.email
             username = item.username
-            if (item.displayname is OptionalInput.Defined) {
-                displayname = requireNotNull(item.displayname.value) { "displayname" }
+            displayname = if (item.displayname is OptionalInput.Defined) {
+                requireNotNull(item.displayname.value) { "displayname" }
+            } else {
+                item.username
             }
         }.also {
             logger.info("Created new user ${it.uuid} with data $item")
         }.bind()
     }
 
-    override suspend fun put(item: User.CreateDto): MutableRepository.PutResult<User> = newSuspendedTransaction {
-        val existingUser = findByUsername(item.username)
+    override suspend fun put(
+        item: User.CreateDto,
+        relations: List<Relation<User>>,
+    ): MutableRepository.PutResult<User> = newSuspendedTransaction {
+        val existingUser = findByUsername(item.username, relations)
         if (existingUser == null) {
-            MutableRepository.PutResult(create(item), created = true)
+            MutableRepository.PutResult(create(item, relations), created = true)
         } else {
             logger.info(
                 "Loaded existing user ${existingUser.username} (${existingUser.uuid}) with" +

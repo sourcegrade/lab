@@ -42,6 +42,7 @@ import org.sourcegrade.lab.hub.domain.Assignment
 import org.sourcegrade.lab.hub.domain.AssignmentCollection
 import org.sourcegrade.lab.hub.domain.DomainEntityCollection
 import org.sourcegrade.lab.hub.domain.MutableAssignment
+import org.sourcegrade.lab.hub.domain.Relation
 import org.sourcegrade.lab.hub.domain.SizedIterableCollection
 import org.sourcegrade.lab.hub.domain.repo.MutableAssignmentRepository
 import org.sourcegrade.lab.hub.domain.repo.MutableRepository
@@ -87,7 +88,7 @@ internal class DBAssignmentRepository(
 
     override suspend fun findAll(): AssignmentCollection = DBAssignmentCollection { DBAssignment.all().bindIterable() }
 
-    override suspend fun create(item: Assignment.CreateDto): Assignment = newSuspendedTransaction {
+    override suspend fun create(item: Assignment.CreateDto, relations: List<Relation<Assignment>>): Assignment = newSuspendedTransaction {
         DBAssignment.new {
             course = DBCourse.findByIdNotNull(item.courseId)
             submissionGroupCategory = DBSubmissionGroupCategory.findByIdNotNull(item.submissionGroupCategoryId)
@@ -97,7 +98,7 @@ internal class DBAssignmentRepository(
         }
     }
 
-    override suspend fun put(item: Assignment.CreateDto): MutableRepository.PutResult<Assignment> {
+    override suspend fun put(item: Assignment.CreateDto, relations: List<Relation<Assignment>>): MutableRepository.PutResult<Assignment> {
         TODO("Not yet implemented")
     }
 }

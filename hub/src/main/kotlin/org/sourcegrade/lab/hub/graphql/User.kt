@@ -23,9 +23,9 @@ import com.expediagroup.graphql.server.operations.Mutation
 import com.expediagroup.graphql.server.operations.Query
 import graphql.schema.DataFetchingEnvironment
 import org.apache.logging.log4j.Logger
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.sourcegrade.lab.hub.domain.User
 import org.sourcegrade.lab.hub.domain.UserCollection
+import org.sourcegrade.lab.hub.domain.repo.MutableRepository
 import org.sourcegrade.lab.hub.domain.repo.MutableUserRepository
 import org.sourcegrade.lab.hub.domain.repo.UserRepository
 import java.util.UUID
@@ -43,38 +43,34 @@ class UserQuery(
     private val repository: UserRepository,
 ) {
     suspend fun findAll(): UserCollection = repository.findAll()
-
-    suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = newSuspendedTransaction {
-        repository.findById(id, dfe.extractRelations())
-    }
-
+    suspend fun findById(dfe: DataFetchingEnvironment, id: UUID): User? = repository.findById(id, dfe.extractRelations())
     suspend fun deleteById(id: UUID): Boolean = repository.deleteById(id)
     suspend fun exists(id: UUID): Boolean = repository.exists(id)
     suspend fun countAll(): Long = repository.countAll()
 
     suspend fun findByUsername(dfe: DataFetchingEnvironment, username: String): User? =
-        repository.findByUsername(username, relations = dfe.extractRelations())
+        repository.findByUsername(username, dfe.extractRelations())
 
-    suspend fun findAllByUsername(dfe: DataFetchingEnvironment, partialUsername: String): UserCollection {
-        return repository.findAllByUsername(partialUsername)
-    }
+    suspend fun findAllByUsername(dfe: DataFetchingEnvironment, partialUsername: String): UserCollection =
+        repository.findAllByUsername(partialUsername)
 }
 
 class UserMutations(
     private val logger: Logger,
     private val repository: MutableUserRepository,
 ) : Mutation {
-    fun hello2(): String = "Hello, World!"
-//    fun user(): UserMutation = UserMutation(logger, repository)
+    fun user(): UserMutation = UserMutation(logger, repository)
 }
 
-//@GraphQLDescription("Mutation user collection")
-//class UserMutation(
-//    private val logger: Logger,
-//    private val repository: MutableUserRepository,
-//) {
-////    suspend fun create(dfe: DataFetchingEnvironment, item: User.CreateDto): User.Snapshot {
-////        logger.info("SelectionSet: ${dfe.selectionSet.fields.joinToString { it.name }}")
-////        return repository.create(item)
-////    }
-//}
+@GraphQLDescription("Mutation user collection")
+class UserMutation(
+    private val logger: Logger,
+    private val repository: MutableUserRepository,
+) {
+    suspend fun create(dfe: DataFetchingEnvironment, item: User.CreateDto): User = repository.create(item, dfe.extractRelations())
+    suspend fun put(dfe: DataFetchingEnvironment, item: User.CreateDto): PutResult = repository.put(item, dfe.extractRelations()).convert()
+
+    data class PutResult(val entity: User, val created: Boolean)
+
+    private fun MutableRepository.PutResult<User>.convert(): PutResult = PutResult(entity, created)
+}
