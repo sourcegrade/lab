@@ -1,5 +1,5 @@
 [versions]
-kotlin = "1.9.23"
+kotlin = "1.9.25"
 log4j = "2.23.1"
 graphql = "7.0.2"
 exposed = "0.49.0"
