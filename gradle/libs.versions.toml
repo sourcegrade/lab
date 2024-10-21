@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.23"
 log4j = "2.23.1"
-graphql = "7.0.2"
+graphql = "7.2.1"
 exposed = "0.49.0"
 
 [libraries]
