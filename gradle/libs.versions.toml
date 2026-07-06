@@ -38,7 +38,7 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 exposed-kotlin-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
 
-postgresql = "org.postgresql:postgresql:42.7.3"
+postgresql = "org.postgresql:postgresql:42.7.13"
 protobuf-java = "com.google.protobuf:protobuf-java:4.26.1"
 protobuf-kotlin = "com.google.protobuf:protobuf-kotlin:4.26.1"
 
